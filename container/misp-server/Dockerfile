@@ -148,9 +148,9 @@ chmod -R g+ws /var/www/MISP/app/files/scripts/tmp;
 ### 7 Configure Apache
 # add HTTP MISP Config
 RUN rm /etc/apache2/sites-available/*; rm /etc/apache2/sites-enabled/*;
-COPY --chown=www-data:www-data files/misp.conf /etc/apache2/sites-available/misp.conf
-COPY --chown=www-data:www-data files/misp.ssl.conf /etc/apache2/sites-available/misp.ssl.conf
-COPY --chown=root:root files/ports.conf /etc/apache2/ports.conf
+COPY files/misp*.conf /etc/apache2/sites-available/
+#COPY files/misp.ssl.conf /etc/apache2/sites-available/misp.ssl.conf
+COPY files/ports.conf /etc/apache2/ports.conf
 RUN chmod 644 /etc/apache2/ports.conf
 # add HTTPS MISP Config - THIS SHOULD BE DONE IN ROBOT
 #RUN mkdir /etc/apache2/ssl
