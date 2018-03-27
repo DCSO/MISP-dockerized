@@ -1,0 +1,7 @@
+secrets/*
+volumes
+volumes/*
+config/*backup*
+config/misp.conf.yml
+docker-bench-security/
+.env*
