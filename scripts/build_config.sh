@@ -183,7 +183,8 @@ function query_misp_settings(){
 #################################################
 # Start Execution:
 check_exists_configs
-query_misp_tag
+# query_misp_tag
+# No query_misp_tag, because it is fixed via Release.
 query_hostname
 query_proxy
 query_db_settings
