@@ -15,6 +15,9 @@ DOCKER_COMPOSE_CONF="$SCRIPTPATH/../config/.env"
 MISP_CONF_YML="$SCRIPTPATH/../config/misp.conf.yml"
 ############################################
 
+# Preparation
+[ ! -e "$SCRIPTPATH/../config" ] && mkdir $SCRIPTPATH/../config
+
 # Start Function Section
 function check_exists_configs(){
   # check config file and backup if its needed
@@ -180,7 +183,8 @@ function query_misp_settings(){
 #################################################
 # Start Execution:
 check_exists_configs
-query_misp_tag
+# query_misp_tag
+# No query_misp_tag, because it is fixed via Release.
 query_hostname
 query_proxy
 query_db_settings
@@ -189,47 +193,47 @@ query_misp_settings
 
 # Write Configuration
 cat << EOF > $DOCKER_COMPOSE_CONF
-  #!/bin/bash
-  #description     :This script set the Environment variables for the right MISP Docker Container and Environments
-  #=================================================
-  # ------------------------------
-  # Hostname
-  # ------------------------------
-  HOSTNAME=${HOSTNAME}
-  # ------------------------------
-  # Proxy Configuration
-  # ------------------------------
-  HTTP_PROXY=${HTTP_PROXY}
-  NO_PROXY=${NO_PROXY}
-  USE_PROXY=${USE_PROXY}
-  # ------------------------------
-  # DB configuration
-  # ------------------------------
-  DB_VERSION=${DB_V}
-  MYSQL_DATABASE=${DBNAME}
-  MYSQL_USER=${DBUSER}
-  MYSQL_PASSWORD=${DBPASS}
-  MYSQL_ROOT_PASSWORD=${DBROOT}
-  ${DB_ALLOW_EMPTY_PW}
-  # ------------------------------
-  # HTTP/S configuration
-  # ------------------------------
-  HTTP_PORT=${HTTP_PORT}
-  HTTPS_PORT=${HTTPS_PORT}
-  HTTP_SERVERADMIN=${HTTP_SERVERADMIN}
-  # ------------------------------
-  # Redis configuration
-  # ------------------------------
-  REDIS_VERSION=${REDIS_V}
-  # ------------------------------
-  # misp-server env configuration
-  # ------------------------------
-  MISP_TAG=${MISP_TAG}
-  python_cybox_TAG=${python_cybox_TAG}
-  python_stix_TAG=${python_stix_TAG}
-  mixbox_TAG=${mixbox_TAG}
-  cake_resque_TAG=${cake_resque_TAG}
-  ##################################################################
+#!/bin/bash
+#description     :This script set the Environment variables for the right MISP Docker Container and Environments
+#=================================================
+# ------------------------------
+# Hostname
+# ------------------------------
+HOSTNAME=${HOSTNAME}
+# ------------------------------
+# Proxy Configuration
+# ------------------------------
+HTTP_PROXY=${HTTP_PROXY}
+NO_PROXY=${NO_PROXY}
+USE_PROXY=${USE_PROXY}
+# ------------------------------
+# DB configuration
+# ------------------------------
+DB_VERSION=${DB_V}
+MYSQL_DATABASE=${DBNAME}
+MYSQL_USER=${DBUSER}
+MYSQL_PASSWORD=${DBPASS}
+MYSQL_ROOT_PASSWORD=${DBROOT}
+${DB_ALLOW_EMPTY_PW}
+# ------------------------------
+# HTTP/S configuration
+# ------------------------------
+HTTP_PORT=${HTTP_PORT}
+HTTPS_PORT=${HTTPS_PORT}
+HTTP_SERVERADMIN=${HTTP_SERVERADMIN}
+# ------------------------------
+# Redis configuration
+# ------------------------------
+REDIS_VERSION=${REDIS_V}
+# ------------------------------
+# misp-server env configuration
+# ------------------------------
+MISP_TAG=${MISP_TAG}
+python_cybox_TAG=${python_cybox_TAG}
+python_stix_TAG=${python_stix_TAG}
+mixbox_TAG=${mixbox_TAG}
+cake_resque_TAG=${cake_resque_TAG}
+##################################################################
 EOF
  
 cat << EOF > $MISP_CONF_YML
@@ -270,5 +274,11 @@ HTTP_PROXY: "${HTTP_PROXY}"
 NO_PROXY: "${NO_PROXY}"
 USE_PROXY: "${USE_PROXY}"
 EOF
-# link .env to the docker-compose file
-[ -e "$SCRIPTPATH/../.env" ] || ln -s $DOCKER_COMPOSE_CONF $SCRIPTPATH/../.env
+#
+# Post-Tasks
+#
+
+# check if .env file exists and delete it
+[ -e "$SCRIPTPATH/../.env" ] && rm -f $SCRIPTPATH/../.env
+# copy new .env to docker-compose folder
+cp $SCRIPTPATH/../config/.env $SCRIPTPATH/../.env
