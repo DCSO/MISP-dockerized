@@ -280,4 +280,4 @@ EOF
 # check if .env file exists and delete it
 [ -e "$SCRIPTPATH/../.env" ] && rm -f $SCRIPTPATH/../.env
 # copy new .env to docker-compose folder
-cp $SCRIPTPATH/../config/.env $SCRIPTPATH/../config/.env
+cp $SCRIPTPATH/../config/.env $SCRIPTPATH/../.env
