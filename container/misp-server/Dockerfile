@@ -201,8 +201,8 @@ chmod -R g+ws /var/www/MISP/app/files/scripts/tmp;
 COPY files/php.ini /etc/php/7.0/apache2/
 
 # Create Volume with all needed Folder and Files
-COPY tasks_for_volume.sh /
-RUN /tasks_for_volume.sh
+COPY files/tasks_for_volume.sh /
+RUN sh /tasks_for_volume.sh
 
 
 # define the WORKDIR if you use docker exec
