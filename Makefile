@@ -41,19 +41,19 @@ build-config:
 
 # Build Docker misp-server
 build-server:
-	container/build.sh server --no-cache
+	container/build.sh server
 
 # Build Docker misp-proxy
 build-proxy:
-	container/build.sh proxy --no-cache
+	container/build.sh proxy
 
 # Build Docker misp-robot
 build-robot:
-	container/build.sh robot --no-cache
+	container/build.sh robot
 
 # Build all misp docker-container
 build-all:
-	container/build.sh all  --no-cache
+	container/build.sh all
 
 # delete all misp container, volumes and images
 delete:

@@ -1,7 +1,6 @@
 secrets/*
 volumes
 volumes/*
-config/*backup*
-config/misp.conf.yml
+config/
 docker-bench-security/
 .env*
