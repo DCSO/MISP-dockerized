@@ -72,9 +72,10 @@ services:
       #- "80:80" # DEBUG only
       #- "443:443" # DEBUG only
     volumes:
-      - misp-vol-server-data:/var/www/
-      - misp-vol-server-config:/etc/apache2/
-      - misp-vol-server-logs:/var/log/apache2/
+      #- misp-vol-server-data:/var/www/
+      #- misp-vol-server-config:/etc/apache2/
+      #- misp-vol-server-logs:/var/log/apache2/
+      - misp-vol-server-data:/volume
     networks:
       misp-backend:
         aliases:
@@ -128,9 +129,9 @@ services:
 
 
 volumes:
-  misp-vol-server-logs:
+  #misp-vol-server-logs:
   misp-vol-server-data:
-  misp-vol-server-config:
+  #misp-vol-server-config:
   misp-vol-db-data:
   misp-vol-redis-data:
   misp-vol-proxy-data:

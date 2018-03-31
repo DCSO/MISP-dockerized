@@ -19,7 +19,7 @@ ARG cake_resque_TAG=4.1.2
 # Install core components
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -y && apt-get autoremove -y && apt-get clean -y
-RUN apt-get install -y software-properties-common
+RUN apt-get install -y software-properties- && apt-get autoremove -y && apt-get clean -y
 RUN apt-get install -y \ 
 supervisor \
 nano \
@@ -41,7 +41,8 @@ openssl \
 vim \
 zip \
 net-tools \
-sudo
+sudo \
+&& apt-get autoremove -y && apt-get clean -y
 
 # Install additional dependencies
 RUN apt-get install -y \ 
@@ -54,13 +55,15 @@ python-setuptools \
 libxml2-dev \
 libxslt1-dev \
 zlib1g-dev \
-python-setuptools
+python-setuptools \
+&& apt-get autoremove -y && apt-get clean -y
 
 # Install Apache
 RUN apt-get install -y \
 apache2 \
 apache2-doc \
-apache2-utils 
+apache2-utils \
+&& apt-get autoremove -y && apt-get clean -y
 
 # ATTENTION the part about a2enmod/a2dismod, a2ensite/a2dissite is moved to step 7.
 
@@ -76,7 +79,9 @@ php-mysql \
 php-opcache \
 php-readline \
 php-redis \
-php-xml
+php-xml \
+&& apt-get autoremove -y && apt-get clean -y
+
 # Set locals
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
@@ -191,10 +196,17 @@ chmod -R g+ws /var/www/MISP/app/files/scripts/tmp;
 
 #########################################
 #       Start of DCSO MISP Config Part
+
+# Copy PHP.ini File for PHP Config
 COPY files/php.ini /etc/php/7.0/apache2/
 
+# Create Volume with all needed Folder and Files
+COPY tasks_for_volume.sh /
+RUN /tasks_for_volume.sh
+
+
 # define the WORKDIR if you use docker exec
-WORKDIR /var/www/MISP
+WORKDIR /volume
 
 # Environment Variable for Proxy
 ENV HTTP_PROXY=""
