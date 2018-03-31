@@ -1,9 +1,9 @@
 #/bin/bash
-
+set -v
 
 VOLUME_FOLDER="/volume"
 
-function move_and_link(){
+function move_and_link() {
     mv $1 $2
     ln -s $2 $1
 }
@@ -32,7 +32,8 @@ move_and_link /etc/php/7.0/apache2/php.ini $VOLUME_FOLDER/php7.0-apache2.php.ini
 
 
 # LOGGING
-move_and_link /var/log/apache2/ $VOLUME_FOLDER/log-apache2
+[ -e /var/log/apache2 ] || mkdir -p /var/log/apache2
+move_and_link /var/log/apache2 $VOLUME_FOLDER/log-apache2
 
 # remove Script
 rm -f $0
