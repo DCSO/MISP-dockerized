@@ -6,6 +6,7 @@
     mode: 0750
 
 - name: Copy certficate and key to proxy
+  become: tryesue
   copy:
     remote_src: True
     src: "/srv/misp-config/ssl/{{ item }}"
@@ -22,6 +23,7 @@
   shell: openssl dhparam -out /srv/misp-proxy/ssl/dhparams.pem 2048
 
 - name: Switch http to https config 
+  become: yes
   shell: "{{ item }}"
   with_items:
     - "mv /srv/misp-proxy/SERVER_HTTP_only.conf /srv/misp-proxy/SERVER_HTTP_only"
@@ -29,6 +31,7 @@
 
 # Reload Proxy Config
 - name: Restart proxy
+  become: yes
   shell: "{{ item }}"
   with_items:
     - "docker exec -i misp-proxy /bin/bash -c 'service nginx reload'"

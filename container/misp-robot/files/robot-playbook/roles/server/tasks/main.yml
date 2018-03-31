@@ -58,12 +58,13 @@
 ##### Check permissions #####
 - name: Configure MISP | Check permissions
   shell: "{{ item }}"
+  become: yes
   with_items:
-    - "sudo chown -R www-data:www-data /srv/misp-server/MISP"
-    - "sudo chmod -R 750 /srv/misp-server/MISP"
-    - "sudo chmod -R g+ws /srv/misp-server/MISP/app/tmp"
-    - "sudo chmod -R g+ws /srv/misp-server/MISP/app/files"
-    - "sudo chmod -R g+ws /srv/misp-server/MISP/app/files/scripts/tmp"
+    - "chown -R www-data:www-data /srv/misp-server/MISP"
+    - "chmod -R 750 /srv/misp-server/MISP"
+    - "chmod -R g+ws /srv/misp-server/MISP/app/tmp"
+    - "chmod -R g+ws /srv/misp-server/MISP/app/files"
+    - "chmod -R g+ws /srv/misp-server/MISP/app/files/scripts/tmp"
 
 ##### Configure SSL #####
 - name: Apache2 SSL | Create SSL folder
@@ -99,6 +100,7 @@
 #    state: link
 
 - name: Apache2 SSL | Activate SSL config
+  become: yes
   copy:
     remote_src: True
     src: "/srv/apache-config/sites-available/misp.ssl.conf"
@@ -109,6 +111,7 @@
     mode: 0640
 
 - name: Apache2 SSL | Reload Apache configs
+  become: yes
   shell: "{{ item }}"
   with_items:
     #- "docker exec -i misp-server /bin/bash -c 'service apache2 restart'"
