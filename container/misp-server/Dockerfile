@@ -202,7 +202,7 @@ COPY files/php.ini /etc/php/7.0/apache2/
 
 # Create Volume with all needed Folder and Files
 COPY files/tasks_for_volume.sh /
-RUN sh /tasks_for_volume.sh
+RUN bash /tasks_for_volume.sh
 
 
 # define the WORKDIR if you use docker exec
