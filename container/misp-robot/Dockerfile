@@ -9,7 +9,7 @@ LABEL maintainer="DCSO MISP <misp@dcso.de>"
 # Install core components
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -y && apt-get autoremove -y && apt-get clean -y
-RUN apt-get install -y software-properties-common
+RUN apt-get install -y software-properties-common && apt-get autoremove -y && apt-get clean -y
 RUN apt-get install -y \ 
 supervisor \
 nano \
@@ -28,7 +28,8 @@ git \
 openssl \
 net-tools \
 sudo \
-wget
+wget \
+&& apt-get autoremove -y && apt-get clean -y
 
 # Install additional dependencies
 RUN apt-get install -y \ 
@@ -39,7 +40,8 @@ python-pip \
 libxml2-dev \
 libxslt1-dev \
 zlib1g-dev \
-python-setuptools
+python-setuptools \
+&& apt-get autoremove -y && apt-get clean -y
 
 # Install Docker
 # https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-docker-ce
@@ -47,7 +49,8 @@ RUN apt-get install -y \
     apt-transport-https \
     ca-certificates \
     curl \
-    software-properties-common
+    software-properties-common \
+    && apt-get autoremove -y && apt-get clean -y
 
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 RUN apt-key fingerprint 0EBFCD88
@@ -55,7 +58,7 @@ RUN add-apt-repository \
    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
    $(lsb_release -cs) \
    stable"
-RUN apt-get update; apt-get install -y docker-ce;
+RUN apt-get update; apt-get install -y docker-ce; apt-get autoremove -y && apt-get clean -y
 
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
@@ -79,7 +82,7 @@ RUN chmod 644 /root/.ssh/known_hosts
 # Setup Ansible
 RUN add-apt-repository ppa:ansible/ansible
 RUN apt-get update -y
-RUN apt-get install ansible -y
+RUN apt-get install ansible -y && apt-get autoremove -y && apt-get clean -y
 
 RUN mkdir /etc/ansible/playbooks
 #CMD ["/sbin/tini", "-g", "--", "/srv/docker-entrypoint.sh"]
@@ -88,8 +91,6 @@ COPY files/hosts /etc/ansible/hosts
 COPY files/robot-playbook /etc/ansible/playbooks/robot-playbook
 COPY files/configure_misp.sh /srv/configure_misp.sh
 RUN chmod +x /srv/configure_misp.sh
-#ADD files/ansible/MISP-ansible /etc/ansible/playbooks/MISP-ansible
-#RUN ansible-playbook -i "localhost," -c local /etc/ansible/playbooks/MISP-ansible/site.yml
 
 # Add Healthcheck Config
 HEALTHCHECK NONE
