@@ -1,7 +1,7 @@
-FROM nginx:1.13.10-alpine
+FROM nginx:1.13-alpine
 
 LABEL vendor="DCSO GmbH <www.dcso.de>"
-LABEL de.dcso.misp-proxy.release-date="2018-01-02"
+LABEL de.dcso.misp-proxy.release-date="2018-04-02"
 LABEL de.dcso.misp-proxy.is-production="false"
 LABEL maintainer="DCSO MISP <misp@dcso.de>"
 
@@ -21,5 +21,3 @@ ENV NO_PROXY="0.0.0.0"
 
 # Add Healthcheck Config
 HEALTHCHECK --interval=2m --timeout=15s --retries=3 CMD curl -f http://localhost/ || exit 1
-
-CMD bin/sh
