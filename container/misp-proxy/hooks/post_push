@@ -7,12 +7,12 @@ source $SCRIPTPATH/../../../scripts/functions.sh
 # Search existing tags:
 search_myTag
 
-for TAG in myTAG
+for TAG in $myTAG
 do
     # Tag the latest build with all existing git tags with the same commit. 
     # After this Push the tag in addition to the "latest" tag already pushed.
-    docker tag $IMAGE_NAME $DOCKER_REPO:$myTAG
-    docker push $DOCKER_REPO:$myTAG
+    docker tag $IMAGE_NAME $DOCKER_REPO:$TAG
+    docker push $DOCKER_REPO:$TAG
 done
 
 # Invoke all downstream build triggers.
