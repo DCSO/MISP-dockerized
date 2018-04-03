@@ -1,4 +1,3 @@
-#FROM debian:buster
 FROM ubuntu:16.04
 
 #     Variables:
@@ -8,14 +7,14 @@ ARG RELEASE_DATE
 ARG IS_PRODUCTION="false"
 ARG MAINTAINER="DCSO MISP <misp@dcso.de>"
 ARG BUILD_DATE
-ARG NAME="misp-server"
+ARG NAME
 ARG GIT_REPO
 ARG VCS_REF
 ARG VERSION
 #     END Variables
 
-#LABEL de.dcso.misp-server.version="0.0.1-alpha"
 LABEL vendor=${VENDOR}
+LABEL de.dcso.misp-server.version=${VERSION}
 LABEL de.dcso.misp-server.release-date=${RELEASE_DATE}
 LABEL de.dcso.misp-server.is-production=${IS_PRODUCTION}
 LABEL maintainer=${MAINTAINER}
@@ -61,7 +60,7 @@ RUN apt-get update -y; \
         python-setuptools \
         apt-transport-https \
         ca-certificates; \
-    apt-get upgrade -y \
+    apt-get upgrade -y; \
     apt-get autoremove -y; \ 
     apt-get clean -y
 
@@ -93,7 +92,7 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
     add-apt-repository \
    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
    $(lsb_release -cs) \
-   stable" \
+   stable" ;\
     apt-get update; apt-get install -y docker-ce; apt-get autoremove -y && apt-get clean -y
 
 # change language
@@ -117,8 +116,6 @@ RUN add-apt-repository ppa:ansible/ansible; \
 
 COPY files/hosts /etc/ansible/hosts
 COPY files/robot-playbook /etc/ansible/playbooks/robot-playbook
-COPY files/configure_misp.sh /srv/configure_misp.sh
-RUN chmod +x /srv/configure_misp.sh
 
 # Download MISP DB Schema
 RUN mkdir -p /srv/misp_db_scheme; \
