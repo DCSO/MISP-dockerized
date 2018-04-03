@@ -1,0 +1,94 @@
+# for NGINX via Ubuntu: www-data! for NGINX vir nginx:alpine official: nginx
+user nginx;
+worker_processes auto;
+pid /run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
+
+events {
+	worker_connections 768;
+	# multi_accept on;
+}
+
+http {
+
+	##
+	# Basic Settings
+	##
+
+	sendfile on;
+	tcp_nopush on;
+	tcp_nodelay on;
+	keepalive_timeout 65;
+	types_hash_max_size 2048;
+	
+    # Enables or disables emitting nginx version in error messages and in the “Server” response header field.
+    server_tokens off;
+
+	# server_names_hash_bucket_size 64;
+	# server_name_in_redirect off;
+
+	include /etc/nginx/mime.types;
+	default_type application/octet-stream;
+
+	##
+	# Logging Settings
+	##
+
+	access_log /var/log/nginx/access.log;
+	error_log /var/log/nginx/error.log;
+
+    log_format  main  '$host - $remote_addr - $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
+    #    access_log  /var/log/nginx/access.log  main;
+
+
+	##
+	# Gzip Settings
+	##
+
+	gzip on;
+
+	# gzip_http_version 1.1;
+
+    # Enables gzipping of responses for the specified MIME types in addition to “text/html”. 
+    # The special value “*” matches any MIME type (0.8.29). 
+    # Responses with the “text/html” type are always compressed.
+    gzip_types text/css text/javascript application/x-javascript application/javascript application/atom+xml application/json application/xml text/xml image/x-icon ;
+
+    # Sets the minimum length of a response that will be gzipped. 
+    # The length is determined only from the “Content-Length” response header field.
+    gzip_min_length  0;
+
+    # Sets a gzip compression level of a response. Acceptable values are in the range from 1 to 9.
+    gzip_comp_level 2;
+
+    # Sets the number and size of buffers used to compress a response. 
+    # By default, the buffer size is equal to one memory page. 
+    # This is either 4K or 8K, depending on a platform.
+    gzip_buffers 32 8k;
+
+    # Enables or disables gzipping of responses for proxied requests depending on the request and response. 
+    # The fact that the request is proxied is determined by the presence of the “Via” request header field. 
+    # The directive accepts multiple parameters:
+    gzip_proxied any;     
+
+    # Enables or disables inserting the “Vary: Accept-Encoding” response header field if the directives gzip, gzip_static, or gunzip are active.
+    gzip_vary on;
+
+	##
+	# IP Whitelisting
+	##
+
+    # Whitelist only IPs from GLOBAL_allow_IPs file and deny all other:
+    include /etc/nginx/conf.d/GLOBAL_allow_IPs;
+    deny all;
+
+	##
+	# Virtual Host Configs
+	##
+
+	include /etc/nginx/conf.d/*.conf;
+	#include /etc/nginx/sites-enabled/*;
+}
+
