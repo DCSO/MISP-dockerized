@@ -12,7 +12,7 @@ DOCKER_REPO="dcso/$CONTAINER_NAME"
 IMAGE_NAME="$DOCKER_REPO:latest"
 DOCKERFILE_PATH=Dockerfile
 
-sudo docker build \
+sudo docker build --no-cache \
         --build-arg RELEASE_DATE="$(date +"%Y-%m-%d")" \
         --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
         --build-arg NAME="$CONTAINER_NAME" \
