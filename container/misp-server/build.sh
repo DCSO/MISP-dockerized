@@ -3,7 +3,7 @@ set -x
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
 # Set default Value if no parameter is deployed:
-[ -z $1 ] && FOLDER="2.4.88"
+[ -z $1 ] && FOLDER="2.4.88-ubuntu"
 [ -z $1 ] || FOLDER="$1"
 
 source $SCRIPTPATH/$FOLDER/configuration.sh
