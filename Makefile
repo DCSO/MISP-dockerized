@@ -1,9 +1,8 @@
-
 .PHONY: help \
 		start requirements build-config deploy delete\
 		security configure config-db config-server config-proxy \
 		backup-all backup-server backup-redis backup-db backup-proxy backup-robot \
-		build-server build-proxy build-robot build-all rebuild \
+		build-server build-proxy build-robot build-all \
 
 # Shows Help and all Commands
 help:
@@ -34,11 +33,10 @@ help:
 	\t make build-server	 	| build misp-server\n \
 	\t make build-proxy 		| build misp-proxy\n \
 	\t make build-robot 		| build misp-robot\n \
-	\t make rebuild 			| rebuild all docker container\n \
 	\t make help	 		| show help\n"
 
 # Start
-start: requirements #build-config deploy
+start: requirements build-config deploy configure
 	@echo "##############################\n# MISP environment is ready.\n##############################"
 
 ####################	used as host
@@ -49,12 +47,15 @@ requirements:
 # Build Configuration
 build-config:
 	docker run --name misp-robot-init --rm -ti \
-		-v ${PWD}/config:/srv/misp-dockerized/config \
+		-v ${PWD}:/srv/misp-dockerized \
 		dcso/misp-robot bash -c "scripts/build_config.sh"
 
 # Start Docker environment
 deploy: 
-	scripts/startup.sh
+	docker run --name misp-robot-init --rm -ti \
+		-v $(CURDIR):/srv/misp-dockerized \
+		-v /var/run/docker.sock:/var/run/docker.sock:ro \
+		dcso/misp-robot bash -c "scripts/deploy_environment.sh"
 
 # delete all misp container, volumes and images
 delete:
@@ -71,7 +72,7 @@ security:
 
 # configure
 configure:
-	docker exec -it misp-robot /bin/bash -c "/srv/configure_misp.sh"
+	docker exec -it misp-robot /bin/bash -c "/srv/script/configure_misp.sh"
 config-server:
 	docker exec -it misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t server /etc/ansible/playbooks/robot-playbook/site.yml"
 config-db:
@@ -100,21 +101,16 @@ restore:
 ####################	used only for manuall deploying or debugging	#############
 
 # Build all misp docker-container
-build-all:
-	container/build.sh all
+build-all: build-server build-proxy build-robot
 
 # Build Docker misp-server
 build-server:
-	container/build.sh server
+	container/misp-server/build.sh
 
 # Build Docker misp-proxy
 build-proxy:
-	container/build.sh proxy
+	container/misp-proxy/build.sh
 
 # Build Docker misp-robot
 build-robot:
-	container/build.sh robot
-
-# rebuild all docker container
-rebuild:
-	scripts/rebuild.sh
+	container/misp-robot/build.sh
