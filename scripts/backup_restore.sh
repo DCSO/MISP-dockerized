@@ -14,12 +14,14 @@ fi
 
 # set backup location as parameter
 BACKUP_LOCATION="${3}"
+# new default Backup Path:
+[ -z $BACKUP_LOCATION ] && BACKUP_LOCATION="./backup"
 
-if [[ -z ${BACKUP_LOCATION} ]]; then
-  while [[ -z ${BACKUP_LOCATION} ]]; do
-    read -ep "Backup location (absolute path, starting with /): " BACKUP_LOCATION
-  done
-fi
+# if [[ -z ${BACKUP_LOCATION} ]]; then
+#   while [[ -z ${BACKUP_LOCATION} ]]; do
+#     read -ep "Backup location (absolute path, starting with /): " BACKUP_LOCATION
+#   done
+# fi
 
 if [[ ! ${BACKUP_LOCATION} =~ ^/ ]]; then
   echo "Backup directory needs to be given as absolute path (starting with /)."
