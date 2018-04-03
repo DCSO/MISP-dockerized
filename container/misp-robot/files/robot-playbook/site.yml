@@ -11,7 +11,7 @@
     #SERVER_FQDN: lookup('env', 'VAR')
 
   vars_files:
-    - "/srv/misp-config/misp.conf.yml"  
+    - "/srv/misp-dockerized/config/misp.conf.yml"  
 
   roles:
   - role: server

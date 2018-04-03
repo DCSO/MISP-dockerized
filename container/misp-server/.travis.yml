@@ -1,0 +1,23 @@
+language: bash
+services: docker
+
+env:
+  - VERSION=2.4.88
+  - VERSION=2.4.89
+
+install:
+  - git clone https://github.com/docker-library/official-images.git ~/official-images
+
+before_script:
+  - env | sort
+#  - cd "$VERSION"
+#  - image="misp-server:$VERSION"
+
+script:
+  - travis_retry ./build.sh $VERSION
+  - ~/official-images/test/run.sh "dcso/misp-server:$VERSION"
+
+after_script:
+  - docker images
+
+# vim:set et ts=2 sw=2:

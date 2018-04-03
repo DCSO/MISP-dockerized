@@ -11,7 +11,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -y && apt-get autoremove -y && apt-get clean -y
 RUN apt-get install -y software-properties-common && apt-get autoremove -y && apt-get clean -y
 RUN apt-get install -y \ 
-supervisor \
+#supervisor \
 nano \
 vim \
 curl \
@@ -60,6 +60,7 @@ RUN add-apt-repository \
    stable"
 RUN apt-get update; apt-get install -y docker-ce; apt-get autoremove -y && apt-get clean -y
 
+# change language
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 
@@ -67,17 +68,8 @@ ENV LANG en_US.UTF-8
 RUN pip install --upgrade pip
 RUN pip3 install --upgrade pip
 
-# Deploy Deploy-Key
-#### ONLY NEEDED FOR ALPHA - REMOVE ON PRODUCTION #####
-RUN mkdir /root/.ssh
-WORKDIR /root/.ssh
-COPY files/deploy_key /root/.ssh/id_rsa
-COPY files/deploy_key.pub /root/.ssh/id_rsa.pub
-COPY files/known_hosts /root/.ssh/.
-RUN chmod 700 /root/.ssh
-RUN chmod 600 /root/.ssh/id_rsa
-RUN chmod 644 /root/.ssh/id_rsa.pub 
-RUN chmod 644 /root/.ssh/known_hosts
+# Install docker-compose
+RUN pip install docker-compose
 
 # Setup Ansible
 RUN add-apt-repository ppa:ansible/ansible
@@ -91,6 +83,16 @@ COPY files/hosts /etc/ansible/hosts
 COPY files/robot-playbook /etc/ansible/playbooks/robot-playbook
 COPY files/configure_misp.sh /srv/configure_misp.sh
 RUN chmod +x /srv/configure_misp.sh
+
+# Download MISP DB Schema
+RUN curl https://raw.githubusercontent.com/MISP/MISP/v2.4.88/INSTALL/MYSQL.sql -o /srv/misp_db_scheme/v2.4.88_MYSQL.sql; \
+    curl https://raw.githubusercontent.com/MISP/MISP/v2.4.89/INSTALL/MYSQL.sql -o /srv/misp_db_scheme/v2.4.89_MYSQL.sql; \
+
+# Add scripts
+COPY files/scripts/* /srv/scripts/
+
+# Setup Workdir
+WORKDIR /srv
 
 # Add Healthcheck Config
 HEALTHCHECK NONE

@@ -1,18 +1,19 @@
 ##### Copy MISP configs #####
-- name: Configure MISP | Copy MISP configuration files
-  copy:
-    remote_src: True
-    src: "/srv/misp-server/MISP/app/Config/{{ item }}.default.php"
-    dest: "/srv/misp-server/MISP/app/Config/{{ item }}.php"
-    force: yes
-    owner: www-data
-    group: www-data
-    mode: 0750
-  with_items:
-    - bootstrap
-    - database
-    - core
-    - config
+# is done via dockerfile:
+# - name: Configure MISP | Copy MISP configuration files
+#   copy:
+#     remote_src: True
+#     src: "/srv/misp-server/MISP/app/Config/{{ item }}.default.php"
+#     dest: "/srv/misp-server/MISP/app/Config/{{ item }}.php"
+#     force: yes
+#     owner: www-data
+#     group: www-data
+#     mode: 0750
+#   with_items:
+#     - bootstrap
+#     - database
+#     - core
+#     - config
 
 #### Write settings #####
 - name: Configure MISP | Set DB-Password
@@ -75,32 +76,13 @@
     mode: 0640
     state: directory
 
-#- name: Apache2 SSL | Create internal certificate
-#  openssl_certificate:
-#    path: /srv/apache-config/ssl/cert.pem
-#    privatekey_path: /srv/apache-config/ssl/key.pem
-#    provider: selfsigned
-#    selfsigned_digest: sha256
-#    subject: "CN=misp-server"
-#    subject_alt_name: 
-#      - misp-server
-
 - name: Apache2 SSL | Create internal certificate
   shell: openssl req -x509 -newkey rsa:4096 -keyout /srv/apache-config/ssl/key.pem -out /srv/apache-config/ssl/cert.pem -days 3650 -nodes -subj '/CN=misp-server'
 
 - name: Apache2 SSL | Create DH params - This can take a long time, so take a break and enjoy a cup of tea or coffee.
   shell: openssl dhparam -out /srv/apache-config/ssl/dhparams.pem 2048
 
-#- name: Apache2 SSL | Activate SSL config
-#  file:
-#    src: /etc/apache2/sites-available/misp.ssl.conf
-#    dest: /etc/apache2/sites-enabled/misp.ssl.conf
-#    owner: root
-#   group: root
-#    state: link
-
 - name: Apache2 SSL | Activate SSL config
-  become: yes
   copy:
     remote_src: True
     src: "/srv/apache-config/sites-available/misp.ssl.conf"
@@ -114,5 +96,4 @@
   become: yes
   shell: "{{ item }}"
   with_items:
-    #- "docker exec -i misp-server /bin/bash -c 'service apache2 restart'"
     - docker restart misp-server

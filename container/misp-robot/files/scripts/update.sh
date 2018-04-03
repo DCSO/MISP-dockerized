@@ -1,9 +1,11 @@
 #!/bin/bash
 
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )" # path of the script
+MISP_dockerized_path="$SCRIPTPATH/../misp-dockerized/"
 
 # Include functions source file:
-source $SCRIPTPATH/functions.sh
+[ -e $SCRIPTPATH/functions.sh ] && source $SCRIPTPATH/functions.sh
+[ -e $MISP_dockerized_path/config/.env ] && source $MISP_dockerized_path/config/.env
 
 # check if required components exists
 function check_components(){
@@ -25,6 +27,9 @@ function check_components(){
   echo "Finished."
 }
 
+#
+# DCSO Upgrade Functions
+#
 function upgrade_from_v.2.4.88-beta.1(){
   ENV_FILE=${SCRIPTPATH/../.env}
   MISP_CONFIG=${SCRIPTPATH/../config/misp.conf.yml}
@@ -40,14 +45,24 @@ function upgrade_to_v2.4.88-beta.2(){
 
 function upgrade_to_v2.4.88-beta.3(){ 
   echo "Upgrading to v2.4.88-beta.2..."; 
-  ENV_FILE=${SCRIPTPATH/../.env}
-  MISP_CONFIG=${SCRIPTPATH/../config/misp.conf.yml}
+
+  ENV_FILE="${MISP_dockerized_path}/config/.env"
+  MISP_CONFIG="${MISP_dockerized_path}/config/misp.conf.yml"
   [[ ! -f "$ENV_FILE" ]] && { echo ".env is missing"; exit 1;}
   [[ ! -f "$MISP_CONFIG" ]] && { echo "MISP config is missing"; exit 1;}
+  
+  # change NGINX User to change from ubuntu www-data to alpine nginx user
+  sed -e '/^user/s/www-data/nginx/g' /srv/misp-proxy/GLOBAL_nginx_common
+  docker restart misp-proxy
+
+
 
   echo "Upgrading to v2.4.88-beta.2...Finished"; 
 }
 
+function upgrade_to_v2.4.89-beta.1(){
+
+}
 
 ##########################  MAIN  ##########################
 echo

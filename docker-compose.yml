@@ -52,8 +52,6 @@ services:
 
   ### MISP Apache Server ###    
   misp-server:
-    build: 
-      context: container/misp-server
       args:
         - MISP_TAG=v${MISP_TAG-2.4.88}
         - python_cybox_TAG=v2.1.0.12
@@ -68,14 +66,13 @@ services:
     restart: on-failure  
     tty: true
     stdin_open: true
-    #ports:
-      #- "80:80" # DEBUG only
-      #- "443:443" # DEBUG only
+    # ports:
+    #   - "8080:80" # DEBUG only
+    #   - "8443:443" # DEBUG only
     volumes:
-      #- misp-vol-server-data:/var/www/
-      #- misp-vol-server-config:/etc/apache2/
-      #- misp-vol-server-logs:/var/log/apache2/
-      - misp-vol-server-data:/volume
+      - misp-vol-server-data:/var/www/
+      - misp-vol-server-config:/etc/apache2/
+      - misp-vol-server-logs:/var/log/apache2/
     networks:
       misp-backend:
         aliases:
@@ -85,8 +82,6 @@ services:
   # https://hub.docker.com/_/nginx/
   misp-proxy:
     image: dcso/misp-proxy:${MISP_TAG-2.4.88}
-    build: 
-      context: container/misp-proxy
     container_name: misp-proxy
     depends_on:
       - "misp-server"
@@ -104,7 +99,6 @@ services:
 
   misp-robot:
     image: dcso/misp-robot:${MISP_TAG-2.4.88}
-    build: container/misp-robot
     container_name: misp-robot
     depends_on:
       - "misp-db"
@@ -122,6 +116,9 @@ services:
       - misp-vol-server-config:/srv/apache-config/
       - ./config/misp.conf.yml:/srv/misp-config/misp.conf.yml:ro # Configuration file for MISP
       - ./config/ssl:/srv/misp-config/ssl:ro # Directory for TLS certificates and key
+      #- ./config:/srv/misp-dockerized/config:ro # Directory to expose configuration
+      #- ./backup:/srv/misp-dockerized/backup  # Directory for backup files
+      - ./:/srv/misp-dockerized  # Directory for backup files
     networks:
       misp-backend:
         aliases:
@@ -129,11 +126,10 @@ services:
 
 
 volumes:
-  #misp-vol-server-logs:
+  misp-vol-server-logs:
   misp-vol-server-data:
-  #misp-vol-server-config:
+  misp-vol-server-config:
   misp-vol-db-data:
   misp-vol-redis-data:
   misp-vol-proxy-data:
   misp-vol-proxy-logs:
-  

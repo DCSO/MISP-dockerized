@@ -2,21 +2,27 @@
 #description     :This script build the configuration for the MISP Container and their content.
 #==============================================================================
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
+
 ###########################################
 # Start Global Variabel Section
-MISP_TAG=2.4.88
-python_cybox_TAG=v2.1.0.12
-python_stix_TAG=v1.1.1.4
-mixbox_TAG=v1.0.2
-cake_resque_TAG=4.1.2
 REDIS_V=3.2.11
 DB_V=10.3.5
-DOCKER_COMPOSE_CONF="$SCRIPTPATH/../config/.env"
-MISP_CONF_YML="$SCRIPTPATH/../config/misp.conf.yml"
+MISP_dockerized_repo="$SCRIPTPATH/../misp-dockerized"
+DOCKER_COMPOSE_CONF="${MISP_dockerized_repo}/config/.env"
+MISP_CONF_YML="${MISP_dockerized_repo}/config/misp.conf.yml"
+BACKUP_PATH="${MISP_dockerized_repo}/backup"
 ############################################
+# Variables for the config:
+MISP_TAG
+HOSTNAME="misp.example.com"
+USE_PROXY=no
+HTTP_PROXY=""
+NO_PROXY=""
 
-# Preparation
-[ ! -e "$SCRIPTPATH/../config" ] && mkdir $SCRIPTPATH/../config
+
+# load variables from existing fconfiguration , if exists:
+[ -e $DOCKER_COMPOSE_CONF ] && source $DOCKER_COMPOSE_CONF
+############################################
 
 # Start Function Section
 function check_exists_configs(){
@@ -25,7 +31,8 @@ function check_exists_configs(){
     read -r -p "A docker-compose config file exists and will be overwritten, are you sure you want to contine? [y/N] " response
     case $response in
       [yY][eE][sS]|[yY])
-        mv $DOCKER_COMPOSE_CONF $DOCKER_COMPOSE_CONF-backup_`date +%Y%m%d_%H_%M`
+        # move existing configuration in backup folder and add the date of this movement
+        mv $DOCKER_COMPOSE_CONF $BACKUP_PATH/.env-backup_`date +%Y%m%d_%H_%M`
         ;;
       *)
         exit 1
@@ -37,7 +44,8 @@ function check_exists_configs(){
     read -r -p "A misp config file exists and will be overwritten, are you sure you want to contine? [y/N] " response
     case $response in
       [yY][eE][sS]|[yY])
-        mv $MISP_CONF_YML $MISP_CONF_YML-backup_`date +%Y%m%d_%H_%M`
+        # move existing configuration in backup folder and add the date of this movement
+        mv $MISP_CONF_YML $BACKUP_PATH/misp.conf.yml-backup_`date +%Y%m%d_%H_%M`
         ;;
       *)
         exit 1
@@ -53,7 +61,7 @@ function query_misp_tag(){
 
 function query_hostname(){
   # read Hostname for MISP Instance
-  read -p "Hostname (FQDN - example.org is not a valid FQDN): " -ei "misp.example.com" HOSTNAME
+  read -p "Hostname (FQDN - example.org is not a valid FQDN): " -ei $HOSTNAME HOSTNAME
 }
 
 function query_proxy(){
@@ -64,8 +72,8 @@ function query_proxy(){
     case $response in
       [yY][eE][sS]|[yY])
         USE_PROXY=yes
-        read -p "Which Proxy we should use (for example: http://proxy.example.com:80/) [default: none]: " -ei "" HTTP_PROXY
-        read -p "For which site(s) we shouldn't use a Proxy (for example: localhost,127.0.0.0/8,docker-registry.somecorporation.com) [default: 0.0.0.0]: " -ei "0.0.0.0" NO_PROXY
+        read -p "Which Proxy we should use (for example: http://proxy.example.com:80/) [default: none]: " -ei $HTTP_PROXY HTTP_PROXY
+        read -p "For which site(s) we shouldn't use a Proxy (for example: localhost,127.0.0.0/8,docker-registry.somecorporation.com) [default: 0.0.0.0]: " -ei $NO_PROXY NO_PROXY
         break
         ;;
       [nN][oO]|[nN])

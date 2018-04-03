@@ -34,5 +34,5 @@
   become: yes
   shell: "{{ item }}"
   with_items:
-    - "docker exec -i misp-proxy /bin/bash -c 'service nginx reload'"
+    - "docker restart misp-proxy"
 

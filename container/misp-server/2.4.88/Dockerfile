@@ -1,17 +1,26 @@
 #FROM debian:buster
 FROM ubuntu:16.04
+
+# Variables:
+ARG GIT_REPO
+ARG MISP_TAG
+ENV MISP_TAG=${MISP_TAG}
+ARG python_cybox_TAG
+ARG python_stix_TAG
+ARG mixbox_TAG
+ARG cake_resque_TAG
+
 #LABEL de.dcso.misp-server.version="0.0.1-alpha"
 LABEL vendor="DCSO GmbH <www.dcso.de>"
 LABEL de.dcso.misp-server.release-date="2018-01-02"
 LABEL de.dcso.misp-server.is-production="false"
 LABEL maintainer="DCSO MISP <misp@dcso.de>"
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.vcs-url="${GIT_REPO}" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.schema-version="1.0.0-rc1"
 
-# Variables:
-ARG MISP_TAG=v2.4.88
-ARG python_cybox_TAG=v2.1.0.12
-ARG python_stix_TAG=v1.1.1.4
-ARG mixbox_TAG=v1.0.2
-ARG cake_resque_TAG=4.1.2
+
 
 #########################################
 #       Start of MISP Config Part
@@ -98,7 +107,7 @@ RUN pip3 install --upgrade pip
 # Attention: we replaced the fixed tag with a variable
 RUN mkdir /var/www/MISP; chown www-data:www-data /var/www/MISP;
 RUN git clone https://github.com/MISP/MISP.git /var/www/MISP
-RUN cd /var/www/MISP; git checkout tags/${MISP_TAG};
+RUN cd /var/www/MISP; git checkout tags/v${MISP_TAG};
 
 # Make git ignore filesystem permission differences
 RUN cd /var/www/MISP; git config core.filemode false;
@@ -154,14 +163,8 @@ chmod -R g+ws /var/www/MISP/app/files/scripts/tmp;
 # add HTTP MISP Config
 RUN rm /etc/apache2/sites-available/*; rm /etc/apache2/sites-enabled/*;
 COPY files/misp*.conf /etc/apache2/sites-available/
-#COPY files/misp.ssl.conf /etc/apache2/sites-available/misp.ssl.conf
 COPY files/ports.conf /etc/apache2/ports.conf
 RUN chmod 644 /etc/apache2/ports.conf
-# add HTTPS MISP Config - THIS SHOULD BE DONE IN ROBOT
-#RUN mkdir /etc/apache2/ssl
-#RUN openssl req -x509 -newkey rsa:4096 -keyout /etc/apache2/ssl/key.pem -out /etc/apache2/ssl/cert.pem -days 3650 -nodes -subj '/CN=misp-server'
-#RUN openssl dhparam -out /etc/apache2/ssl/dhparams.pem 2048
-#RUN chmod -R 644 /etc/apache2/ssl
 
 # Configure Apache
 RUN sudo a2dismod status; \
@@ -200,14 +203,6 @@ chmod -R g+ws /var/www/MISP/app/files/scripts/tmp;
 # Copy PHP.ini File for PHP Config
 COPY files/php.ini /etc/php/7.0/apache2/
 
-# Create Volume with all needed Folder and Files
-COPY files/tasks_for_volume.sh /
-RUN bash /tasks_for_volume.sh
-
-
-# define the WORKDIR if you use docker exec
-WORKDIR /volume
-
 # Environment Variable for Proxy
 ENV HTTP_PROXY=""
 ENV NO_PROXY="0.0.0.0"
@@ -219,7 +214,6 @@ HEALTHCHECK --interval=1m --timeout=15s --retries=3 CMD curl -f http://localhost
 COPY files/entrypoint.sh /srv/entrypoint.sh
 RUN chmod +x /srv/entrypoint.sh
 ENTRYPOINT [ "/srv/entrypoint.sh" ] 
-# CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
 
 #       End of DCSO MISP Config Part
 #########################################

@@ -13,7 +13,8 @@ RUN mkdir -p /var/www/maintenance
 COPY files/maintenance.html /var/www/maintenance/
 # rename orig nginx.conf && place own nginx.conf
 RUN mv /etc/nginx/nginx.conf /etc/nginx/nginx.orig \
-    && ln -s /etc/nginx/conf.d/GLOBAL_nginx_common /etc/nginx/nginx.conf
+    && ln -s /etc/nginx/conf.d/GLOBAL_nginx_common /etc/nginx/nginx.conf \
+    && rm -f /etc/nginx/conf.d/default.conf
 
 # Environment Variable for Proxy
 ENV HTTP_PROXY=""
