@@ -1,11 +1,12 @@
 #!/bin/bash
 set -x
+SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
-# check if at least one parameter exists
-[ -z $1 ] && echo "please get Version as parameter." && exit 1
-FOLDER="$1"
+# Set default Value if no parameter is deployed:
+[ -z $1 ] && FOLDER="2.4.88"
+[ -z $1 ] || FOLDER="$1"
 
-source $FOLDER/configuration.sh
+source $SCRIPTPATH/$FOLDER/configuration.sh
 
 DOCKER_REPO="dcso/$CONTAINER_NAME"
 IMAGE_NAME="$DOCKER_REPO:latest"
@@ -23,7 +24,7 @@ sudo docker build \
         --build-arg python_stix_TAG="$python_stix_TAG" \
         --build-arg mixbox_TAG="$mixbox_TAG" \
         --build-arg cake_resque_TAG="$cake_resque_TAG" \
-    -f $FOLDER/$DOCKERFILE_PATH -t $IMAGE_NAME -t $DOCKER_REPO:$VERSION $FOLDER/
+    -f $SCRIPTPATH/$FOLDER/$DOCKERFILE_PATH -t $IMAGE_NAME -t $DOCKER_REPO:$FOLDER $SCRIPTPATH/$FOLDER/
 
 # ##################################################
 # # for documentation:
