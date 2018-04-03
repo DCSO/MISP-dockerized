@@ -47,7 +47,7 @@ requirements:
 # Build Configuration
 build-config:
 	docker run --name misp-robot-init --rm -ti \
-		-v ${PWD}:/srv/misp-dockerized \
+		-v $(CURDIR):/srv/misp-dockerized \
 		dcso/misp-robot bash -c "scripts/build_config.sh"
 
 # Start Docker environment

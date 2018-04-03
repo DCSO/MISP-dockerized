@@ -1,6 +1,7 @@
 #/bin/bash
 #description     :This script install and start all misp docker container.
 #==============================================================================
+source /srv/scripts/functions.sh
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 docker_compose_file="docker-compose.yml"
 
@@ -12,7 +13,8 @@ if [ -z "which docker-compose" ]
         echo -e "\n Sorry, i didn't found docker-compose please try to install it.
                  \n You can download it from: https://docs.docker.com/compose/install/ or from https://github.com/docker/compose/releases"
     else
-        if [ -e "$SCRIPTPATH/../.env" ] 
+        pushd $MISP_dockerized_repo
+        if [ -f ".env" ] 
             then
                 echo "configuration exists..."
             else
@@ -25,4 +27,5 @@ if [ -z "which docker-compose" ]
             do
                 sudo docker-compose -f $docker_compose_file up -d $container
             done
+        popd
 fi

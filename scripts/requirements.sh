@@ -153,6 +153,8 @@ check_folder "backup"
     if [ $STATUS == "FAIL" ]
         then
             echo "[$STATUS] at least one Error is occured.\n"
+            exit 1
         else
             echo "[$STATUS] no Error is occured.\n"
+            exit 0
     fi

@@ -2,19 +2,21 @@
 
 ######################  START GLOBAL  ####################################
 #exit on error and pipefail
-set -o pipefail
+#set -o pipefail
 #########
-USE_CURL=y                                      # use curl or wget?
-export LC_ALL=C                                 # export LC_ALL as language C
-DATE=$(date +%Y-%m-%d_%H_%M_%S)                 # current date
-BRANCH=$(git rev-parse --abbrev-ref HEAD)       # my branch
-TAGS=""                                         # existing commits
-myCOMMIT="$(git log --format="%H"|head -1)"         # my currently installed commit
+MISP_dockerized_repo="/srv/misp-dockerized"
+USE_CURL=y                                          # use curl or wget?
+export LC_ALL=C                                     # export LC_ALL as language C
+DATE=$(date +%Y-%m-%d_%H_%M_%S)                     # current date
+BRANCH=$(cd $MISP_dockerized_repo; git rev-parse --abbrev-ref HEAD)           # my branch
+TAGS=""                                             # existing commits
+myCOMMIT="$(cd $MISP_dockerized_repo; git log --format="%H"|head -1)"         # my currently installed commit
 myTAG=""                                            # my current installed tag
-myTAG_TIMESTAMP="$(git log --format="%ct"|head -1)" # Date of the current installed tag 
+myTAG_TIMESTAMP="$(cd $MISP_dockerized_repo; git log --format="%ct"|head -1)" # Date of the current installed tag 
 NEW_TAG=""                                          # my new tag after update
 declare -A TAG_SELECTION                            # declare an Array
 ######################  END GLOBAL  ####################################
+
 
 # Function: to compare PARAM1 with PARAM2 if PARAM1 > PARAM2
 function version_gt() { test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; }
