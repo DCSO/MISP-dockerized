@@ -1,11 +1,12 @@
 #!/bin/bash
 set -x
+SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
-# check if at least one parameter exists
-[ -z $1 ] && echo "please get Version as parameter." && exit 1
-FOLDER="$1"
+# Set default Value if no parameter is deployed:
+[ -z $1 ] && FOLDER="1.0.0-ubuntu"
+[ -z $1 ] || FOLDER="$1"
 
-source $FOLDER/configuration.sh
+source $SCRIPTPATH/$FOLDER/configuration.sh
 
 DOCKER_REPO="dcso/$CONTAINER_NAME"
 IMAGE_NAME="$DOCKER_REPO:latest"
@@ -18,7 +19,7 @@ sudo docker build \
         --build-arg GIT_REPO="$GIT_REPO" \
         --build-arg VCS_REF=$(git rev-parse --short HEAD) \
         --build-arg VERSION="$VERSION" \
-    -f $FOLDER/$DOCKERFILE_PATH -t $IMAGE_NAME -t $DOCKER_REPO:$VERSION $FOLDER/
+    -f $SCRIPTPATH/$FOLDER/$DOCKERFILE_PATH -t $IMAGE_NAME -t $DOCKER_REPO:$FOLDER $SCRIPTPATH/$FOLDER/
 
 # ##################################################
 # # for documentation:
