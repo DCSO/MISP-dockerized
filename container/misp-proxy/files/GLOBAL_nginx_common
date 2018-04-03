@@ -1,4 +1,5 @@
-user www-data;
+# for NGINX via Ubuntu: www-data! for NGINX vir nginx:alpine official: nginx
+user nginx;
 worker_processes auto;
 pid /run/nginx.pid;
 include /etc/nginx/modules-enabled/*.conf;

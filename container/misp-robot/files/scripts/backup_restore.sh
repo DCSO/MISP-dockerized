@@ -12,6 +12,9 @@ if [[ ${1} == "backup" && ! ${2} =~ (server|redis|mysql|proxy|all) ]]; then
   exit 1
 fi
 
+# set backup location as parameter
+BACKUP_LOCATION="${3}"
+
 if [[ -z ${BACKUP_LOCATION} ]]; then
   while [[ -z ${BACKUP_LOCATION} ]]; do
     read -ep "Backup location (absolute path, starting with /): " BACKUP_LOCATION

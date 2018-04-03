@@ -4,7 +4,7 @@
 # Sets the protocol and address of a proxied server and an optional URI to which a location should be mapped. 
 # As a protocol, “http” or “https” can be specified. 
 # The address can be specified as a domain name or IP address, and an optional port:
-proxy_pass http://misp-server:80;
+proxy_pass https://misp-server:443;
 
 # Allows redefining or appending fields to the request header passed to the proxied server. 
 # The value can contain text, variables, and their combinations. 
