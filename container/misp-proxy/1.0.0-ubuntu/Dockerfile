@@ -1,10 +1,32 @@
 #FROM nginx:1.13.9
 FROM ubuntu:16.04
 
-LABEL vendor="DCSO GmbH <www.dcso.de>"
-LABEL de.dcso.misp-proxy.release-date="2018-01-02"
-LABEL de.dcso.misp-proxy.is-production="false"
-LABEL maintainer="DCSO MISP <misp@dcso.de>"
+#     Variables:
+# for Labels:
+ARG VENDOR="DCSO GmbH <www.dcso.de>"
+ARG RELEASE_DATE
+ARG IS_PRODUCTION="false"
+ARG MAINTAINER="DCSO MISP <misp@dcso.de>"
+ARG BUILD_DATE
+ARG NAME
+ARG GIT_REPO
+ARG VCS_REF
+ARG VERSION
+#     END Variables
+
+#LABEL de.dcso.misp-server.version="0.0.1-alpha"
+LABEL vendor=${VENDOR}
+LABEL de.dcso.misp-server.release-date=${RELEASE_DATE}
+LABEL de.dcso.misp-server.is-production=${IS_PRODUCTION}
+LABEL maintainer=${MAINTAINER}
+LABEL org.label-schema.build-date="${BUILD_DATE}" \
+          org.label-schema.name="MISP-dockerized ${NAME}" \
+          org.label-schema.description="This docker container is part of the DCSO MISP dockerized environment." \
+          org.label-schema.vcs-ref="${VCS_REF}" \
+          org.label-schema.vcs-url="${GIT_REPO}" \
+          org.label-schema.vendor="${VENDOR}" \
+          org.label-schema.version="${VERSION}" \
+          org.label-schema.schema-version="1.0.0-rc1"
 
 # Install core components
 ENV DEBIAN_FRONTEND noninteractive
@@ -53,6 +75,8 @@ RUN chmod -R 640 /etc/ssl/private
 # Environment Variable for Proxy
 ENV HTTP_PROXY=""
 ENV NO_PROXY="0.0.0.0"
+# Environment Variable to check Version
+ENV VERSION=${VERSION}
 
 # Add Healthcheck Config
 HEALTHCHECK --interval=2m --timeout=15s --retries=3 CMD curl -f http://localhost/ || exit 1
