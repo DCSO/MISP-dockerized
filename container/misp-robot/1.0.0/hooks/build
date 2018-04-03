@@ -1,0 +1,14 @@
+#!/bin/bash
+set -x
+source ./configuration.sh
+
+sudo docker build \
+        --build-arg RELEASE_DATE="$(date +"%Y-%m-%d")" \
+        --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+        --build-arg NAME="$CONTAINER_NAME" \
+        --build-arg GIT_REPO="$GIT_REPO" \
+        --build-arg VCS_REF=$(git rev-parse --short HEAD) \
+        --build-arg VERSION="$VERSION" \
+    -f $DOCKERFILE_PATH -t $IMAGE_NAME -t $DOCKER_REPO:$VERSION .
+
+docker push $DOCKER_REPO:$MISP_TAG
