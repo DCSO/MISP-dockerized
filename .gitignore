@@ -1,6 +1,4 @@
-secrets/*
-volumes
-volumes/*
 config/
+backup/
 docker-bench-security/
-.env*
+.env
