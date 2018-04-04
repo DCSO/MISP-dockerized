@@ -31,8 +31,6 @@ MYSQL_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)"
 MYSQL_ROOT_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)"
 
 # MISP
-MISP_USER="admin@admin.test"
-MISP_PASSWORD="admin"
 MISP_prefix=""
 MISP_encoding="utf8"
 
@@ -204,9 +202,8 @@ function query_http_settings(){
 
 function query_misp_settings(){
   # read and set MISP config settings
-  read -p "Which MISP login should we use [default: misp]: " -ei "misp" MISP_login
-  read -p "Which MISP DB prefix should we use [default: '']: " -ei "" MISP_prefix
-  read -p "Which MISP Encoding should we use [default: utf8]: " -ei "utf8" 
+  read -p "Which MISP DB prefix should we use [default: '']: " -ei $MISP_prefix MISP_prefix
+  read -p "Which MISP Encoding should we use [default: utf8]: " -ei $MISP_encoding  MISP_encoding
 }
 
 #################################################
@@ -271,8 +268,6 @@ HTTP_ALLOWED_IP=${HTTP_ALLOWED_IP}
 # misp-server env configuration
 # ------------------------------
 MISP_TAG=${MISP_TAG}
-MISP_USER=${MISP_USER}
-MISP_PASSWORD=${MISP_PASSWORD}
 MISP_prefix=${MISP_prefix}
 MISP_encoding=${MISP_encoding}
 ##################################################################
