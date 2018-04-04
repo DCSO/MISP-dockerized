@@ -328,6 +328,9 @@ EOF
 # check if .env file exists and delete it
 [ -e "$MISP_dockerized_repo/.env" ] && rm -f $MISP_dockerized_repo/.env
 # copy new .env to docker-compose folder
-cp -v $MISP_dockerized_repo/config/.env $MISP_dockerized_repo/.env
-
+  #cp -v $MISP_dockerized_repo/config/.env $MISP_dockerized_repo/.env
+# hardlink to .env:
+pushd $MISP_dockerized_repo
+  ln config/.env .env
+popd
 echo "####################### Configuration successfully build. #######################"
