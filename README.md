@@ -13,6 +13,7 @@ Contributors|
 License|
 
 Docker Information
+
 |Name|Docker Layer|Latest Docker version|
 |---|---|---|
 |misp-proxy|[![](https://images.microbadger.com/badges/image/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy "Get your own image badge on microbadger.com")|[![](https://images.microbadger.com/badges/version/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy "Get your own version badge on microbadger.com")|
