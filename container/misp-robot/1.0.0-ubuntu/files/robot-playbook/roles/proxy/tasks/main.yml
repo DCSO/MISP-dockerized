@@ -1,0 +1,38 @@
+##### Configure #####
+- name: Create SSL directory
+  file:
+    path: /srv/misp-proxy/ssl
+    state: directory
+    mode: 0750
+
+- name: Copy certficate and key to proxy
+  become: yes
+  copy:
+    remote_src: True
+    src: "/srv/misp-dockerized/config/ssl/{{ item }}"
+    dest: "/srv/misp-proxy/ssl/{{ item }}"
+    force: yes
+    owner: root
+    group: root
+    mode: 0750
+  with_items:
+    - cert.pem
+    - key.pem
+
+- name: Create DH params - This can take a long time, so take a break and enjoy a cup of tea or coffee.
+  shell: openssl dhparam -out /srv/misp-proxy/ssl/dhparams.pem 2048
+
+- name: Switch http to https config 
+  become: yes
+  shell: "{{ item }}"
+  with_items:
+    - "mv /srv/misp-proxy/SERVER_HTTP_only.conf /srv/misp-proxy/SERVER_HTTP_only"
+    - "mv /srv/misp-proxy/SERVER_HTTPS_and_redirected_HTTP /srv/misp-proxy/SERVER_HTTPS_and_redirected_HTTP.conf"
+
+# Reload Proxy Config
+- name: Restart proxy
+  become: yes
+  shell: "{{ item }}"
+  with_items:
+    - "docker restart misp-proxy"
+

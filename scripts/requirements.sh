@@ -79,6 +79,9 @@ source $SCRIPTPATH/../config/.env
     # check github
     #check_URL github.com https
 
+###############################  USER CHECKS    #########################
+echo "" # Empty Line for a better overview.
+
 #
 #   Check user part of docker group
 #
@@ -100,7 +103,6 @@ source $SCRIPTPATH/../config/.env
 #
 #   Check docker.sock
 #
-    echo "" # Empty Line for a better overview.
     if [ ! -z "$(docker ps 2>&1|grep 'permission denied')" ]
         then
             STATUS="FAIL"
@@ -110,11 +112,49 @@ source $SCRIPTPATH/../config/.env
             echo "[OK] User '$(whoami)' has access to Docker."
     fi
 
+###############################  FILE CHECKS    #########################
+
+#
+#   Check Write permissions
+#
+echo
+[ ! -d ./config/ssl ] && echo -n "create config directory..." && mkdir -p ./config/ssl && echo "finished." 
+[ ! -d ./backup ] && echo -n "create backup directory..." && mkdir ./backup && echo "finished."
+
+function check_folder(){
+    FOLDER="$1"
+    if [ ! -e "$FOLDER" ]
+            then
+                STATUS="FAIL"
+                echo "[FAIL] Can't create '$FOLDER' Folder."
+            else
+                # user is in docker group
+                echo "[OK] Folder $FOLDER exists."
+                touch $FOLDER/test
+                if [ ! -e $FOLDER/test ]
+                    then
+                        STATUS="FAIL"
+                        echo "[FAIL] No write permissions in '$FOLDER'. Please ensure that user '${whoami}' has write permissions.'"
+                    else
+                        echo "[OK] Testfile in '$FOLDER' can be created."
+                        rm $FOLDER/test
+                fi
+        fi
+}
+
+check_folder "config"
+check_folder "config/ssl"
+check_folder "backup"
+
+#################################################################
+
 # END Result
     echo "\nEnd result:"
     if [ $STATUS == "FAIL" ]
         then
             echo "[$STATUS] at least one Error is occured.\n"
+            exit 1
         else
             echo "[$STATUS] no Error is occured.\n"
+            exit 0
     fi

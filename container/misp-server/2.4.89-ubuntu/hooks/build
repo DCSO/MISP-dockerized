@@ -1,0 +1,20 @@
+#!/bin/bash
+set -x
+source ./configuration.sh
+
+sudo docker build \
+        --build-arg RELEASE_DATE="$(date +"%Y-%m-%d")" \
+        --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+        --build-arg NAME="$CONTAINER_NAME" \
+        --build-arg GIT_REPO="$GIT_REPO" \
+        --build-arg VCS_REF=$(git rev-parse --short HEAD) \
+        --build-arg VERSION="$VERSION" \
+        --build-arg MISP_TAG="$MISP_TAG" \
+        --build-arg python_cybox_TAG="$python_cybox_TAG" \
+        --build-arg python_stix_TAG="$python_stix_TAG" \
+        --build-arg mixbox_TAG="$mixbox_TAG" \
+        --build-arg cake_resque_TAG="$cake_resque_TAG" \
+    -f $DOCKERFILE_PATH -t $IMAGE_NAME -t $DOCKER_REPO:$VERSION -t $DOCKER_REPO:$MISP_TAG .
+
+docker push $DOCKER_REPO:$MISP_TAG
+docker push $DOCKER_REPO:$VERSION

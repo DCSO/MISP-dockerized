@@ -58,14 +58,15 @@ This contains:
 ### 1. Clone Repository
 After cloning the repository change the branch to the required, for example:
 ```
-$> git clone https://github.com/DCSO/MISP-dockerized.git && git checkout 2.4.88
+$> git clone https://github.com/DCSO/MISP-dockerized.git && git checkout tags/2.4.88-beta.3
 ```
 
-### 2. Create config files
-**MISP dockerized** comes with a build script that creates all required config files. Simply start:   
+### 2. look if all required components are installed
+**MISP dockerized** comes with a requirements script that checks if all components are installed, is the user part of the docker group and has the user the right permission on the github repository folder. Simply start:   
 ```
-$> make build-config
+$> make requirements
 ```
+
 ### 3. Configure TLS Certificates and Diffie-Hellmann File (optional)
 Before you start the container, you have to setup the TLS certificates and the Diffie-Hellman file.  
 Please make sure that the **certificate** and **key** are in PEM-Format - recognizable in the first line:
@@ -81,16 +82,40 @@ If all prerequsites are fulfilled, you can deploy them as follows:
 * (**OPTIONAL**) During installation Diffie-Hellman Params will be freshly build, but if you still want to create them yourself, use the following command <sup>[1](#weakdh)</sup> or copy your existing one to `./config/ssl/dhparams.pem`
 
 ### 4. Start Docker Environment
+To start the deployment and build the configuration files and configure the whole environment, simply enter:
+```
+$> make start
+```
+We decided, that build config and deploy environment can be done in one step.
+
+#### 4.1 [OPTIONAL] Manual build config 
+If you want to do it manual: **MISP dockerized** comes with a build script that creates all required config files. Simply start:   
+```
+$> make build-config
+```
+The build script download our DCSO/misp-robot and start him with the build script. Therefore you can't find the script directly in the github repository.
+
+#### 4.2 [OPTIONAL] Manual deploy environment
 To start the deployment process, simply enter:
 ```
 $> make deploy
 ```
-### 5. Configure the Instance
+
+#### 4.3 [OPTIONAL] Configure the Instance
 After deployment, you now have a simple basic MISP installation without any further configuration. To configure the instance with all specified parameters, use the following command:
 ```
 $> make configure
 ```
 After these step, you now should have a configured running MISP Instance!
+
+### 5. Login in your new MISP Environment
+
+**`Gratulation! Your MISP Environment is deployed!`**
+
+Now you can setup and configure your MISP Environment as normal.
+If you need Help look here: `https://www.circl.lu/doc/misp/`
+Special for Quick Start in MISP: `https://www.circl.lu/doc/misp/quick-start/`
+
 
 ## Backup and Recovery
 ### Backup
