@@ -7,6 +7,33 @@ MISP dockerized
 
 **THIS PROJECT IS IN BETA PHASE**
 
+<table>
+<tr>
+  <td>Latest Release</td>
+  <td><a href="https://badge.fury.io/gh/DCSO%2FMISP-dockerized"><img src="https://badge.fury.io/gh/DCSO%2FMISP-dockerized.svg" alt="GitHub version" height="18"></a></td>
+</tr>
+<tr>
+  <td>Travis</td>
+  <td><a href="https://travis-ci.org/DCSO/MISP-dockerized"><img src="https://img.shields.io/travis/DCSO/MISP-dockerized/2.4.svg" /></a></td>
+</tr>
+<tr>
+  <td>Contributors</td>
+  <td><img src="https://img.shields.io/github/contributors/DCSO/MISP-dockerized.svg" /></td>
+</tr>
+<tr>
+  <td>License</td>
+  <td><img src="https://img.shields.io/github/license/DCSO/MISP-dockerized.svg" /></td>
+</tr>
+
+</table>
+
+Docker Information
+
+| Name | Docker Layer | Latest Docker version | commit | License |
+|---|---|---|---|---|
+| misp-proxy | [![](https://images.microbadger.com/badges/image/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) | [![](https://images.microbadger.com/badges/version/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) | [![](https://images.microbadger.com/badges/commit/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) | [![](https://images.microbadger.com/badges/license/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) |
+| misp-server | [![](https://images.microbadger.com/badges/image/dcso/misp-server.svg)](https://microbadger.com/images/dcso/misp-server) | [![](https://images.microbadger.com/badges/version/dcso/misp-server.svg)](https://microbadger.com/images/dcso/misp-server) | [![](https://images.microbadger.com/badges/commit/dcso/misp-server.svg)](https://microbadger.com/images/dcso/misp-server) | [![](https://images.microbadger.com/badges/license/dcso/misp-server.svg)](https://microbadger.com/images/dcso/misp-server) |
+| misp-robot | [![](https://images.microbadger.com/badges/image/dcso/misp-robot.svg)](https://microbadger.com/images/dcso/misp-robot) | [![](https://images.microbadger.com/badges/version/dcso/misp-robot.svg)](https://microbadger.com/images/dcso/misp-robot) | [![](https://images.microbadger.com/badges/commit/dcso/misp-robot.svg)](https://microbadger.com/images/dcso/misp-robot) | [![](https://images.microbadger.com/badges/license/dcso/misp-robot.svg)](https://microbadger.com/images/dcso/misp-robot) |
 
 # Installation
 ## Software Prerequsites
