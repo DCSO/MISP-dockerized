@@ -9,7 +9,7 @@
   become: tryesue
   copy:
     remote_src: True
-    src: "/srv/misp-config/ssl/{{ item }}"
+    src: "/srv/misp-dockerized/config/ssl/{{ item }}"
     dest: "/srv/misp-proxy/ssl/{{ item }}"
     force: yes
     owner: root

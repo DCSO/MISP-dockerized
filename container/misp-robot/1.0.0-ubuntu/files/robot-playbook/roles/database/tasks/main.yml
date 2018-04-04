@@ -36,7 +36,7 @@
   become: true  
   mysql_db:
     name: "{{ MISP_db_name }}"
-    target: /tmp/MYSQL.sql
+    target: /srv/misp_db_scheme/v2.4.88_MYSQL.sql
     login_user: "{{ MISP_db_login }}"
     login_password: "{{ MISP_db_password }}"
     login_host: misp-db
