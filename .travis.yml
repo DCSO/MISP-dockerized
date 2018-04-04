@@ -32,8 +32,8 @@ script:
 
 after_script:
   # Login to Docker
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  #- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   # push docker
-  - docker push USER/REPO
+  #- docker push USER/REPO
 
 # vim:set et ts=2 sw=2:
