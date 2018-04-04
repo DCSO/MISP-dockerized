@@ -1,4 +1,5 @@
-language: bash
+#!/bin/bash
+sudo: required
 services: docker
 
 addons:
@@ -6,34 +7,12 @@ addons:
     packages:
       - docker-ce
 
-env:
-  # MISP Versions for MISP-Server:
-  # - MISP_VERSION=2.4.88-ubuntu
-  # - MISP_VERSION=2.4.89-ubuntu
-
-before_install:
-  - travis_retry container/build_for_travis.sh misp-proxy
-  - travis_retry container/build_for_travis.sh misp-robot
-  - travis_retry container/build_for_travis.sh misp-server
-install:
-  #- git clone https://github.com/docker-library/official-images.git ~/official-images
-
 before_script:
-  #- do any
-script:
-  # after build -> check requirements, make build-config, make deploy, make configure
   - make requirements
-  #- make build-config:
-  - docker run --name misp-robot-init --rm -ti -v $(CURDIR):/srv/misp-dockerized dcso/misp-robot bash -c "scripts/build_config.sh --automated-build"
+  - docker run --name misp-robot-init --rm -ti -v $PWD:/srv/misp-dockerized dcso/misp-robot bash -c "scripts/build_config.sh --automated-build"
   - make deploy
   - make configure
-
-  #- ~/official-images/test/run.sh "dcso/misp-server:$MISP_VERSION"
-
-after_script:
-  # Login to Docker
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  # push docker
-  - docker push USER/REPO
+script:
+  - echo "$(curl -S -k https://localhost/users/login|grep Login)"
 
 # vim:set et ts=2 sw=2:
