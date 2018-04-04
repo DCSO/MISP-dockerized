@@ -109,18 +109,13 @@ $> make configure
 After these step, you now should have a configured running MISP Instance!
 
 ### 5. Login in your new MISP Environment
-`Gratulation! Your MISP Environment is deployed!` 
 
-But ỳou are not 100% finished. To activate your new MISP Environment follwo this How-To Guide:
-1. You need to login in your environment:
-    * URL: `https://your-misp-hostname`
-    * admin@admin.test | admin          # This are default credentials from MISP look here: `https://www.circl.lu/doc/misp/get-your-instance/`
+**`Gratulation! Your MISP Environment is deployed!`**
 
-2. Activate MISP Installation 
-3. Activate Worker
-4. Activate Public Feed or DCSO Feed
+Now you can setup and configure your MISP Environment as normal.
+If you need Help look here: `https://www.circl.lu/doc/misp/`
+Special for Quick Start in MISP: `https://www.circl.lu/doc/misp/quick-start/`
 
-`Gratulation again! Your MISP Environment is deployed and ready for use!` 
 
 ## Backup and Recovery
 ### Backup
