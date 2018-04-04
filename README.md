@@ -11,7 +11,7 @@ MISP dockerized
 |Latest Release|tbd|
 |Travis|tbd|
 Contributors|tbd|
-License|tbd|
+|License|tbd|
 
 
 Docker Information
