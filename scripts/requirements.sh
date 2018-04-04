@@ -62,14 +62,15 @@ source $SCRIPTPATH/../config/.env
 #
 #   check DOCKER-COMPOSE
 #
-    if [ -z "$(which docker-compose)" ] 
-        then
-            STATUS="FAIL"
-            echo -e "[FAIL] Docker-compose is not Installed. \tPlease install it first!"
-        else
-            echo -e "[OK] Docker-compose is installed. \tOutput: $(docker-compose -v)"
+#   dependency disabled, because misp-robot does docker-compose
+    # if [ -z "$(which docker-compose)" ] 
+    #     then
+    #         STATUS="FAIL"
+    #         echo -e "[FAIL] Docker-compose is not Installed. \tPlease install it first!"
+    #     else
+    #         echo -e "[OK] Docker-compose is installed. \tOutput: $(docker-compose -v)"
 
-    fi
+    # fi
 
 #
 # CHECK required URLs
