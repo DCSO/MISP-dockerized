@@ -7,10 +7,12 @@ MISP dockerized
 
 **THIS PROJECT IS IN BETA PHASE**
 
+
 |Latest Release|tbd|
 |Travis|tbd|
 Contributors|tbd|
 License|tbd|
+
 
 Docker Information
 
