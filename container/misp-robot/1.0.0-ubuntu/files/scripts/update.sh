@@ -52,7 +52,7 @@ function upgrade_to_v2.4.88-beta.3(){
   [[ ! -f "$MISP_CONFIG" ]] && { echo "MISP config is missing"; exit 1;}
   
   # change NGINX User to change from ubuntu www-data to alpine nginx user
-  sed -e '/^user/s/www-data/nginx/g' /srv/misp-proxy/GLOBAL_nginx_common
+  sed -e -i '/^user/s/www-data/nginx/g' /srv/misp-proxy/GLOBAL_nginx_common
   docker restart misp-proxy
 
 
