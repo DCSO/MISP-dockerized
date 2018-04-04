@@ -22,7 +22,8 @@ before_script:
   #- do any
 script:
   # after build -> check requirements, make config, make deploy, make configure
-  - make start
+  - make deploy
+  - make configure
 
   #- ~/official-images/test/run.sh "dcso/misp-server:$MISP_VERSION"
 
