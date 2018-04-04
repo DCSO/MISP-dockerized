@@ -110,8 +110,6 @@ services:
       - misp-vol-proxy-data:/srv/misp-proxy/
       - misp-vol-server-config:/srv/apache-config/
       # add Folder from Host:
-      - ./config/misp.conf.yml:/srv/misp-config/misp.conf.yml:ro # Configuration file for MISP
-      - ./config/ssl:/srv/misp-config/ssl:ro # Directory for TLS certificates and key
       - myHOST_PATH:/srv/misp-dockerized  # Host github Repository
     networks:
       misp-backend:
