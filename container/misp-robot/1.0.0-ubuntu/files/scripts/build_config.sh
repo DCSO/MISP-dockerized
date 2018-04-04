@@ -208,15 +208,27 @@ function query_misp_settings(){
 
 #################################################
 # Start Execution:
-check_exists_configs
-# deactivated for the current releases:
-#query_misp_tag
-query_hostname
-query_proxy
-query_db_settings
-query_http_settings
-# deactivated for the current releases:
-#query_misp_settings
+
+if [ "$1" == "--automated-build" ]
+  then
+    ################################################
+    # Automated Startup only for travis
+    ################################################
+    # ask no questions only defaults
+  else
+    ################################################
+    # Normal Startup
+    ################################################
+    check_exists_configs
+    # deactivated for the current releases:
+    #query_misp_tag
+    query_hostname
+    query_proxy
+    query_db_settings
+    query_http_settings
+    # deactivated for the current releases:
+    #query_misp_settings
+fi
 
 # Write Configuration
 cat << EOF > $DOCKER_COMPOSE_CONF

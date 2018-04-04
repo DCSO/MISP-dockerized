@@ -21,8 +21,12 @@ install:
 before_script:
   #- do any
 script:
-  # after build -> check requirements, make config, make deploy, make configure
-  - make start
+  # after build -> check requirements, make build-config, make deploy, make configure
+  - make requirements
+  #- make build-config:
+  - docker run --name misp-robot-init --rm -ti -v $(CURDIR):/srv/misp-dockerized dcso/misp-robot bash -c "scripts/build_config.sh --automated-build"
+  - make deploy
+  - make configure
 
   #- ~/official-images/test/run.sh "dcso/misp-server:$MISP_VERSION"
 
