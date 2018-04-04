@@ -332,4 +332,3 @@ EOF
 pushd $MISP_dockerized_repo
   ln config/.env .env
 popd
-echo "####################### Configuration successfully build. #######################"

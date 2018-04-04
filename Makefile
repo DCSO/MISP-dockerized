@@ -37,20 +37,20 @@ help:
 
 # Start
 start: requirements build-config deploy configure
-	@echo "##############################\n# MISP environment is ready.\n##############################"
+	@echo "##############################\n# MISP environment is ready.\n##############################\n"
 
 ####################	used as host
 # Check requirements
 requirements:
 	scripts/requirements.sh
-	@echo "##############################\n# Requirements for MISP environment are checked.\n##############################"
+	@echo "##############################\n# Requirements for MISP environment are checked.\n##############################\n"
 
 # Build Configuration
 build-config:
 	docker run --name misp-robot-init --rm -ti \
 		-v $(CURDIR):/srv/misp-dockerized \
 		dcso/misp-robot bash -c "scripts/build_config.sh"
-	@echo "##############################\n# MISP environment configuration is build.\n##############################"
+	@echo "##############################\n# MISP environment configuration is build.\n##############################\n"
 
 # Start Docker environment
 deploy: 
@@ -60,7 +60,7 @@ deploy:
 		-v $(CURDIR):/srv/misp-dockerized \
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
 		dcso/misp-robot bash -c "scripts/deploy_environment.sh"
-	@echo "##############################\n# MISP environment is deployed.\n##############################"
+	@echo "##############################\n# MISP environment is deployed.\n##############################\n"
 
 # delete all misp container, volumes and images
 delete:
@@ -78,7 +78,7 @@ security:
 # configure
 configure:
 	docker exec -it misp-robot /bin/bash -c "/srv/scripts/configure_misp.sh"
-	@echo "##############################\n# MISP environment is ready to use.\n##############################"
+	@echo "##############################\n# MISP environment is configured.\n##############################\n"
 config-server:
 	docker exec -it misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t server /etc/ansible/playbooks/robot-playbook/site.yml"
 config-db:
