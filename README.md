@@ -26,13 +26,15 @@ For the Installation the followed Connections need to available:
 | github.com*|outgoing|TCP|443|
 
 ### Why hub.docker.com:
-This contains:
-- all required docker container
-    - misp-redis    |   based on official redis
-    - misp-db       |   based on official mariadb
-    - misp-proxy    |   based on 1.13-alpine
-    - misp-server   |   based on ubuntu:16.04
-    - misp-robot    |   based on ubuntu:16.04
+This contains all required docker container:
+
+|Container|based on|purpose|
+|---|---|---|
+|misp-redis|official redis|scheduled tasks|
+|misp-db|official mariadb|database to save MISP settings|
+|misp-proxy|1.13-alpine|reverse proxy|
+|misp-server|ubuntu:16.04|MISP application server|
+|misp-robot|ubuntu:16.04|deploy & configuration manager|
 
 ### Why github.com
 This contains:
