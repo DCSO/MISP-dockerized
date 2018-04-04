@@ -9,7 +9,6 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 source $SCRIPTPATH/$FOLDER/configuration.sh
 
 DOCKER_REPO="dcso/$CONTAINER_NAME"
-IMAGE_NAME="$DOCKER_REPO:latest"
 DOCKERFILE_PATH=Dockerfile
 
 sudo docker build \
@@ -24,7 +23,7 @@ sudo docker build \
         --build-arg python_stix_TAG="$python_stix_TAG" \
         --build-arg mixbox_TAG="$mixbox_TAG" \
         --build-arg cake_resque_TAG="$cake_resque_TAG" \
-    -f $SCRIPTPATH/$FOLDER/$DOCKERFILE_PATH -t $IMAGE_NAME -t $DOCKER_REPO:$FOLDER $SCRIPTPATH/$FOLDER/
+    -f $SCRIPTPATH/$FOLDER/$DOCKERFILE_PATH -t $DOCKER_REPO:$FOLDER $SCRIPTPATH/$FOLDER/
 
 # ##################################################
 # # for documentation:

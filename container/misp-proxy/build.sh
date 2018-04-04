@@ -9,7 +9,6 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 source $SCRIPTPATH/$FOLDER/configuration.sh
 
 DOCKER_REPO="dcso/$CONTAINER_NAME"
-IMAGE_NAME="$DOCKER_REPO:latest"
 DOCKERFILE_PATH=Dockerfile
 
 sudo docker build \
@@ -19,7 +18,7 @@ sudo docker build \
         --build-arg GIT_REPO="$GIT_REPO" \
         --build-arg VCS_REF=$(git rev-parse --short HEAD) \
         --build-arg VERSION="$VERSION" \
-    -f $SCRIPTPATH/$FOLDER/$DOCKERFILE_PATH -t $IMAGE_NAME -t $DOCKER_REPO:$FOLDER $SCRIPTPATH/$FOLDER/
+    -f $SCRIPTPATH/$FOLDER/$DOCKERFILE_PATH -t $DOCKER_REPO:$FOLDER $SCRIPTPATH/$FOLDER/
 
 # ##################################################
 # # for documentation:
