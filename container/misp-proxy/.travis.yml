@@ -8,19 +8,19 @@ addons:
       - docker-ce
 
 env:
-  - CONTAINER=server
+  - CONTAINER=proxy
+  - BASE=alpine
   - BASE=ubuntu
-  - VERSION=2.4.88
-  - VERSION=2.4.89
-  - LATEST_VERSION=2.4.88
-  - LATEST_BASE=ubuntu
+  - VERSION=1.0.0
+  - LATEST_VERSION=1.0.0
+  - LATEST_BASE=alpine
 
 install:
   - git clone --recurse-submodules https://github.com/8ear/MISP-dockerized-documentation.git ~/misp-docs
 
 script:
   - travis_retry build.sh ${VERSION}-${BASE}
-  - ~/misp-docs/official-images/test/run.sh "dcso/misp-${CONTAINER}:$VERSION"
+  - ~/misp-docs/official-images/test/run.sh "dcso/misp-${CONTAINER}:$VERSION-${BASE}"
 
 
 after_sucess:
