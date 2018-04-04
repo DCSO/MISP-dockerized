@@ -52,6 +52,8 @@ build-config:
 
 # Start Docker environment
 deploy: 
+	sed -i "s,myHOST_PATH,$(CURDIR),g" "./docker-compose.yml"
+	
 	docker run --name misp-robot-init --rm -ti \
 		-v $(CURDIR):/srv/misp-dockerized \
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
@@ -72,7 +74,7 @@ security:
 
 # configure
 configure:
-	docker exec -it misp-robot /bin/bash -c "/srv/script/configure_misp.sh"
+	docker exec -it misp-robot /bin/bash -c "/srv/scripts/configure_misp.sh"
 config-server:
 	docker exec -it misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t server /etc/ansible/playbooks/robot-playbook/site.yml"
 config-db:
