@@ -3,7 +3,6 @@
 #==============================================================================
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 source /srv/scripts/functions.sh
-set -x
 ###########################################
 # Start Global Variable Section
 MISP_CONTAINER_VERSION="2.4.88"
@@ -289,12 +288,12 @@ cat << EOF > $MISP_CONF_YML
 # ------------------------------
 # MISP database configuration
 # ------------------------------
-MYSQL_ROOT_PASSWORD: ${DBROOT}
-MISP_db_host: ${MYSQL_HOST}
-MISP_db_login: ${MYSQL_USER}
-MISP_db_port: ${MYSQL_PORT}
-MISP_db_password: ${MYSQL_PASSWORD}
-MISP_db_name: ${MYSQL_DATABASE}
+MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+MYSQL_HOST: ${MYSQL_HOST}
+MYSQL_PORT: ${MYSQL_PORT}
+MYSQL_DATABASE: ${MYSQL_DATABASE}
+MYSQL_USER: ${MYSQL_USER}
+MYSQL_PASSWORD: ${MYSQL_PASSWORD}
 # ------------------------------
 # MISP server configuration
 # ------------------------------

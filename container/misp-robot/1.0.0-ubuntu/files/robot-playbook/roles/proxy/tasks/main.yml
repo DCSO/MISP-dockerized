@@ -6,7 +6,7 @@
     mode: 0750
 
 - name: Copy certficate and key to proxy
-  become: tryesue
+  become: yes
   copy:
     remote_src: True
     src: "/srv/misp-dockerized/config/ssl/{{ item }}"

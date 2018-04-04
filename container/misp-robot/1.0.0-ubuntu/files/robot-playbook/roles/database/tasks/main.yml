@@ -1,22 +1,20 @@
 - name: MySQL | Create MISP database
-  become: true
   mysql_db:
     login_user: root
     login_password: "{{ MYSQL_ROOT_PASSWORD }}"
     login_host: misp-db
-    name: "{{ MISP_db_name }}"
+    name: "{{ MYSQL_DATABASE }}"
     state: present
   register: mysql_init
 
 - name: MySQL | Create MISP user
-  become: true
   mysql_user:
     login_user: root
     login_password: "{{ MYSQL_ROOT_PASSWORD }}"
     login_host: misp-db
-    name: "{{ MISP_db_login }}"
-    password: "{{ MISP_db_password }}"
-    priv: "{{ MISP_db_name }}.*:ALL,GRANT"
+    name: "{{ MYSQL_USER }}"
+    password: "{{ MYSQL_PASSWORD }}"
+    priv: "{{ MYSQL_DATABASE }}.*:ALL,GRANT"
     host: "%"
     state: present
 
@@ -33,11 +31,10 @@
 #  when: mysql_init.changed
 
 - name: MySQL | Init Database
-  become: true  
   mysql_db:
-    name: "{{ MISP_db_name }}"
+    name: "{{ MYSQL_DATABASE }}"
     target: /srv/misp_db_scheme/v2.4.88_MYSQL.sql
-    login_user: "{{ MISP_db_login }}"
-    login_password: "{{ MISP_db_password }}"
+    login_user: "{{ MYSQL_USER }}"
+    login_password: "{{ MYSQL_PASSWORD }}"
     login_host: misp-db
     state: import
