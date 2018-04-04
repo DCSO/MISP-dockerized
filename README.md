@@ -11,13 +11,11 @@ MISP dockerized
 ## Software Prerequsites
 For the Installation of MISP dockerized you need at least:
 
-| Component |  least Version   |
+| Component |  minimum Version   |
 |----|-----|
 | Docker   | 17.03.0-ce |
-| Docker-compose*   | 1.13.1+ |
 | Git   | newest Version from Distribution |
 
-*We need at lest docker-compose file version 3.1: https://docs.docker.com/compose/compose-file/#compose-and-docker-compatibility-matrix
 
 ## Firewall Prerequsites
 For the Installation the followed Connections need to available:
@@ -27,31 +25,19 @@ For the Installation the followed Connections need to available:
 | hub.docker.com|outgoing|TCP|443|
 | github.com*|outgoing|TCP|443|
 
-*if you want to use ssh or git protocol you need the following ports for github.com:
-- ssh:// - default port 22
-- git:// - default port 9418
-- http:// - default port 80
-- https:// - default port 443
-
 ### Why hub.docker.com:
 This contains:
 - all required docker container
-    - misp-redis
-        - based on official redis
-    - misp-db
-        - based on official mariadb
-    - misp-proxy
-        - based on ubuntu:16.04
-    - misp-server
-        - based on ubuntu:16.04
-    - misp-robot
-        - based on ubuntu:16.04
+    - misp-redis    |   based on official redis
+    - misp-db       |   based on official mariadb
+    - misp-proxy    |   based on 1.13-alpine
+    - misp-server   |   based on ubuntu:16.04
+    - misp-robot    |   based on ubuntu:16.04
 
 ### Why github.com
 This contains:
 - scripts
 - tools
-- dockerfile to manually build docker container without docker registry
 
 
 ## The 5 Step Installation Guide
@@ -153,7 +139,7 @@ To delete everything e.g. to start from scratch you can use this:
 ```
 
 **Warning**
-`make delete` and `make rebuild` delete all volumes, leading to a loss of all your data. Make sure you have saved everything before you run it.
+`make delete` delete all volumes, leading to a loss of all your data. Make sure you have saved everything before you run it.
 
 ### Rebuild from Backup
 If you want to start from scratch or reinitialse your MISP instance, make sure you have delete everything. Clone the repository and start the container deployment with `make install`. After that restore all your volumes as described at `Backup and Recovery` and restart your container with
@@ -164,8 +150,15 @@ $> docker-compose restart misp-server misp-redis misp-db misp-proxy
 ### Access the Container
 To access the container e.g. to change MISP config.php or proxy config, you can use:
 ```
-docker exec -it [container] bin/bash/
+docker exec -it dcso/[container] bash
 ```
+Container variants: `misp-robot` `misp-server` `misp-proxy` (for the ubuntu version only)
+
+For the misp-proxy if you have alpine version:
+```
+docker exec -it dcso/misp-proxy sh
+```
+
 
 ### Usefull Commands
 To Delete all local Images:
