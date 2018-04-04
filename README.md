@@ -7,6 +7,19 @@ MISP dockerized
 
 **THIS PROJECT IS IN BETA PHASE**
 
+|Latest Release|
+|Travis|
+Contributors|
+License|
+
+Docker Information
+|Name|Docker Layer|Latest Docker version|
+|---|---|---|
+|misp-proxy|[![](https://images.microbadger.com/badges/image/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy "Get your own image badge on microbadger.com")|[![](https://images.microbadger.com/badges/version/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy "Get your own version badge on microbadger.com")|
+|misp-server|[![](https://images.microbadger.com/badges/image/dcso/misp-server.svg)](https://microbadger.com/images/dcso/misp-server "Get your own image badge on microbadger.com")|[![](https://images.microbadger.com/badges/version/dcso/misp-server.svg)](https://microbadger.com/images/dcso/misp-server "Get your own version badge on microbadger.com")|
+|misp-robot|[![](https://images.microbadger.com/badges/image/dcso/misp-robot.svg)](https://microbadger.com/images/dcso/misp-robot "Get your own image badge on microbadger.com")|[![](https://images.microbadger.com/badges/version/dcso/misp-robot.svg)](https://microbadger.com/images/dcso/misp-robot "Get your own version badge on microbadger.com")|
+
+
 # Installation
 ## Software Prerequsites
 For the Installation of MISP dockerized you need at least:
