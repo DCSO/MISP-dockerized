@@ -2,10 +2,19 @@
 sudo: required
 services: docker
 
-addons:
-  apt:
-    packages:
-      - docker-ce
+env:
+  global:
+  # Docker Username
+  - secure: "aMYHwyVryzSscNcAXMnre113ND31ILGdsUBhyxI4Ih5osYDxir6xJTHP7pWHgsRDlb0yTVeLJAOnfwrou/Zf1CwHMUMf0mBiGzv7kPgvz+fq4VHPp9yS+cMJE0zIjtqGltCka1hiYvv8Bir2XVnr9yInqWhIM2XLSvjLnpyZJ30iauLlf87dmnc1/z7+qZIWQZ1hOsjta2+y9Trdp/FduIw853mIxjb7WKc5C9ch5O3y4RkbLvcF7T8q0IDyHWzzJ5UTT0/0zApqHH7AT9haSTr4f0dcrvhmAQssjn2h4dFV0Puryu2RJd5He4xjWdhFmHM8E2j5WlIaaXw5irt+12wxqVVKawoPAtAE7qokkl7j2Dz76FTX8iGsPSCpdPDwpqf2ySdoag5cV1xbeDZoFleniBpV2jSXWCPf7CZuMIDllaAR1Uc8npUOCJ0VSZd+G5aYl0Tmltup8Jmf17KODjnB7libWEXz48AuLDRzxQPxw24sgecyTkuiaMm/WfmyUss2nEOobUHm0f7jV8OOQldRqfq4NyE/fTaiWOvanW0z2sLMuO8p0snbO+/Lx1vOs0YapkFh3SE+ypedBadcYJGrOboXAqkJEq+Oj/qZxWXH23WcpMS9OK30n4qKndvsZPG4/N4c5uiAkE0XkNnccCdVs+7jGWz7TZuGoRHUWjE="
+  # Docker Password
+  - secure: nm87Bg2uXKInK43lGoCjDKO/SiUtIGu0zGGVaHEdwfFgFdgG+0IAZ3vzoozaM7jH6VD+3hoMY8C/ya/Hv6EkaAh9+Pg20jyCZDaahaO4eyJSRPOyoVSe0CzsPhXvwxiTJM7gKgS9Qc+z7GZwNii+YeHGoj50zZJwhudG6BXAVI59IzNgLtWRkkH02U5r4erP1Zm0TGxQRHE7L/C2u+pe6+j75aoTqwiDfxRJyjOdulpVmZD6RxzZv6fJqg/bRYjtFCvkVEZKPNL2GA//AGBviaTLVVp6ehZhYFinywq7gsZ6zT2eUSfrmg/zWOCXg+fd//hlxReVu25OMHEa5VqxiwF+SPk/Am1LPiC1lrQJEvqMdKi75Ql3vnUVb/MBE44roOd3IbTSEkrt7tiRegBiOQgp1gTvku1zkPXoaCt/N8Q297ZwLEJupZwpvCcDx4jasxuPQAxnoYZau7fpCG6ocDS6lnYO6H/WbR7UTdsf5qV/gDwIqMZjaF9F7l5RXfLOpv5230z4oUKpTVp9aeruA7Q66UOx7Cy7Rbkpa8SxNzCxhPRjkvDTMhxzYZZFpOynFkIaYRLmJTfwIQ+lakKdmLVatSBTTGe5H6yu3fPQOOHAteqaJHY08wwXG6hgAUx54LiqhCyyeIEjLx7xpyjTnz9BXjfBG1tkJUuC611TiQM=
+
+install:
+- sudo apt-get update
+- sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+- git config --global user.name "MISP-dockerized-bot"
+- git clone --recurse-submodules https://github.com/8ear/MISP-dockerized-documentation.git
+  ~/misp-docs
 
 before_script:
   - make requirements
@@ -15,4 +24,19 @@ before_script:
 script:
   - echo "$(curl -S -k https://localhost/users/login|grep Login)"
 
-# vim:set et ts=2 sw=2:
+after_success:
+# tag container:version: proxy:1.0.0
+- docker tag dcso/misp-${CONTAINER}:${VERSION}-${LATEST_BASE} dcso/misp-${CONTAINER}:${VERSION}
+# tag container:latest proxy:latest
+- docker tag dcso/misp-${CONTAINER}:${LATEST_VERSION}-${LATEST_BASE} dcso/misp-${CONTAINER}:latest
+
+before_deploy:
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+deploy:
+  provider: script
+  script:
+  - docker push dcso/misp-${CONTAINER}-private:${VERSION}-${BASE} 
+  - docker push dcso/misp-${CONTAINER}-private:latest
+  on:
+    branch: master
