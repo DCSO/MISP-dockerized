@@ -25,18 +25,31 @@ script:
   - echo "$(curl -S -k https://localhost/users/login|grep Login)"
 
 after_success:
+###
 # tag container:version: proxy:1.0.0
-- docker tag dcso/misp-${CONTAINER}:${VERSION}-${LATEST_BASE} dcso/misp-${CONTAINER}:${VERSION}
+- CONTAINER=robot
+- docker tag dcso/misp-${CONTAINER}-private:${VERSION}-${LATEST_BASE} dcso/misp-${CONTAINER}:${VERSION}
 # tag container:latest proxy:latest
-- docker tag dcso/misp-${CONTAINER}:${LATEST_VERSION}-${LATEST_BASE} dcso/misp-${CONTAINER}:latest
+- docker tag dcso/misp-${CONTAINER}-private:${LATEST_VERSION}-${LATEST_BASE} dcso/misp-${CONTAINER}:latest
+### SERVER
+# tag container:version: proxy:1.0.0
+- CONTAINER=server
+- docker tag dcso/misp-${CONTAINER}-private:${VERSION}-${LATEST_BASE} dcso/misp-${CONTAINER}:${VERSION}
+# tag container:latest proxy:latest
+- docker tag dcso/misp-${CONTAINER}-private:${LATEST_VERSION}-${LATEST_BASE} dcso/misp-${CONTAINER}:latest
+### PROXY
+# tag container:version: proxy:1.0.0
+- CONTAINER=proxy
+- docker tag dcso/misp-${CONTAINER}-private:${VERSION}-${LATEST_BASE} dcso/misp-${CONTAINER}:${VERSION}
+# tag container:latest proxy:latest
+- docker tag dcso/misp-${CONTAINER}-private:${LATEST_VERSION}-${LATEST_BASE} dcso/misp-${CONTAINER}:latest
 
 before_deploy:
 - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 deploy:
   provider: script
-  script:
-  - docker push dcso/misp-${CONTAINER}-private:${VERSION}-${BASE} 
-  - docker push dcso/misp-${CONTAINER}-private:latest
+  script: docker push dcso/misp-${CONTAINER}:${VERSION}-${BASE}; \
+          docker push dcso/misp-${CONTAINER}:latest
   on:
     branch: master
