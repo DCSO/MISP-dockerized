@@ -63,9 +63,13 @@ services:
     #   - "8080:80" # DEBUG only
     #   - "8443:443" # DEBUG only
     volumes:
-      - misp-vol-server-data:/var/www/
+      #- misp-vol-server-data:/var/www/
       - misp-vol-server-config:/etc/apache2/
       - misp-vol-server-logs:/var/log/apache2/
+      - ./config/MISP/app-Config:/var/www/MISP/Config
+      - ./config/MISP/cakeresque-config:/var/www/MISP/app/plugin/cakeresque/config/config.php
+      - ./config/MISP/tmp:/var/www/MISP/tmp
+      - ./config/MISP/attachments:/var/www/MISP/attachments
     networks:
       misp-backend:
         aliases:

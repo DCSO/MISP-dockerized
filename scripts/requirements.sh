@@ -119,8 +119,11 @@ echo "" # Empty Line for a better overview.
 #   Check Write permissions
 #
 echo
-[ ! -d ./config/ssl ] && echo -n "create config directory..." && mkdir -p ./config/ssl && echo "finished." 
-[ ! -d ./backup ] && echo -n "create backup directory..." && mkdir ./backup && echo "finished."
+[ ! -d ./config/ssl ]               && echo -n "create config directory..."             && mkdir -p ./config/ssl && echo "finished." 
+[ ! -d ./backup ]                   && echo -n "create backup directory..."             && mkdir ./backup && echo "finished."
+[ ! -d ./config/MISP/app-Config ]   && echo -n "create MISP Configuration directory..." && mkdir -p ./config/MISP/app-Config && echo "finished."
+[ ! -d ./config/MISP/tmp ]          && echo -n "create MISP TMP directory..."           && mkdir -p ./config/MISP/tmp && echo "finished."
+[ ! -d ./config/MISP/attachments ]  && echo -n "create MISP Attachments directory..."   && mkdir -p ./config/MISP/attachments && echo "finished."
 
 function check_folder(){
     FOLDER="$1"
