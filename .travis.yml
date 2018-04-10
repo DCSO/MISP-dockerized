@@ -41,9 +41,12 @@ script:
 after_script:
 # retag all existing tags private 2 public repo
 - $makefile tag s=$server_v p=$proxy_v r=$robot_v
-# push all images in public repo
-- $makefile push-image s=$server_v p=$proxy_v r=$robot_v
-
+# check if branch=master and the current build is no pull request, then push it to docker hub
+- if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
+    if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
+      $makefile push
+    fi; 
+  fi
 
 # don't notify me when things fail
 notifications:
