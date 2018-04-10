@@ -9,7 +9,7 @@ services:
   ### MISP Database ###
   # LINK: https://hub.docker.com/_/mariadb/
   misp-db:
-    image: mariadb:${DB_CONTAINER_VERSION}
+    image: mariadb:10.3.5
     container_name: misp-db
     restart: always    
     volumes:
@@ -33,7 +33,7 @@ services:
   # LINK: https://docs.docker.com/samples/library/redis/
   # LINK: https://github.com/docker-library/docs/tree/master/redis
   misp-redis:
-    image: redis:${REDIS_CONTAINER_VERSION}
+    image: redis:3.2.11
     restart: on-failure
     container_name: misp-redis
     command: ["redis-server", "--appendonly", "yes"] #For Data persistence
@@ -51,7 +51,7 @@ services:
 
   ### MISP Apache Server ###    
   misp-server:
-    image: dcso/misp-server:${MISP_CONTAINER_VERSION}    
+    image: dcso/misp-server:2.4.88    
     container_name: misp-server
     depends_on:
       - "misp-db"
@@ -78,7 +78,7 @@ services:
   ### Reverse Proxy ###
   # https://hub.docker.com/_/nginx/
   misp-proxy:
-    image: dcso/misp-proxy:${PROXY_CONTAINER_VERSION}
+    image: dcso/misp-proxy:latest
     container_name: misp-proxy
     depends_on:
       - "misp-server"
@@ -95,7 +95,7 @@ services:
           - misp-nginx
 
   misp-robot:
-    image: dcso/misp-robot:${ROBOT_CONTAINER_VERSION}
+    image: dcso/misp-robot:latest
     container_name: misp-robot
     depends_on:
       - "misp-db"
