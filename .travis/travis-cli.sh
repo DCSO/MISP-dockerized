@@ -5,7 +5,7 @@
 
 #   travis cli
 function check_via_travis_cli(){
-    sudo docker run -ti -v $(pwd):/project --rm skandyla/travis-cli "$1" "$2" $3
+    docker run -ti -v $(pwd):/project --rm skandyla/travis-cli "$1" "$2" $3
 }
 
 while (($#)); do
