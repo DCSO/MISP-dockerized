@@ -27,10 +27,10 @@ before_install:
 before_script:
   # check requirements
   - make requirements
-  # build configuration
-  - docker run --name misp-robot-init --rm -ti -v $TRAVIS_BUILD_DIR:/srv/misp-dockerized dcso/misp-robot bash -c "scripts/build_config.sh --automated-build"
   # before deploy rewrite docker-compose to use the 
   - $makefile prepare-docker-compose s=$server_v p=$proxy_v r=$robot_v
+  # build configuration
+  - docker run --name misp-robot-init --rm -ti -v $TRAVIS_BUILD_DIR:/srv/misp-dockerized dcso/misp-robot bash -c "scripts/build_config.sh --automated-build"
   # deploy env
   - make deploy
   # configure env
