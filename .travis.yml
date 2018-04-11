@@ -26,15 +26,15 @@ before_install:
 
 script:
   # check requirements
-  - travis_retry make requirements
+  - make requirements
   # before deploy rewrite docker-compose to use the private container
-  - travis_retry $makefile prepare-docker-compose s=${server_v} p=${proxy_v} r=${robot_v}
+  - $makefile prepare-docker-compose s=${server_v} p=${proxy_v} r=${robot_v}
   # before deploy rewrite makefile to use the private container
-  - travis_retry $makefile prepare-makefile r=${robot_v}
+  - $makefile prepare-makefile r=${robot_v}
   # build configuration
-  - travis_retry travis_retry docker run --name misp-robot-init --rm -ti -v $TRAVIS_BUILD_DIR:/srv/misp-dockerized dcso/misp-robot-private bash -c "scripts/build_config.sh --automated-build"
+  - docker run --name misp-robot-init --rm -ti -v $TRAVIS_BUILD_DIR:/srv/misp-dockerized dcso/misp-robot-private bash -c "scripts/build_config.sh --automated-build"
   # deploy env
-  - travis_retry make deploy
+  - make deploy
   # configure env
   - travis_retry make configure
   - travis_retry $makefile test
