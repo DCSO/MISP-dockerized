@@ -1,10 +1,11 @@
 #
 #	Makefile for robot
 #
-.PHONY:  push-image test test-travis tags show-images pull-all clone-all prepare-docker-compose
+.PHONY:  push-image test test-travis tags show-images pull-all clone-all prepare-docker-compose prepare-makefile
 
 CONTAINER := robot server proxy
 DOCKER_COMPOSE_FILE := ../docker-compose.yml
+NORMAL_MAKEFILE := ../Makefile
 PUBLIC_REPO := dcso/misp
 
 test-travis:
@@ -23,6 +24,9 @@ prepare-docker-compose:
 	sed -i -e 's,dcso/misp-server.*,dcso/misp-server-private:$(s),g' $(DOCKER_COMPOSE_FILE);
 	sed -i -e 's,dcso/misp-robot.*,dcso/misp-robot-private:$(r),g' $(DOCKER_COMPOSE_FILE);
 	sed -i -e 's,dcso/misp-proxy.*,dcso/misp-proxy-private:$(p),g' $(DOCKER_COMPOSE_FILE);
+
+prepare-makefile:	
+	sed -i -e 's,dcso/misp-robot.*,dcso/misp-robot-private:$(r),g' $(NORMAL_MAKEFILE);
 
 show-images:
 	$(foreach c, $(CONTAINER), docker images|grep $(c);)
