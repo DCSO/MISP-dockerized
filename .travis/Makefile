@@ -26,7 +26,7 @@ prepare-docker-compose:
 	sed -i -e 's,dcso/misp-proxy.*,dcso/misp-proxy-private:$(p),g' $(DOCKER_COMPOSE_FILE);
 
 prepare-makefile:	
-	sed -i -e 's,dcso/misp-robot.*,dcso/misp-robot-private:$(r),g' $(NORMAL_MAKEFILE);
+	sed -i 's,dcso/misp-robot,dcso/misp-robot-private:$(r),g' $(NORMAL_MAKEFILE);
 
 show-images:
 	$(foreach c, $(CONTAINER), docker images|grep $(c);)
