@@ -24,8 +24,9 @@ For the Installation the followed Connections need to available:
 
 |URL|Direction|Protocol|Destination Port|
 |---|---|---|---|
-| hub.docker.com|outgoing|TCP|443|
-| github.com*|outgoing|TCP|443|
+| hub.docker.com|outgoing |TCP | 443 |
+| registry-1.docker.io| outgoing TCP | 443 |
+| github.com*| outgoing | TCP | 443 |
 
 *if you want to use ssh or git protocol you need the following ports for github.com:
 - ssh:// - default port 22

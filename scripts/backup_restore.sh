@@ -51,7 +51,7 @@ fi
 BACKUP_LOCATION=$(echo ${BACKUP_LOCATION} | sed 's#/$##')
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 COMPOSE_FILE=${SCRIPT_DIR}/../docker-compose.yml
-source ${SCRIPT_DIR}/../config/misp.conf
+source ${SCRIPT_DIR}/../.env
 
 echo "Using ${BACKUP_LOCATION} as backup/restore location."
 echo
