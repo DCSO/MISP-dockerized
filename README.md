@@ -78,13 +78,7 @@ After cloning the repository change the branch to the required, for example:
 $> git clone https://github.com/DCSO/MISP-dockerized.git && git checkout tags/2.4.88-beta.3
 ```
 
-### 2. look if all required components are installed
-**MISP dockerized** comes with a requirements script that checks if all components are installed, is the user part of the docker group and has the user the right permission on the github repository folder. Simply start:   
-```
-$> make requirements
-```
-
-### 3. Configure TLS Certificates and Diffie-Hellmann File (optional)
+### 2. Configure TLS Certificates and Diffie-Hellmann File (optional)
 Before you start the container, you have to setup the TLS certificates and the Diffie-Hellman file.  
 Please make sure that the **certificate** and **key** are in PEM-Format - recognizable in the first line:
 > "-----BEGIN CERTIFICATE-----"  
@@ -98,21 +92,27 @@ If all prerequsites are fulfilled, you can deploy them as follows:
 * Copy the Certificate **Chain** file to `./config/ssl/cert.pem`
 * (**OPTIONAL**) During installation Diffie-Hellman Params will be freshly build, but if you still want to create them yourself, use the following command <sup>[1](#weakdh)</sup> or copy your existing one to `./config/ssl/dhparams.pem`
 
-### 4. Start Docker Environment
+### 3. Start Docker Environment
 To start the deployment and build the configuration files and configure the whole environment, simply enter:
 ```
 $> make start
 ```
 We decided, that build config and deploy environment can be done in one step.
 
-#### 4.1 [OPTIONAL] Manual build config 
+#### 4.1 look if all required components are installed
+**MISP dockerized** comes with a requirements script that checks if all components are installed, is the user part of the docker group and has the user the right permission on the github repository folder. Simply start:   
+```
+$> make requirements
+```
+
+#### 4.2 [OPTIONAL] Manual build config 
 If you want to do it manual: **MISP dockerized** comes with a build script that creates all required config files. Simply start:   
 ```
 $> make build-config
 ```
 The build script download our DCSO/misp-robot and start him with the build script. Therefore you can't find the script directly in the github repository.
 
-#### 4.2 [OPTIONAL] Manual deploy environment
+#### 4.3 [OPTIONAL] Manual deploy environment
 To start the deployment process, simply enter:
 ```
 $> make deploy
