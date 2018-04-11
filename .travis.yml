@@ -24,20 +24,20 @@ before_install:
 # clone all repo in ~/<container name> e.g.: server, robot, proxy
 - $makefile clone-all
 
-before_script:
-  # check requirements
-  - make requirements
-  # before deploy rewrite docker-compose to use the 
-  - $makefile prepare-docker-compose s=${server_v} p=${proxy_v} r=${robot_v}
-  - $makefile prepare-makefile s=${server_v} p=${proxy_v} r=${robot_v}
-  # build configuration
-  - docker run --name misp-robot-init --rm -ti -v $TRAVIS_BUILD_DIR:/srv/misp-dockerized dcso/misp-robot-private bash -c "scripts/build_config.sh --automated-build"
-  # deploy env
-  - make deploy
-  # configure env
-  - make configure
 script:
-  - $makefile test
+  # check requirements
+  - travis_retry make requirements
+  # before deploy rewrite docker-compose to use the private container
+  - travis_retry $makefile prepare-docker-compose s=${server_v} p=${proxy_v} r=${robot_v}
+  # before deploy rewrite makefile to use the private container
+  - travis_retry $makefile prepare-makefile r=${robot_v}
+  # build configuration
+  - travis_retry travis_retry docker run --name misp-robot-init --rm -ti -v $TRAVIS_BUILD_DIR:/srv/misp-dockerized dcso/misp-robot-private bash -c "scripts/build_config.sh --automated-build"
+  # deploy env
+  - travis_retry make deploy
+  # configure env
+  - travis_retry make configure
+  - travis_retry $makefile test
 
 after_script:
 # retag all existing tags private 2 public repo
