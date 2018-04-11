@@ -7,8 +7,18 @@ if [[ ! ${1} =~ (backup|restore) ]]; then
   exit 1
 fi
 
-if [[ ${1} == "backup" && ! ${2} =~ (server|redis|mysql|proxy|all) ]]; then
-  echo "Second parameter needs to be 'server', 'redis', 'mysql', 'proxy' or 'all'"
+if [[ ${1} == "backup" && ! ${2} =~ (server|redis|mysql|proxy|config|all) ]]; then
+  echo "Second parameter needs to be 'server', 'redis', 'mysql', 'proxy', 'config' or 'all'"
+  exit 1
+fi
+
+if [[ ! ${3} =~ "^[\/][a-z]*" ]]; then
+  echo "Third parameter needs to be a backup or restore directory given as absolute path (starting with /) "
+  exit 1
+fi
+
+if [[ ! -d "${3}" ]]; then
+  echo "${3} does not exist - Backup directory must be an existing and writeable directory"
   exit 1
 fi
 
@@ -84,7 +94,7 @@ function backup() {
           -v ${BACKUP_LOCATION}/misp-${DATE}:/backup \
           -v $(docker volume ls -qf name=misp-vol-redis-data):/redis \
           ubuntu:16.04 /bin/tar -cvpzf /backup/backup_redis.tar.gz /redis
-      ;;&
+      ;;&      
       proxy|all)
         echo "Backup proxy at ${BACKUP_LOCATION}/misp-${DATE}"
         docker run --rm \
@@ -109,6 +119,10 @@ function backup() {
           -v $(docker volume ls -qf name=misp-vol-proxy-data):/data \
           -v $(docker volume ls -qf name=misp-vol-proxy-logs):/logs \
           ubuntu:16.04 /bin/bash -c "tar -cvpzf /backup/backup_proxy_data.tar.gz /data; tar -cvpzf /backup/backup_proxy_logs.tar.gz /logs;"
+      ;;&
+      config|all)
+        echo "Backup config files at ${BACKUP_LOCATION}/misp-${DATE}"
+        tar -cvpzf ${BACKUP_LOCATION}/misp-${DATE}/backup_config.tar.gz ${SCRIPT_DIR}/../.env ${SCRIPT_DIR}/../config
       ;;
     esac
     shift
@@ -171,6 +185,10 @@ function restore() {
         #docker start $(docker ps -aqf name=misp-proxy)
         docker-compose start misp-proxy
       ;;
+      config)
+        echo "Restore config files"
+        tar -xvzf ${BACKUP_LOCATION}/misp-${DATE}/backup_config.tar.gz -C ${SCRIPT_DIR}/../.
+      ;;&
     esac
     shift
   done
@@ -199,7 +217,7 @@ elif [[ ${1} == "restore" ]]; then
   echo
   declare -A FILE_SELECTION
   RESTORE_POINT="${FOLDER_SELECTION[${input_sel}]}"
-  if [[ -z $(find "${FOLDER_SELECTION[${input_sel}]}" -maxdepth 1 -type f -regex ".*\(redis\|mysql\|server\).*") ]]; then
+  if [[ -z $(find "${FOLDER_SELECTION[${input_sel}]}" -maxdepth 1 -type f -regex ".*\(redis\|mysql\|server\|config\).*") ]]; then
     echo "No datasets found"
     exit 1
   fi
@@ -219,6 +237,10 @@ elif [[ ${1} == "restore" ]]; then
     elif [[ ${file} =~ mysql ]]; then
       echo "[ ${i} ] - SQL DB"
       FILE_SELECTION[${i}]="mysql"
+      ((i++))
+    elif [[ ${file} =~ config ]]; then
+      echo "[ ${i} ] - Config files "
+      FILE_SELECTION[${i}]="config"
       ((i++))
     fi
   done
