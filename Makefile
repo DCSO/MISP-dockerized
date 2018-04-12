@@ -37,30 +37,35 @@ help:
 
 # Start
 start: requirements build-config deploy configure
-	@echo "##############################\n# MISP environment is ready.\n##############################\n"
+	@echo ""
+	@echo "\n###########\tMISP environment is ready\t###########\n"
+	@echo "Please go to: $(shell cat .env|grep HOSTNAME|cut -d = -f 2)"
+	@echo "Login credentials:"
+	@echo "\tUsername: admin@admin.test"
+	@echo "\tPassword: admin"
+	@echo "###################################################\n"
 
 ####################	used as host
 # Check requirements
 requirements:
-	scripts/requirements.sh
-	@echo "##############################\n# Requirements for MISP environment are checked.\n##############################\n"
+	@echo "\n###########\tChecking Requirements\t###########\n"
+	@scripts/requirements.sh
 
 # Build Configuration
 build-config:
-	docker run --name misp-robot-init --rm -ti \
+	@echo "\n###########\tBuild Configuration\t###########\n"
+	@docker run --name misp-robot-init --rm -ti \
 		-v $(CURDIR):/srv/misp-dockerized \
 		dcso/misp-robot bash -c "scripts/build_config.sh"
-	@echo "##############################\n# MISP environment configuration is build.\n##############################\n"
 
 # Start Docker environment
 deploy: 
-	sed -i "s,myHOST_PATH,$(CURDIR),g" "./docker-compose.yml"
-	
-	docker run --name misp-robot-init --rm -ti \
+	@echo "\n###########\tDeploy Environment\t###########\n"
+	@sed -i "s,myHOST_PATH,$(CURDIR),g" "./docker-compose.yml"
+	@docker run --name misp-robot-init --rm -ti \
 		-v $(CURDIR):/srv/misp-dockerized \
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
 		dcso/misp-robot bash -c "scripts/deploy_environment.sh"
-	@echo "##############################\n# MISP environment is deployed.\n##############################\n"
 
 # delete all misp container, volumes and images
 delete:
@@ -73,12 +78,13 @@ delete-unused:
 
 # check with docker security check
 security:
+	@echo "\n###########\tCheck Docker Security\t###########\n"
 	docker exec -it misp-robot /bin/bash -c "scripts/check_docker_security.sh"
 
 # configure
 configure:
-	docker exec -it misp-robot /bin/bash -c "/srv/scripts/configure_misp.sh"
-	@echo "##############################\n# MISP environment is configured.\n##############################\n"
+	@echo "\n###########\tConfigure Environment\t###########\n"
+	@docker exec -it misp-robot /bin/bash -c "/srv/scripts/configure_misp.sh"
 config-server:
 	docker exec -it misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t server /etc/ansible/playbooks/robot-playbook/site.yml"
 config-db:
@@ -103,20 +109,3 @@ backup-robot:
 # restore service
 restore:
 	docker exec -it misp-robot /bin/bash -c "scripts/backup_restore.sh restore"
-
-####################	used only for manuall deploying or debugging	#############
-
-# Build all misp docker-container
-build-all: build-server build-proxy build-robot
-
-# Build Docker misp-server
-build-server:
-	container/misp-server/build.sh
-
-# Build Docker misp-proxy
-build-proxy:
-	container/misp-proxy/build.sh
-
-# Build Docker misp-robot
-build-robot:
-	container/misp-robot/build.sh
