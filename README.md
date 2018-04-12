@@ -1,57 +1,75 @@
 MISP dockerized
 ====
 # About
-**MISP dockerized** is a project designed to provide an easy-to-use and easy-to-install'out of the box' MISP instance that includes everything you need to run MISP with minimal host-side requirements. 
+**MISP dockerized** is a project designed to provide an easy-to-use and easy-to-install 'out of the box' MISP instance that includes everything you need to run MISP with minimal host-side requirements. 
 
 **MISP dockerized** uses MISP (Open Source Threat Intelligence Platform - https://github.com/MISP/MISP), which is maintend and developed by the MISP project team (https://www.misp-project.org/)
 
 **THIS PROJECT IS IN BETA PHASE**
 
+### Project Information
+<table>
+<tr>
+  <td>Latest Release</td>
+  <td><a href="https://badge.fury.io/gh/DCSO%2FMISP-dockerized"><img src="https://badge.fury.io/gh/DCSO%2FMISP-dockerized.svg" alt="GitHub version" height="18"></a></td>
+</tr>
+<tr>
+  <td>Travis</td>
+  <td><a href="https://travis-ci.org/DCSO/MISP-dockerized"><img src="https://img.shields.io/travis/DCSO/MISP-dockerized/2.4.svg" /></a></td>
+</tr>
+<tr>
+  <td>Contributors</td>
+  <td><img src="https://img.shields.io/github/contributors/DCSO/MISP-dockerized.svg" /></td>
+</tr>
+<tr>
+  <td>Project License</td>
+  <td><img src="https://img.shields.io/github/license/DCSO/MISP-dockerized.svg" /></td>
+</tr>
+
+</table>
+
+### Docker Container Information
+
+| Name | Travis | Docker Size & Layers | Latest Docker Version | Commit | Container License |
+|---|---|---|---|---|---|
+| misp-proxy | [![](https://img.shields.io/travis/DCSO/MISP-dockerized-proxy/2.4.svg)](https://travis-ci.org/DCSO/MISP-dockerized-proxy) | [![](https://images.microbadger.com/badges/image/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) | [![](https://images.microbadger.com/badges/version/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) | [![](https://images.microbadger.com/badges/commit/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) | [![](https://images.microbadger.com/badges/license/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) |
+| misp-server | [![](https://img.shields.io/travis/DCSO/MISP-dockerized-server/2.4.svg)](https://travis-ci.org/DCSO/MISP-dockerized-server)| [![](https://images.microbadger.com/badges/image/dcso/misp-server.svg)](https://microbadger.com/images/dcso/misp-server) | [![](https://images.microbadger.com/badges/version/dcso/misp-server.svg)](https://microbadger.com/images/dcso/misp-server) | [![](https://images.microbadger.com/badges/commit/dcso/misp-server.svg)](https://microbadger.com/images/dcso/misp-server) | [![](https://images.microbadger.com/badges/license/dcso/misp-server.svg)](https://microbadger.com/images/dcso/misp-server) |
+| misp-robot | [![](https://img.shields.io/travis/DCSO/MISP-dockerized-robot/2.4.svg)](https://travis-ci.org/DCSO/MISP-dockerized-robot)|  [![](https://images.microbadger.com/badges/image/dcso/misp-robot.svg)](https://microbadger.com/images/dcso/misp-robot) | [![](https://images.microbadger.com/badges/version/dcso/misp-robot.svg)](https://microbadger.com/images/dcso/misp-robot) | [![](https://images.microbadger.com/badges/commit/dcso/misp-robot.svg)](https://microbadger.com/images/dcso/misp-robot) | [![](https://images.microbadger.com/badges/license/dcso/misp-robot.svg)](https://microbadger.com/images/dcso/misp-robot) |
+
 # Installation
 ## Software Prerequsites
 For the Installation of MISP dockerized you need at least:
 
-| Component |  least Version   |
+| Component |  minimum Version   |
 |----|-----|
 | Docker   | 17.03.0-ce |
-| Docker-compose*   | 1.13.1+ |
 | Git   | newest Version from Distribution |
 
-*We need at lest docker-compose file version 3.1: https://docs.docker.com/compose/compose-file/#compose-and-docker-compatibility-matrix
 
 ## Firewall Prerequsites
 For the Installation the followed Connections need to available:
 
 |URL|Direction|Protocol|Destination Port|
 |---|---|---|---|
-| hub.docker.com|outgoing|TCP|443|
-| github.com*|outgoing|TCP|443|
-
-*if you want to use ssh or git protocol you need the following ports for github.com:
-- ssh:// - default port 22
-- git:// - default port 9418
-- http:// - default port 80
-- https:// - default port 443
+| hub.docker.com|outgoing |TCP | 443 |
+| registry-1.docker.io| outgoing TCP | 443 |
+| github.com*| outgoing | TCP | 443 |
 
 ### Why hub.docker.com:
-This contains:
-- all required docker container
-    - misp-redis
-        - based on official redis
-    - misp-db
-        - based on official mariadb
-    - misp-proxy
-        - based on ubuntu:16.04
-    - misp-server
-        - based on ubuntu:16.04
-    - misp-robot
-        - based on ubuntu:16.04
+This contains all required docker container:
+
+|Container|based on|purpose|
+|---|---|---|
+|misp-redis|official redis|scheduled tasks|
+|misp-db|official mariadb|database to save MISP settings|
+|misp-proxy|1.13-alpine|reverse proxy|
+|misp-server|ubuntu:16.04|MISP application server|
+|misp-robot|ubuntu:16.04|deploy & configuration manager|
 
 ### Why github.com
 This contains:
 - scripts
 - tools
-- dockerfile to manually build docker container without docker registry
 
 
 ## The 5 Step Installation Guide
@@ -153,7 +171,7 @@ To delete everything e.g. to start from scratch you can use this:
 ```
 
 **Warning**
-`make delete` and `make rebuild` delete all volumes, leading to a loss of all your data. Make sure you have saved everything before you run it.
+`make delete` delete all volumes, leading to a loss of all your data. Make sure you have saved everything before you run it.
 
 ### Rebuild from Backup
 If you want to start from scratch or reinitialse your MISP instance, make sure you have delete everything. Clone the repository and start the container deployment with `make install`. After that restore all your volumes as described at `Backup and Recovery` and restart your container with
@@ -164,8 +182,15 @@ $> docker-compose restart misp-server misp-redis misp-db misp-proxy
 ### Access the Container
 To access the container e.g. to change MISP config.php or proxy config, you can use:
 ```
-docker exec -it [container] bin/bash/
+docker exec -it dcso/[container] bash
 ```
+Container variants: `misp-robot` `misp-server` `misp-proxy` (for the ubuntu version only)
+
+For the misp-proxy if you have alpine version:
+```
+docker exec -it dcso/misp-proxy sh
+```
+
 
 ### Usefull Commands
 To Delete all local Images:
