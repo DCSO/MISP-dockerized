@@ -51,8 +51,9 @@ For the Installation the followed Connections need to available:
 
 |URL|Direction|Protocol|Destination Port|
 |---|---|---|---|
-| hub.docker.com|outgoing|TCP|443|
-| github.com*|outgoing|TCP|443|
+| hub.docker.com|outgoing |TCP | 443 |
+| registry-1.docker.io| outgoing TCP | 443 |
+| github.com*| outgoing | TCP | 443 |
 
 ### Why hub.docker.com:
 This contains all required docker container:
