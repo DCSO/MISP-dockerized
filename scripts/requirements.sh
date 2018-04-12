@@ -62,14 +62,15 @@ source $SCRIPTPATH/../config/.env
 #
 #   check DOCKER-COMPOSE
 #
-    if [ -z "$(which docker-compose)" ] 
-        then
-            STATUS="FAIL"
-            echo -e "[FAIL] Docker-compose is not Installed. \tPlease install it first!"
-        else
-            echo -e "[OK] Docker-compose is installed. \tOutput: $(docker-compose -v)"
+#   dependency disabled, because misp-robot does docker-compose
+    # if [ -z "$(which docker-compose)" ] 
+    #     then
+    #         STATUS="FAIL"
+    #         echo -e "[FAIL] Docker-compose is not Installed. \tPlease install it first!"
+    #     else
+    #         echo -e "[OK] Docker-compose is installed. \tOutput: $(docker-compose -v)"
 
-    fi
+    # fi
 
 #
 # CHECK required URLs
@@ -78,6 +79,9 @@ source $SCRIPTPATH/../config/.env
     #check_URL hub.docker.com https
     # check github
     #check_URL github.com https
+
+###############################  USER CHECKS    #########################
+echo "" # Empty Line for a better overview.
 
 #
 #   Check user part of docker group
@@ -100,7 +104,6 @@ source $SCRIPTPATH/../config/.env
 #
 #   Check docker.sock
 #
-    echo "" # Empty Line for a better overview.
     if [ ! -z "$(docker ps 2>&1|grep 'permission denied')" ]
         then
             STATUS="FAIL"
@@ -110,11 +113,52 @@ source $SCRIPTPATH/../config/.env
             echo "[OK] User '$(whoami)' has access to Docker."
     fi
 
+###############################  FILE CHECKS    #########################
+
+#
+#   Check Write permissions
+#
+echo
+[ ! -d ./config/ssl ]               && echo -n "create config directory..."             && mkdir -p ./config/ssl && echo "finished." 
+[ ! -d ./backup ]                   && echo -n "create backup directory..."             && mkdir ./backup && echo "finished."
+[ ! -d ./config/MISP/app-Config ]   && echo -n "create MISP Configuration directory..." && mkdir -p ./config/MISP/app-Config && echo "finished."
+[ ! -d ./config/MISP/tmp ]          && echo -n "create MISP TMP directory..."           && mkdir -p ./config/MISP/tmp && echo "finished."
+[ ! -d ./config/MISP/attachments ]  && echo -n "create MISP Attachments directory..."   && mkdir -p ./config/MISP/attachments && echo "finished."
+
+function check_folder(){
+    FOLDER="$1"
+    if [ ! -e "$FOLDER" ]
+            then
+                STATUS="FAIL"
+                echo "[FAIL] Can't create '$FOLDER' Folder."
+            else
+                # user is in docker group
+                echo "[OK] Folder $FOLDER exists."
+                touch $FOLDER/test
+                if [ ! -e $FOLDER/test ]
+                    then
+                        STATUS="FAIL"
+                        echo "[FAIL] No write permissions in '$FOLDER'. Please ensure that user '${whoami}' has write permissions.'"
+                    else
+                        echo "[OK] Testfile in '$FOLDER' can be created."
+                        rm $FOLDER/test
+                fi
+        fi
+}
+
+check_folder "config"
+check_folder "config/ssl"
+check_folder "backup"
+
+#################################################################
+
 # END Result
     echo "\nEnd result:"
     if [ $STATUS == "FAIL" ]
         then
             echo "[$STATUS] at least one Error is occured.\n"
+            exit 1
         else
             echo "[$STATUS] no Error is occured.\n"
+            exit 0
     fi
