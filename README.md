@@ -21,9 +21,6 @@ MISP dockerized
 
 ### Docker Container Information
 
-[![Build Status](https://travis-ci.org/DCSO/MISP-dockerized.svg?branch=master)](https://travis-ci.org/DCSO/MISP-dockerized)
-
-
 | Name | Travis | Docker Size & Layers | Latest Docker Version | Commit | Container License |
 |---|---|---|---|---|---|
 | misp-proxy | [![](https://travis-ci.org/DCSO/MISP-dockerized-proxy.svg?branch=master)](https://travis-ci.org/DCSO/MISP-dockerized-proxy) | [![](https://images.microbadger.com/badges/image/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) | [![](https://images.microbadger.com/badges/version/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) | [![](https://images.microbadger.com/badges/commit/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) | [![](https://images.microbadger.com/badges/license/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) |
