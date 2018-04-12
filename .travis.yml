@@ -45,9 +45,9 @@ after_script:
 # check if branch=master and the current build is no pull request, then push it to docker hub
 - if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
     if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
-      $makefile push
+      $makefile push;
     fi; 
-  fi
+  fi;
 
 # don't notify me when things fail
 notifications:

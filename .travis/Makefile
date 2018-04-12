@@ -36,9 +36,9 @@ tag:
 	$(eval c := server)
 	$(eval search_tag := $(s))
 	$(eval image_id := $(shell docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep misp-$(c)-private:$(search_tag)|cut -d : -f 3|head -n 1;))
-	echo $(image_id);
+	@echo "Image ID: $(image_id)";
 	$(eval image_tags := $(shell docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep $(image_id)|cut -d : -f 2;))
-	echo $(image_tags);
+	echo "Image Tags: $(image_tags)";
 	$(foreach tag, $(image_tags), \
 		docker tag dcso/misp-$(c)-private:$(search_tag) $(PUBLIC_REPO)-$(c):$(tag); \
 	)
