@@ -54,7 +54,7 @@ services:
 
   ### MISP Apache Server ###    
   misp-server:
-    image: dcso/misp-server:2.4.88    
+    image: dcso/misp-server:2.4.89    
     container_name: misp-server
     depends_on:
       - "misp-db"
