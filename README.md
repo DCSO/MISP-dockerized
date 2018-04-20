@@ -14,27 +14,18 @@ MISP dockerized
   <td><a href="https://badge.fury.io/gh/DCSO%2FMISP-dockerized"><img src="https://badge.fury.io/gh/DCSO%2FMISP-dockerized.svg" alt="GitHub version" height="18"></a></td>
 </tr>
 <tr>
-  <td>Travis</td>
-  <td><a href="https://travis-ci.org/DCSO/MISP-dockerized"><img src="https://img.shields.io/travis/DCSO/MISP-dockerized/2.4.svg" /></a></td>
+  <td>Travis Master</td>
+  <td><a href="https://travis-ci.org/DCSO/MISP-dockerized"><img src="https://travis-ci.org/DCSO/MISP-dockerized.svg?branch=master" /></a></td>
 </tr>
-<tr>
-  <td>Contributors</td>
-  <td><img src="https://img.shields.io/github/contributors/DCSO/MISP-dockerized.svg" /></td>
-</tr>
-<tr>
-  <td>Project License</td>
-  <td><img src="https://img.shields.io/github/license/DCSO/MISP-dockerized.svg" /></td>
-</tr>
-
 </table>
 
 ### Docker Container Information
 
 | Name | Travis | Docker Size & Layers | Latest Docker Version | Commit | Container License |
 |---|---|---|---|---|---|
-| misp-proxy | [![](https://img.shields.io/travis/DCSO/MISP-dockerized-proxy/2.4.svg)](https://travis-ci.org/DCSO/MISP-dockerized-proxy) | [![](https://images.microbadger.com/badges/image/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) | [![](https://images.microbadger.com/badges/version/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) | [![](https://images.microbadger.com/badges/commit/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) | [![](https://images.microbadger.com/badges/license/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) |
-| misp-server | [![](https://img.shields.io/travis/DCSO/MISP-dockerized-server/2.4.svg)](https://travis-ci.org/DCSO/MISP-dockerized-server)| [![](https://images.microbadger.com/badges/image/dcso/misp-server.svg)](https://microbadger.com/images/dcso/misp-server) | [![](https://images.microbadger.com/badges/version/dcso/misp-server.svg)](https://microbadger.com/images/dcso/misp-server) | [![](https://images.microbadger.com/badges/commit/dcso/misp-server.svg)](https://microbadger.com/images/dcso/misp-server) | [![](https://images.microbadger.com/badges/license/dcso/misp-server.svg)](https://microbadger.com/images/dcso/misp-server) |
-| misp-robot | [![](https://img.shields.io/travis/DCSO/MISP-dockerized-robot/2.4.svg)](https://travis-ci.org/DCSO/MISP-dockerized-robot)|  [![](https://images.microbadger.com/badges/image/dcso/misp-robot.svg)](https://microbadger.com/images/dcso/misp-robot) | [![](https://images.microbadger.com/badges/version/dcso/misp-robot.svg)](https://microbadger.com/images/dcso/misp-robot) | [![](https://images.microbadger.com/badges/commit/dcso/misp-robot.svg)](https://microbadger.com/images/dcso/misp-robot) | [![](https://images.microbadger.com/badges/license/dcso/misp-robot.svg)](https://microbadger.com/images/dcso/misp-robot) |
+| misp-proxy | [![](https://travis-ci.org/DCSO/MISP-dockerized-proxy.svg?branch=master)](https://travis-ci.org/DCSO/MISP-dockerized-proxy) | [![](https://images.microbadger.com/badges/image/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) | [![](https://images.microbadger.com/badges/version/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) | [![](https://images.microbadger.com/badges/commit/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) | [![](https://images.microbadger.com/badges/license/dcso/misp-proxy.svg)](https://microbadger.com/images/dcso/misp-proxy) |
+| misp-server | [![](https://travis-ci.org/DCSO/MISP-dockerized-server.svg?branch=master)](https://travis-ci.org/DCSO/MISP-dockerized-server)| [![](https://images.microbadger.com/badges/image/dcso/misp-server.svg)](https://microbadger.com/images/dcso/misp-server) | [![](https://images.microbadger.com/badges/version/dcso/misp-server.svg)](https://microbadger.com/images/dcso/misp-server) | [![](https://images.microbadger.com/badges/commit/dcso/misp-server.svg)](https://microbadger.com/images/dcso/misp-server) | [![](https://images.microbadger.com/badges/license/dcso/misp-server.svg)](https://microbadger.com/images/dcso/misp-server) |
+| misp-robot | [![](https://travis-ci.org/DCSO/MISP-dockerized-robot.svg?branch=master)](https://travis-ci.org/DCSO/MISP-dockerized-robot)|  [![](https://images.microbadger.com/badges/image/dcso/misp-robot.svg)](https://microbadger.com/images/dcso/misp-robot) | [![](https://images.microbadger.com/badges/version/dcso/misp-robot.svg)](https://microbadger.com/images/dcso/misp-robot) | [![](https://images.microbadger.com/badges/commit/dcso/misp-robot.svg)](https://microbadger.com/images/dcso/misp-robot) | [![](https://images.microbadger.com/badges/license/dcso/misp-robot.svg)](https://microbadger.com/images/dcso/misp-robot) |
 
 # Installation
 ## Software Prerequsites
@@ -51,19 +42,20 @@ For the Installation the followed Connections need to available:
 
 |URL|Direction|Protocol|Destination Port|
 |---|---|---|---|
-| hub.docker.com|outgoing|TCP|443|
-| github.com*|outgoing|TCP|443|
+| registry-1.docker.io| outgoing TCP | 443 |
+| github.com*| outgoing | TCP | 443 |
+| hub.docker.com|outgoing |TCP | 443 |
 
-### Why hub.docker.com:
+### Why registry-1.docker.io:
 This contains all required docker container:
 
 |Container|based on|purpose|
 |---|---|---|
 |misp-redis|official redis|scheduled tasks|
 |misp-db|official mariadb|database to save MISP settings|
-|misp-proxy|1.13-alpine|reverse proxy|
-|misp-server|ubuntu:16.04|MISP application server|
-|misp-robot|ubuntu:16.04|deploy & configuration manager|
+|misp-proxy|alpine|reverse proxy|
+|misp-server|ubuntu|MISP application server|
+|misp-robot|ubuntu|deploy & configuration manager|
 
 ### Why github.com
 This contains:
@@ -71,7 +63,7 @@ This contains:
 - tools
 
 
-## The 5 Step Installation Guide
+## The 4 Step Installation Guide
 ### 1. Clone Repository
 After cloning the repository change the branch to the required, for example:
 ```
@@ -99,33 +91,33 @@ $> make start
 ```
 We decided, that build config and deploy environment can be done in one step.
 
-#### 4.1 look if all required components are installed
+#### 3.1. [OPTIONAL] look if all required components are installed
 **MISP dockerized** comes with a requirements script that checks if all components are installed, is the user part of the docker group and has the user the right permission on the github repository folder. Simply start:   
 ```
 $> make requirements
 ```
 
-#### 4.2 [OPTIONAL] Manual build config 
+#### 3.2 [OPTIONAL] Manual build config 
 If you want to do it manual: **MISP dockerized** comes with a build script that creates all required config files. Simply start:   
 ```
 $> make build-config
 ```
 The build script download our DCSO/misp-robot and start him with the build script. Therefore you can't find the script directly in the github repository.
 
-#### 4.3 [OPTIONAL] Manual deploy environment
+#### 3.3 [OPTIONAL] Manual deploy environment
 To start the deployment process, simply enter:
 ```
 $> make deploy
 ```
 
-#### 4.3 [OPTIONAL] Configure the Instance
+#### 3.4 [OPTIONAL] Configure the Instance
 After deployment, you now have a simple basic MISP installation without any further configuration. To configure the instance with all specified parameters, use the following command:
 ```
 $> make configure
 ```
 After these step, you now should have a configured running MISP Instance!
 
-### 5. Login in your new MISP Environment
+### 4. Login in your new MISP Environment
 
 **`Gratulation! Your MISP Environment is deployed!`**
 
@@ -153,17 +145,12 @@ $> make restore
 ```
 
 
-## Help
+# Help
 ### Make Docker Autostart at Startup
 ```
 $ systemctl enable docker.service
 ```
-### Rebuild or Delete the Repository
-If you want to rebuild all containers e.g. if you change the docker-compose file, you can do this with `make`
-```
-&> make rebuild
-```
-
+### Delete the Repository
 To delete everything e.g. to start from scratch you can use this:
 ```
 &> make delete
@@ -173,10 +160,7 @@ To delete everything e.g. to start from scratch you can use this:
 `make delete` delete all volumes, leading to a loss of all your data. Make sure you have saved everything before you run it.
 
 ### Rebuild from Backup
-If you want to start from scratch or reinitialse your MISP instance, make sure you have delete everything. Clone the repository and start the container deployment with `make install`. After that restore all your volumes as described at `Backup and Recovery` and restart your container with
-```
-$> docker-compose restart misp-server misp-redis misp-db misp-proxy
-```
+If you want to start from scratch or reinitialse your MISP instance, make sure you have delete everything. Clone the repository and start the container deployment with `make start`. After that restore all your volumes as described at `Backup and Recovery`.
 
 ### Access the Container
 To access the container e.g. to change MISP config.php or proxy config, you can use:
@@ -190,11 +174,10 @@ For the misp-proxy if you have alpine version:
 docker exec -it dcso/misp-proxy sh
 ```
 
-
 ### Usefull Commands
 To Delete all local Images:
 ```
-docker rmi $(docker images -q)
+docker system prune -a
 ```
 
 To delete only all non-tagged (dangling) Images:
