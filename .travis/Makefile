@@ -13,7 +13,7 @@ test-travis:
 
 pull-all:
 	# pull all images and tags
-	$(foreach c, $(CONTAINER), docker pull -a dcso/misp-$(c)-private;)
+	$(foreach c, $(CONTAINER), docker pull -a dcso/misp-$(c)-private)
 
 clone-all:
 	# clone all repos
@@ -36,9 +36,7 @@ tag:
 	$(eval c := server)
 	$(eval search_tag := $(s))
 	$(eval image_id := $(shell docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep misp-$(c)-private:$(search_tag)|cut -d : -f 3|head -n 1;))
-	@echo "Image ID: $(image_id)";
 	$(eval image_tags := $(shell docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep $(image_id)|cut -d : -f 2;))
-	echo "Image Tags: $(image_tags)";
 	$(foreach tag, $(image_tags), \
 		docker tag dcso/misp-$(c)-private:$(search_tag) $(PUBLIC_REPO)-$(c):$(tag); \
 	)
@@ -46,9 +44,7 @@ tag:
 	$(eval c := proxy)
 	$(eval search_tag := $(p))
 	$(eval image_id := $(shell docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep misp-$(c)-private:$(search_tag)|cut -d : -f 3|head -n 1;))
-	echo $(image_id);
 	$(eval image_tags := $(shell docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep $(image_id)|cut -d : -f 2;))
-	echo $(image_tags);
 	$(foreach tag, $(image_tags), \
 		docker tag dcso/misp-$(c)-private:$(search_tag) $(PUBLIC_REPO)-$(c):$(tag); \
 	)
@@ -56,12 +52,12 @@ tag:
 	$(eval c := robot)
 	$(eval search_tag := $(r))
 	$(eval image_id := $(shell docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep misp-$(c)-private:$(search_tag)|cut -d : -f 3|head -n 1;))
-	echo $(image_id);
 	$(eval image_tags := $(shell docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep $(image_id)|cut -d : -f 2;))
-	echo $(image_tags);
 	$(foreach tag, $(image_tags), \
 		docker tag dcso/misp-$(c)-private:$(search_tag) $(PUBLIC_REPO)-$(c):$(tag); \
 	)
+	@echo "###########################################"
+	docker images
 
 test:
 	#echo "$(curl -S -k https://localhost/users/login)"|grep Login

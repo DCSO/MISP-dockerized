@@ -4,6 +4,9 @@ version: '3.1'
 networks: 
   misp-backend:
     driver: bridge
+    ipam:
+      config:
+      - subnet: 192.168.47.0/28
 
 services:
   ### MISP Database ###
@@ -43,7 +46,7 @@ services:
       timeout: 15s
       retries: 3
     volumes:
-      - misp-vol-redis-data:/data/"
+      - misp-vol-redis-data:/data/
     networks:
       misp-backend:
         aliases:
@@ -51,7 +54,7 @@ services:
 
   ### MISP Apache Server ###    
   misp-server:
-    image: dcso/misp-server:2.4.88    
+    image: dcso/misp-server:2.4.89    
     container_name: misp-server
     depends_on:
       - "misp-db"
