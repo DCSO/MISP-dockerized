@@ -1,5 +1,5 @@
 .PHONY: help \
-		start requirements build-config deploy delete\
+		start requirements build-config deploy delete change-ssl disable-maintenance enable-maintenance\
 		security configure config-db config-server config-proxy \
 		backup-all backup-server backup-redis backup-db backup-proxy backup-robot \
 		build-server build-proxy build-robot build-all \
@@ -16,6 +16,7 @@ help:
 	\t make delete-unused 		| delete all unused docker container, volumes and images \n \
 	\t make security	 		| check docker security via misp-robot\n \
 	Configure: \n \
+	\t make change-ssl		| change ssl cert
 	\t make configure 		| configure docker container via misp-robot\n \
 	\t make config-db 		| configure misp-db via misp-robot\n \
 	\t make config-server		| configure misp-server via misp-robot\n \
@@ -37,30 +38,33 @@ help:
 
 # Start
 start: requirements build-config deploy configure
-	@echo ""
-	@echo "\n###########\tMISP environment is ready\t###########\n"
+	@echo
+	@echo "###########	MISP environment is ready	###########"
 	@echo "Please go to: $(shell cat .env|grep HOSTNAME|cut -d = -f 2)"
 	@echo "Login credentials:"
 	@echo "\tUsername: admin@admin.test"
 	@echo "\tPassword: admin"
-	@echo "###################################################\n"
+	@echo
+	@echo "Do not forget to change your SSL certificate with:    make change-ssl"
+	@echo "##########################################################"
+	@echo
 
 ####################	used as host
 # Check requirements
 requirements:
-	@echo "\n###########\tChecking Requirements\t###########\n"
+	@echo "###########	Checking Requirements	###########"
 	@scripts/requirements.sh
 
 # Build Configuration
 build-config:
-	@echo "\n###########\tBuild Configuration\t###########\n"
-	@docker run --name misp-robot-init --rm -ti \
+	@echo "###########	Build Configuration	###########"
+	@docker run --network=none --name misp-robot-init --rm -ti \
 		-v $(CURDIR):/srv/misp-dockerized \
 		dcso/misp-robot bash -c "scripts/build_config.sh"
 
 # Start Docker environment
 deploy: 
-	@echo "\n###########\tDeploy Environment\t###########\n"
+	@echo "###########	Deploy Environment	###########"
 	@sed -i "s,myHOST_PATH,$(CURDIR),g" "./docker-compose.yml"
 	@docker run --name misp-robot-init --rm -ti \
 		-v $(CURDIR):/srv/misp-dockerized \
@@ -78,12 +82,12 @@ delete-unused:
 
 # check with docker security check
 security:
-	@echo "\n###########\tCheck Docker Security\t###########\n"
+	@echo "###########	Check Docker Security	###########	"
 	docker exec -it misp-robot /bin/bash -c "scripts/check_docker_security.sh"
 
 # configure
 configure:
-	@echo "\n###########\tConfigure Environment\t###########\n"
+	@echo "	###########	Configure Environment	###########	"
 	@docker exec -it misp-robot /bin/bash -c "/srv/scripts/configure_misp.sh"
 config-server:
 	docker exec -it misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t server /etc/ansible/playbooks/robot-playbook/site.yml"
@@ -91,6 +95,15 @@ config-db:
 	docker exec -it misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t database /etc/ansible/playbooks/robot-playbook/site.yml"
 config-proxy:
 	docker exec -it misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t proxy /etc/ansible/playbooks/robot-playbook/site.yml"
+
+# maintainence
+enable-maintenance:
+	docker exec -it misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t enable /etc/ansible/playbooks/robot-playbook/maintenance.yml"
+disable-maintenance:
+	docker exec -it misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t disable /etc/ansible/playbooks/robot-playbook/maintenance.yml"
+
+# reconfigure ssl
+change-ssl: config-server config-proxy
 
 # backup all services
 backup-all:
