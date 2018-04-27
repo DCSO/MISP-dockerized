@@ -66,22 +66,25 @@ services:
     #   - "8080:80" # DEBUG only
     #   - "8443:443" # DEBUG only
     volumes:
-      - misp-vol-server-data:/var/www/
-      - misp-vol-server-config:/etc/apache2/
-      - misp-vol-server-logs:/var/log/apache2/
-      #- ./config/MISP/app-Config:/var/www/MISP/Config
-      #- ./config/MISP/cakeresque-config:/var/www/MISP/app/plugin/cakeresque/config/config.php
-      #- ./config/MISP/tmp:/var/www/MISP/tmp
-      #- ./config/MISP/attachments:/var/www/MISP/attachments
+    # Logfile
+    - misp-vol-server-logs:/var/log/apache2/
+    # Apache2 Configuration
+    - misp-vol-server-apache2-config-sites-enabled:/etc/apache2/sites-enabled:ro
+    - misp-vol-ssl:/etc/apache2/ssl:ro
+    # MISP Configurations:
+    - misp-vol-server-MISP-app-Config:/var/www/MISP/app/Config
+    - misp-vol-server-MISP-cakeresque-config:/var/www/MISP/app/Plugin/CakeResque/Config
+    - misp-vol-server-MISP-tmp:/var/www/MISP/tmp
+    - misp-vol-server-MISP-attachments:/var/www/MISP/attachments
     networks:
       misp-backend:
         aliases:
-          - misp-server
+        - misp-server
 
   ### Reverse Proxy ###
   # https://hub.docker.com/_/nginx/
   misp-proxy:
-    image: dcso/misp-proxy:latest
+    image: dcso/misp-proxy:1.0.0-alpine
     container_name: misp-proxy
     depends_on:
       - "misp-server"
@@ -90,8 +93,10 @@ services:
       - "${HTTP_PORT}:80"
       - "${HTTPS_PORT}:443"    
     volumes:
-      - misp-vol-proxy-data:/etc/nginx/conf.d/
-      - misp-vol-proxy-logs:/var/log/nginx/misp-server/
+      # NGINX Configuration
+      - misp-vol-proxy-conf:/etc/nginx/conf.d:ro
+      # NGINX SSL 
+      - misp-vol-ssl:/etc/nginx/ssl:ro
     networks:
       misp-backend:
         aliases:
@@ -110,14 +115,15 @@ services:
     healthcheck:
       disable: true
     volumes:
-      # add docker.sock:
-      - /var/run/docker.sock:/var/run/docker.sock:ro # Make sure its always read only!
-      # add Volumes:
-      - misp-vol-server-data:/srv/misp-server/
-      - misp-vol-proxy-data:/srv/misp-proxy/
-      - misp-vol-server-config:/srv/apache-config/
-      # add Folder from Host:
-      - myHOST_PATH:/srv/misp-dockerized  # Host github Repository
+    - /var/run/docker.sock:/var/run/docker.sock:ro                    # docker.sock | Make sure its always read only!
+    - myHOST_PATH:/srv/misp-dockerized              # Github Repository
+    - misp-vol-ssl:/srv/misp-ssl
+    - misp-vol-server-apache2-config-sites-enabled:/srv/misp-server/apache2/sites-enabled
+    - misp-vol-server-MISP-app-Config:/srv/misp-server/MISP/Config
+    - misp-vol-server-MISP-cakeresque-config:/srv/misp-server/MISP/CakeResque/Config
+    - misp-vol-server-MISP-tmp:/srv/misp-server/MISP/tmp
+    - misp-vol-server-MISP-attachments:/srv/misp-server/MISP/attachments
+    - misp-vol-proxy-conf:/srv/misp-proxy/conf.d
     networks:
       misp-backend:
         aliases:
@@ -125,10 +131,13 @@ services:
 
 
 volumes:
-  misp-vol-server-logs:
-  misp-vol-server-data:
-  misp-vol-server-config:
+  misp-vol-ssl:
   misp-vol-db-data:
   misp-vol-redis-data:
-  misp-vol-proxy-data:
-  misp-vol-proxy-logs:
+  misp-vol-server-logs:
+  misp-vol-server-apache2-config-sites-enabled:
+  misp-vol-server-MISP-app-Config:
+  misp-vol-server-MISP-cakeresque-config:
+  misp-vol-server-MISP-tmp:
+  misp-vol-server-MISP-attachments:
+  misp-vol-proxy-conf:
