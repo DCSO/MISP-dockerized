@@ -52,6 +52,26 @@ services:
         aliases:
           - misp-redis
 
+  ### Postfix ###
+  # https://hub.docker.com/_/nginx/
+  misp-postfix:
+    image: dcso/misp-dockerized-proxy:1.0.0-alpine
+    container_name: misp-postfix
+    restart: on-failure
+    environment:
+      HOSTNAME: ${HOSTNAME}
+      DOMAIN: ${DOMAIN}
+      SENDER_ADDRESS: ${SENDER_ADDRESS}
+      RELAYHOST: ${RELAYHOST}
+      RELAY_USER: ${RELAY_USER}
+      RELAY_PASSWORD: ${RELAY_PASSWORD}
+      DOCKER_NETWORK: ${DOCKER_NETWORK}
+      DEBUG_PEER: ${DEBUG_PEER}
+    networks:
+      misp-backend:
+        aliases:
+          - misp-postfix
+
   ### MISP Apache Server ###    
   misp-server:
     image: dcso/misp-server:2.4.89    
@@ -59,6 +79,7 @@ services:
     depends_on:
       - "misp-db"
       - "misp-redis"
+      - "misp-postfix"
     restart: on-failure  
     tty: true
     stdin_open: true
@@ -102,6 +123,7 @@ services:
         aliases:
           - misp-nginx
 
+  ### Robot ###
   misp-robot:
     image: dcso/misp-robot:latest
     container_name: misp-robot
@@ -129,7 +151,7 @@ services:
         aliases:
           - misp-robot
 
-
+### VOLUMES ###
 volumes:
   misp-vol-ssl:
   misp-vol-db-data:
