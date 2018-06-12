@@ -58,9 +58,7 @@ requirements:
 # Build Configuration
 build-config:
 	@echo "###########	Build Configuration	###########"
-	@docker run --network=none --name misp-robot-init --rm -ti \
-		-v $(CURDIR):/srv/misp-dockerized \
-		dcso/misp-robot bash -c "scripts/build_config.sh"
+	@scripts/build_config.sh
 
 # Start Docker environment
 deploy: 
@@ -69,7 +67,7 @@ deploy:
 	@docker run --name misp-robot-init --rm -ti \
 		-v $(CURDIR):/srv/misp-dockerized \
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
-		dcso/misp-robot bash -c "scripts/deploy_environment.sh"
+		dcso/misp-dockerized-robot:1.0.2-ubuntu-dev bash -c "scripts/deploy_environment.sh"
 
 # delete all misp container, volumes and images
 delete:
