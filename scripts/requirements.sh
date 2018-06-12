@@ -58,6 +58,8 @@ function check_URL(){
             echo "       Result: $COMMAND."
     fi
 }
+#check misp.dcso.de
+check_URL https://misp.dcso.de
 #check hub.docker.com
 check_URL https://docker.io
 # check github
@@ -139,7 +141,7 @@ check_folder "backup"
 #
 echo
 if [ ! -f ./config/ssl/key.pem -a ! -f ./config/ssl/cert.pem ]; then
-    read -r -p "[WARN] No certificate found. Should we create a self-signed certificate? [Y/n] " -ei "y" response
+    read -r -p "[WARN] No SSL certificate found. Should we create a self-signed certificate? [Y/n] " -ei "y" response
     case $response in
     [yY][eE][sS]|[yY])
         echo "[OK] We create a self-signed certificate in the volume."
@@ -160,6 +162,53 @@ if [ ! -f ./config/ssl/key.pem -a ! -f ./config/ssl/cert.pem ]; then
     esac
 fi
 
+###############################  SMIME CHECKS    #########################
+echo
+if [ ! -f ./config/smime/key.pem -a ! -f ./config/smime/cert.pem ]; then
+    read -r -p "[WARN] No S/MIME certificate found. Should we create a self-signed certificate? [Y/n] " -ei "y" response
+    case $response in
+    [yY][eE][sS]|[yY])
+        echo "[OK] We create a self-signed certificate in the volume."
+        echo "     To change the SSL certificate and private key later: "
+        echo "     1. save certificate into:      $PWD/config/smime/cert.pem"
+        echo "     2. save private keyfile into:  $PWD/config/smime/key.pem"
+        echo "     3. do:                         make change-smime"
+        read -r -p "     continue with ENTER"     
+        echo
+        echo
+        ;;
+    *)
+        STATUS="FAIL"
+        echo "[FAIL] No certificate file exists. Please save your cert at: $PWD/config/smime/cert.pem" 
+        echo "[FAIL] No certificate key exists. Please save your key at:   $PWD/config/smime/key.pem"
+        echo
+        ;;
+    esac
+fi
+
+###############################  PGP CHECKS    #########################
+echo
+if [ ! -f ./config/pgp/key.pem -a ! -f ./config/pgp/public.pem ]; then
+    read -r -p "[WARN] No PGP key found. Should we create a pgp key? [Y/n] " -ei "y" response
+    case $response in
+    [yY][eE][sS]|[yY])
+        echo "[OK] We create a pgp key in the volume."
+        echo "     To change the SSL certificate and private key later: "
+        echo "     1. save public key into:      $PWD/config/pgp/public.pem"
+        echo "     2. save private key into:  $PWD/config/pgp/key.pem"
+        echo "     3. do:                         make change-pgp"
+        read -r -p "     continue with ENTER"     
+        echo
+        echo
+        ;;
+    *)
+        STATUS="FAIL"
+        echo "[FAIL] No certificate file exists. Please save your cert at: $PWD/config/pgp/public.pem" 
+        echo "[FAIL] No certificate key exists. Please save your key at:   $PWD/config/pgp/key.pem"
+        echo
+        ;;
+    esac
+fi
 
 ###############################  END Result    #########################
 echo "End result:"
