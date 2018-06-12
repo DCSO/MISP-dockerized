@@ -1,10 +1,10 @@
 #/bin/bash
 #description     :This script install and start all misp docker container.
 #==============================================================================
-source /srv/scripts/functions.sh
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
-docker_compose_file="docker-compose.yml"
 
+[ -z "$1" ] && docker_compose_file="$SCRIPTPATH../docker-compose.yml"
+[ -z "$1" ] || docker_compose_file="$1"
 
 # check if docker-compose is installed.
 if [ -z "which docker-compose" ]
@@ -23,9 +23,6 @@ if [ -z "which docker-compose" ]
                 exit 1
         fi
         echo '...Starting Docker...'
-        for container in misp-db misp-redis misp-server misp-proxy misp-robot misp-postfix
-            do
-                sudo docker-compose -f $docker_compose_file up -d $container
-            done
+        sudo docker-compose -f $docker_compose_file up -d
         popd
 fi
