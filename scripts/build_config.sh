@@ -53,11 +53,11 @@ QUESTION_DEBUG_PEERS="no"
 ############################################
 DB_CONTAINER_TAG="10.3.5"
 REDIS_CONTAINER_TAG="3.2.11"
-POSTFIX_CONTAINER_TAG="1.0.0-alpine-dev"
-MISP_CONTAINER_TAG="2.4.91-ubuntu-dev"
+POSTFIX_CONTAINER_TAG="1.0.0-alpine"
+MISP_CONTAINER_TAG="2.4.92-ubuntu"
 MISP_TAG=$(echo $MISP_CONTAINER_TAG|cut -d - -f 1)
-PROXY_CONTAINER_TAG="1.0.1-alpine-dev"
-ROBOT_CONTAINER_TAG="1.0.2-ubuntu-dev"
+PROXY_CONTAINER_TAG="1.0.1-alpine"
+ROBOT_CONTAINER_TAG="1.0.2-ubuntu"
 ######################  END GLOBAL  ###########
 
 
