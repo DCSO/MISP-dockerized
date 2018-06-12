@@ -3,8 +3,10 @@
 #==============================================================================
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
-[ -z "$1" ] && docker_compose_file="$SCRIPTPATH../docker-compose.yml"
-[ -z "$1" ] || docker_compose_file="$1"
+[ -z "$1" ] && MISP_dockerized_repo="$SCRIPTPATH../"
+[ -z "$1" ] || MISP_dockerized_repo="$1"
+
+docker_compose_file="docker-compose.yml"
 
 # check if docker-compose is installed.
 if [ -z "which docker-compose" ]
