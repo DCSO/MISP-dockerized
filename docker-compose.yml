@@ -4,58 +4,19 @@ version: '3.1'
 networks: 
   misp-backend:
     driver: bridge
+    driver_opts:
+     com.docker.network.bridge.name: "mispbr0"
+     com.docker.network.enable_ipv6: "false"
+    #internal: true
     ipam:
       config:
-      - subnet: 192.168.47.0/28
+      - subnet: "192.168.47.0/28"
 
 services:
-  ### MISP Database ###
-  # LINK: https://hub.docker.com/_/mariadb/
-  misp-db:
-    image: mariadb:10.3.5
-    container_name: misp-db
-    restart: always    
-    volumes:
-      - misp-vol-db-data:/var/lib/mysql/"
-    healthcheck:
-      test: ["CMD-SHELL", "mysql -u $MYSQL_USER -p$MYSQL_PASSWORD -h misp-db --execute 'show databases;'"]
-      interval: 1m
-      timeout: 15s
-      retries: 5
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    networks:
-      misp-backend:
-        aliases:
-          - misp-db 
-
-  ### MISP Redis Server ###
-  # LINK: https://docs.docker.com/samples/library/redis/
-  # LINK: https://github.com/docker-library/docs/tree/master/redis
-  misp-redis:
-    image: redis:3.2.11
-    restart: on-failure
-    container_name: misp-redis
-    command: ["redis-server", "--appendonly", "yes"] #For Data persistence
-    healthcheck:
-      test: ["CMD-SHELL", "[ $$(redis-cli -h misp-redis ping) == PONG ] && exit 1"]
-      interval: 1m30s
-      timeout: 15s
-      retries: 3
-    volumes:
-      - misp-vol-redis-data:/data/
-    networks:
-      misp-backend:
-        aliases:
-          - misp-redis
-
   ### Postfix ###
   # https://hub.docker.com/_/nginx/
   misp-postfix:
-    image: dcso/misp-dockerized-proxy:1.0.0-alpine
+    image: dcso/misp-dockerized-postfix:${POSTFIX_CONTAINER_TAG}
     container_name: misp-postfix
     restart: on-failure
     environment:
@@ -74,11 +35,9 @@ services:
 
   ### MISP Apache Server ###    
   misp-server:
-    image: dcso/misp-server:2.4.89    
+    image: dcso/misp-dockerized-server:${MISP_CONTAINER_TAG}
     container_name: misp-server
     depends_on:
-      - "misp-db"
-      - "misp-redis"
       - "misp-postfix"
     restart: on-failure  
     tty: true
@@ -86,7 +45,17 @@ services:
     # ports:
     #   - "8080:80" # DEBUG only
     #   - "8443:443" # DEBUG only
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      CMD_MYSQL: mysqld
+      CMD_APACHE:
+      CMD_REDIS: redis-server --appendonly yes
     volumes:
+    # DB
+    - misp-vol-db-data:/var/lib/mysql/
     # Logfile
     - misp-vol-server-logs:/var/log/apache2/
     # Apache2 Configuration
@@ -105,7 +74,7 @@ services:
   ### Reverse Proxy ###
   # https://hub.docker.com/_/nginx/
   misp-proxy:
-    image: dcso/misp-proxy:1.0.0-alpine
+    image: dcso/misp-dockerized-proxy:${PROXY_CONTAINER_TAG}
     container_name: misp-proxy
     depends_on:
       - "misp-server"
@@ -125,11 +94,9 @@ services:
 
   ### Robot ###
   misp-robot:
-    image: dcso/misp-robot:latest
+    image: dcso/misp-dockerized-robot:${ROBOT_CONTAINER_TAG}
     container_name: misp-robot
     depends_on:
-      - "misp-db"
-      - "misp-redis"
       - "misp-server"
       - "misp-proxy"
     tty: true
@@ -146,6 +113,8 @@ services:
     - misp-vol-server-MISP-tmp:/srv/misp-server/MISP/tmp
     - misp-vol-server-MISP-attachments:/srv/misp-server/MISP/attachments
     - misp-vol-proxy-conf:/srv/misp-proxy/conf.d
+    - myHOST_PATH/playbooks:/etc/ansible/playbooks/robot-playbook:ro
+    - myHOST_PATH/scripts:/srv/scripts:ro
     networks:
       misp-backend:
         aliases:
