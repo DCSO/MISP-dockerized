@@ -1,0 +1,35 @@
+- name: Create MISP database
+  mysql_db:
+    login_user: root
+    login_password: "{{ MYSQL_ROOT_PASSWORD }}"
+    login_host: misp-db
+    name: "{{ MYSQL_DATABASE }}"
+    state: present
+  register: mysql_init
+
+- name: Create MISP user
+  mysql_user:
+    login_user: root
+    login_password: "{{ MYSQL_ROOT_PASSWORD }}"
+    login_host: misp-db
+    name: "{{ MYSQL_USER }}"
+    password: "{{ MYSQL_PASSWORD }}"
+    priv: "{{ MYSQL_DATABASE }}.*:ALL,GRANT"
+    host: "%"
+    state: present
+  when: mysql_init.changed
+
+
+- name: check if DB exists
+  shell: "mysql -u {{ MYSQL_USER }} -p{{ MYSQL_PASSWORD }} -h {{ MYSQL_HOST }} -e 'use {{ MYSQL_DATABASE }}; show tables;'"
+  register: dbstatus
+
+- name: Init Database
+  mysql_db:
+    name: "{{ MYSQL_DATABASE }}"
+    target: "{{DB_SCHEME_PATH}}/v{{ MISP_TAG }}_MYSQL.sql"
+    login_user: "{{ MYSQL_USER }}"
+    login_password: "{{ MYSQL_PASSWORD }}"
+    login_host: misp-db
+    state: import
+  when: dbstatus is defined and dbstatus.stdout == ""

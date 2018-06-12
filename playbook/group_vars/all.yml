@@ -1,0 +1,6 @@
+MISP_PATH: /srv/misp-server/MISP
+SSL_CERT_FILENAME: cert.pem
+SSL_KEY_FILENAME: key.pem
+SSL_CSR_FILENAME: csr.pem
+SSL_DH_FILENAME: dhparams.pem
+SSL_CONFIG_PATH: /srv/misp-ssl

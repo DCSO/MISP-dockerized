@@ -1,0 +1,95 @@
+##### Configure SSL #####
+# - name: SSL | Create SSL folder
+#   tags: ssl
+#   file:
+#     path: "{{SERVER_CONFIG_PATH}}/ssl"
+#     owner: root
+#     group: root
+#     mode: 0750
+#     state: directory
+
+- name: SSL | check if SSL DH params exists
+  tags: ssl
+  stat: 
+    path: "{{SSL_CONFIG_PATH}}/{{SSL_DH_FILENAME}}"
+  register: dh_params
+
+- name: SSL | check if SSL cert  exists
+  tags: ssl
+  stat: 
+    path: "{{SSL_CONFIG_PATH}}/{{SSL_CERT_FILENAME}}"
+  register: cert_file
+
+- name: SSL | check if SSL key exists
+  tags: ssl
+  stat: 
+    path: "{{SSL_CONFIG_PATH}}/{{SSL_KEY_FILENAME}}"
+  register: cert_key_file
+
+- name: SSL | generate a private key for Self Signed OpenSSL certificate
+  tags: ssl
+  openssl_privatekey:
+    path: "{{SSL_CONFIG_PATH}}/{{SSL_KEY_FILENAME}}"
+    size: 4096
+    type: RSA
+    force: false
+    state: present
+  run_once: true
+  when: (cert_file.stat.exists == False) and (cert_key_file.stat.exists == False)
+
+- name: SSL | generate a signing request for Self Signed OpenSSL certificate
+  tags: ssl
+  openssl_csr:
+    path: "{{SSL_CONFIG_PATH}}/{{SSL_CSR_FILENAME}}"
+    privatekey_path: "{{SSL_CONFIG_PATH}}/{{SSL_KEY_FILENAME}}"
+    common_name: "{{MISP_hostname}}"
+    force: false
+    state: present
+  run_once: true
+  when: (cert_file.stat.exists == False) and (cert_key_file.stat.exists == False)
+
+- name: SSL | generate a Self Signed OpenSSL certificate
+  tags: ssl
+  openssl_certificate:
+    path: "{{SSL_CONFIG_PATH}}/{{SSL_CERT_FILENAME}}"
+    privatekey_path: "{{SSL_CONFIG_PATH}}/{{SSL_KEY_FILENAME}}"
+    csr_path: "{{SSL_CONFIG_PATH}}/{{SSL_CSR_FILENAME}}"
+    provider: selfsigned
+    subject: "/CN={{MISP_hostname}}"
+    force: false
+    state: present
+  run_once: true
+  when: (cert_file.stat.exists == False) and (cert_key_file.stat.exists == False)
+
+- name: SSL | Create DH params - This can take a long time, so take a break and enjoy a cup of tea or coffee.
+  tags: ssl
+  openssl_dhparam:
+    path: "{{SSL_CONFIG_PATH}}/{{SSL_DH_FILENAME}}"
+    size: 2048
+  run_once: true
+  when: dh_params.stat.exists == False
+
+- name: SSL | Ensure that the existing certificate is still valid 2 weeks (1209600 seconds) from now
+  tags: ssl
+  openssl_certificate:
+    path: "{{SSL_CONFIG_PATH}}/{{SSL_CERT_FILENAME}}"
+    provider: assertonly
+    valid_in: 1209600
+  ignore_errors: True
+  run_once: true
+
+# deactivated, because we passthrough files via docker-compose
+# - name: SSL | Copy certficate, key and dh params file
+#   tags: ssl
+#   copy:
+#     src: "{{SSL_CONFIG_PATH}}/{{ item }}"
+#     dest: "{{SERVER_CONFIG_PATH}}/ssl/{{ item }}"
+#     force: yes
+#     owner: root
+#     group: root
+#     mode: 0640
+#   with_items:
+#     - "{{SSL_CERT_FILENAME}}"
+#     - "{{SSL_KEY_FILENAME}}"
+#     - "{{SSL_DH_FILENAME}}"
+

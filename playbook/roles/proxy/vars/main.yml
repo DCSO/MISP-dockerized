@@ -1,0 +1,3 @@
+SERVER_CONFIG_PATH: /srv/misp-proxy/conf.d
+HTTP_CONFIG_NAME: SERVER_HTTP_only
+HTTPS_CONFIG_NAME: SERVER_HTTPS_and_redirected_HTTP
