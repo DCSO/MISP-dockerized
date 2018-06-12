@@ -7,6 +7,7 @@ CONTAINER := robot server proxy postfix
 REPOURL := dcso/misp-dockerized
 DOCKER_COMPOSE_FILE := ../docker-compose.yml
 NORMAL_MAKEFILE := ../Makefile
+ENV_FILE := ../config/.env
 
 
 test-travis:
@@ -17,7 +18,7 @@ pull-all:
 	$(foreach c, $(CONTAINER), docker pull -a $(REPOURL)-$(c);)
 
 prepare-docker-compose:
-	$(foreach c, $(CONTAINER), sed -i -e 's,dcso/misp-$(c).*,dcso/MISP-dockerized-$(c):$(tag),g' $(DOCKER_COMPOSE_FILE);)
+	sed -i 's,^.*_CONTAINER_TAG=.*-.*$$,&-dev,g' $(ENV_FILE);
 
 prepare-makefile:	
 	sed -i 's,dcso/misp-robot,dcso/MISP-dockerized-robot:$(r),g' $(NORMAL_MAKEFILE);
