@@ -54,10 +54,19 @@ QUESTION_DEBUG_PEERS="no"
 DB_CONTAINER_TAG="10.3.5"
 REDIS_CONTAINER_TAG="3.2.11"
 POSTFIX_CONTAINER_TAG="1.0.0-alpine"
-MISP_CONTAINER_TAG="2.4.92-ubuntu"
-MISP_TAG=$(echo $MISP_CONTAINER_TAG|cut -d - -f 1)
+MISP_CONTAINER_TAG="2.4.91-ubuntu"
 PROXY_CONTAINER_TAG="1.0.1-alpine"
 ROBOT_CONTAINER_TAG="1.0.2-ubuntu"
+####
+# if you want to use dev options execute 'bash build-config dev'
+if [ "$1" == "dev" ] ; then
+  POSTFIX_CONTAINER_TAG="$POSTFIX_CONTAINER_TAG-dev"
+  MISP_CONTAINER_TAG="$MISP_CONTAINER_TAG-dev"
+  PROXY_CONTAINER_TAG="$PROXY_CONTAINER_TAG-dev"
+  ROBOT_CONTAINER_TAG="$ROBOT_CONTAINER_TAG-dev"
+fi
+####
+MISP_TAG=$(echo $MISP_CONTAINER_TAG|cut -d - -f 1)
 ######################  END GLOBAL  ###########
 
 
@@ -197,7 +206,7 @@ function query_http_settings(){
   read -p "Which HTTP Serveradmin mailadress should we use [default: admin@${HOSTNAME}]: " -ei "$HTTP_SERVERADMIN" HTTP_SERVERADMIN
   while (true)
   do
-    read -r -p "Should we allow access to misp from every IP? [y/N]" -ei "$ALLOW_ALL_IPs" ALLOW_ALL_IPs
+    read -r -p "Should we allow access to misp from every IP? [y/N] " -ei "$ALLOW_ALL_IPs" ALLOW_ALL_IPs
     case $ALLOW_ALL_IPs in
       [yY][eE][sS]|[yY])
         ALLOW_ALL_IPs=yes
@@ -292,7 +301,7 @@ if [ "$1" == "--automated-build" ]
     echo "########## HTTP Configs ##########"
     query_http_settings
     echo
-    echo "########## Postifx Configs ##########"
+    echo "########## Postfix Configs ##########"
     query_postfix_settings
     echo
     echo "########## Network Configs ##########"
@@ -337,11 +346,11 @@ NO_PROXY=${NO_PROXY}
 # DB configuration
 # ------------------------------
 QUESTION_OWN_DB=${QUESTION_OWN_DB}
-MYSQL_HOST=${MYSQL_HOST}
-MYSQL_PORT=${MYSQL_PORT}
-MYSQL_DATABASE=${MYSQL_DATABASE}
-MYSQL_USER=${MYSQL_USER}
-MYSQL_PASSWORD=${MYSQL_PASSWORD}
+MYSQL_HOST="${MYSQL_HOST}"
+MYSQL_PORT="${MYSQL_PORT}"
+MYSQL_DATABASE="${MYSQL_DATABASE}"
+MYSQL_USER="${MYSQL_USER}"
+MYSQL_PASSWORD="${MYSQL_PASSWORD}"
 MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 # ------------------------------
 # HTTP/S configuration
@@ -358,17 +367,17 @@ HTTP_SERVERADMIN="${HTTP_SERVERADMIN}"
 # ------------------------------
 # misp-server env configuration
 # ------------------------------
-MISP_TAG=${MISP_TAG}
+MISP_TAG="${MISP_TAG}"
 MISP_prefix=${MISP_prefix}
 MISP_encoding=${MISP_encoding}
 # ------------------------------
 # Postfix Configuration
 # ------------------------------
-DOMAIN=${DOMAIN}
-RELAYHOST=${RELAYHOST}
-RELAY_USER=${RELAY_USER}
-RELAY_PASSWORD=${RELAY_PASSWORD}
-SENDER_ADDRESS=${SENDER_ADDRESS}
+DOMAIN="${DOMAIN}"
+RELAYHOST="${RELAYHOST}"
+RELAY_USER="${RELAY_USER}"
+RELAY_PASSWORD="${RELAY_PASSWORD}"
+SENDER_ADDRESS="${SENDER_ADDRESS}"
 QUESTION_DEBUG_PEERS=${QUESTION_DEBUG_PEERS}
 DEBUG_PEER=${DEBUG_PEER}
 ##################################################################

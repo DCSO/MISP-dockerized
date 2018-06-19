@@ -14,7 +14,6 @@ networks:
 
 services:
   ### Postfix ###
-  # https://hub.docker.com/_/nginx/
   misp-postfix:
     image: dcso/misp-dockerized-postfix:${POSTFIX_CONTAINER_TAG}
     container_name: misp-postfix
@@ -50,16 +49,15 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      CMD_MYSQL: mysqld
-      CMD_APACHE:
-      CMD_REDIS: redis-server --appendonly yes
+      #CMD_MYSQL: mysqld
+      #CMD_APACHE:
+      #CMD_REDIS: redis-server --appendonly yes
     volumes:
     # DB
     - misp-vol-db-data:/var/lib/mysql/
-    # Logfile
-    - misp-vol-server-logs:/var/log/apache2/
     # Apache2 Configuration
     - misp-vol-server-apache2-config-sites-enabled:/etc/apache2/sites-enabled:ro
+    # NGINX SSL 
     - misp-vol-ssl:/etc/apache2/ssl:ro
     # MISP Configurations:
     - misp-vol-server-MISP-app-Config:/var/www/MISP/app/Config
@@ -72,7 +70,6 @@ services:
         - misp-server
 
   ### Reverse Proxy ###
-  # https://hub.docker.com/_/nginx/
   misp-proxy:
     image: dcso/misp-dockerized-proxy:${PROXY_CONTAINER_TAG}
     container_name: misp-proxy
@@ -104,17 +101,24 @@ services:
     healthcheck:
       disable: true
     volumes:
-    - /var/run/docker.sock:/var/run/docker.sock:ro                    # docker.sock | Make sure its always read only!
-    - myHOST_PATH:/srv/misp-dockerized              # Github Repository
+    # Docker.sock File
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    # Github Repository
+      - myHOST_PATH:/srv/misp-dockerized  
+    # Ansible scripts
+    - myHOST_PATH/playbooks:/etc/ansible/playbooks/robot-playbook:ro
+    # Bash scripts
+    - myHOST_PATH/scripts:/srv/scripts:ro
+    # Volume with Certificates
     - misp-vol-ssl:/srv/misp-ssl
+    # mips-server
     - misp-vol-server-apache2-config-sites-enabled:/srv/misp-server/apache2/sites-enabled
     - misp-vol-server-MISP-app-Config:/srv/misp-server/MISP/Config
     - misp-vol-server-MISP-cakeresque-config:/srv/misp-server/MISP/CakeResque/Config
     - misp-vol-server-MISP-tmp:/srv/misp-server/MISP/tmp
     - misp-vol-server-MISP-attachments:/srv/misp-server/MISP/attachments
+    # misp-proxy
     - misp-vol-proxy-conf:/srv/misp-proxy/conf.d
-    - myHOST_PATH/playbooks:/etc/ansible/playbooks/robot-playbook:ro
-    - myHOST_PATH/scripts:/srv/scripts:ro
     networks:
       misp-backend:
         aliases:

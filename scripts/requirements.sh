@@ -165,22 +165,23 @@ fi
 ###############################  SMIME CHECKS    #########################
 echo
 if [ ! -f ./config/smime/key.pem -a ! -f ./config/smime/cert.pem ]; then
-    read -r -p "[WARN] No S/MIME certificate found. Should we create a self-signed certificate? [Y/n] " -ei "y" response
+    read -r -p "[WARN] No S/MIME certificate found. Would you start with S/MIME? [y/N] " -ei "n" response
     case $response in
     [yY][eE][sS]|[yY])
-        echo "[OK] We create a self-signed certificate in the volume."
-        echo "     To change the SSL certificate and private key later: "
+        STATUS="FAIL"
+        echo "[FAIL] Please save a S/MIME Certificate and the private Key."
         echo "     1. save certificate into:      $PWD/config/smime/cert.pem"
         echo "     2. save private keyfile into:  $PWD/config/smime/key.pem"
-        echo "     3. do:                         make change-smime"
         read -r -p "     continue with ENTER"     
         echo
         echo
+        exit 1
         ;;
     *)
-        STATUS="FAIL"
-        echo "[FAIL] No certificate file exists. Please save your cert at: $PWD/config/smime/cert.pem" 
-        echo "[FAIL] No certificate key exists. Please save your key at:   $PWD/config/smime/key.pem"
+        echo "[OK] No S/MIME want be used. If you want to use S/MIME Later:"
+        echo "     1. Please save your cert at:  $PWD/config/smime/cert.pem" 
+        echo "     2. Please save your key  at:  $PWD/config/smime/key.pem"
+        echo "     3. do:                        make change-smime"
         echo
         ;;
     esac
@@ -192,11 +193,11 @@ if [ ! -f ./config/pgp/key.pem -a ! -f ./config/pgp/public.pem ]; then
     read -r -p "[WARN] No PGP key found. Should we create a pgp key? [Y/n] " -ei "y" response
     case $response in
     [yY][eE][sS]|[yY])
-        echo "[OK] We create a pgp key in the volume."
-        echo "     To change the SSL certificate and private key later: "
-        echo "     1. save public key into:      $PWD/config/pgp/public.pem"
-        echo "     2. save private key into:  $PWD/config/pgp/key.pem"
-        echo "     3. do:                         make change-pgp"
+        echo "[OK] We create a pgp key in the volume. It will be saved to: $PWD/config/pgp/"
+        # echo "     To change the SSL certificate and private key later: "
+        # echo "     1. save public key into:      $PWD/config/pgp/public.pem"
+        # echo "     2. save private key into:  $PWD/config/pgp/key.pem"
+        # echo "     3. do:                         make change-pgp"
         read -r -p "     continue with ENTER"     
         echo
         echo
@@ -204,7 +205,7 @@ if [ ! -f ./config/pgp/key.pem -a ! -f ./config/pgp/public.pem ]; then
     *)
         STATUS="FAIL"
         echo "[FAIL] No certificate file exists. Please save your cert at: $PWD/config/pgp/public.pem" 
-        echo "[FAIL] No certificate key exists. Please save your key at:   $PWD/config/pgp/key.pem"
+        echo "[FAIL] No certificate key exists.  Please save your key at:   $PWD/config/pgp/key.pem"
         echo
         ;;
     esac
@@ -222,3 +223,4 @@ if [ $STATUS == "FAIL" ]
         echo
         exit 0
 fi
+##########################################################################
