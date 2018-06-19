@@ -65,11 +65,10 @@ deploy:
 	@echo "###########	Deploy Environment	###########"
 	@sed -i "s,myHOST_PATH,$(CURDIR),g" "./docker-compose.yml"
 	@docker run --name misp-robot-init --rm -ti \
-		-v $(CURDIR):/srv/misp-dockerized \
-		-v $(CURDIR)/plabooks:/etc/ansible/playbooks/robot-playbook:ro \
+		-v $(CURDIR):/srv/MISP-dockerized \
     	-v $(CURDIR)/scripts:/srv/scripts:ro \
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
-		dcso/misp-dockerized-robot:1.0.2-ubuntu-dev bash -c "scripts/deploy_environment.sh /srv/misp-dockerized/"
+		dcso/misp-dockerized-robot:$(shell cat $(CURDIR)/.env|grep ROBOT_CONTAINER_TAG|cut -d = -f 2) bash -c "scripts/deploy_environment.sh /srv/MISP-dockerized/"
 
 # delete all misp container, volumes and images
 delete:
