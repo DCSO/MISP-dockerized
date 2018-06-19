@@ -1,0 +1,42 @@
+- name: PGP | check if PGP public file  exists
+  tags: pgp
+  stat: 
+    path: "{{PGP_CONFIG_PATH}}/{{PGP_PUBLIC_FILENAME}}"
+  register: public_file
+
+- name: PGP | check if PGP private file exists
+  tags: pgp
+  stat: 
+    path: "{{PGP_CONFIG_PATH}}/{{PGP_PRIVATE_FILENAME}}"
+  register: private_file
+
+
+################
+# IMPORT PGP Keys
+################
+- name: PGP | Import Private and Public Key
+  shell:
+    gpg --import --homedir "{{PGP_HOMEDIR}}" "{{PGP_PUBLIC_FILENAME}}"
+    gpg --import --homedir $HOMEDIR "{{PGP_PRIVATE_FILENAME}}"
+  when: (public_file.stat.exists == True) and (private_file.stat.exists == Ture)  
+
+###############
+# CREATE A NEW PGP KEys
+###############
+- name: PGP | Generate a new Private and Public Key
+  shell: |
+    #GPG Key parameters
+    cat > gpgparams <<EOF
+    Key-Type: RSA
+    Key-Length: 4096
+    Subkey-Type: RSA
+    Subkey-Length: 4096
+    Name-Real: "{{SENDER_ADDRESS}}"
+    Name-Email: "{{SENDER_ADDRESS}}"
+    Expire-Date: 0
+    %commit
+    EOF
+    gpg --no-permission-warning --homedir "{{PGP_HOMEDIR}}" --batch --gen-key gpgparams 2>&1;
+    gpg --export --armor "{{SENDER_ADDRESS}}" > "{{PGP_HOMEDIR}}"/"{{PGP_PUBLIC_FILENAME}}"
+    gpg --export-secret-key "{{SENDER_ADDRESS}}" > "{{PGP_HOMEDIR}}"/"{{PGP_PRIVATE_FILENAME}}"
+  when: (public_file.stat.exists == False) and (private_file.stat.exists == False)  
