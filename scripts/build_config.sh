@@ -21,7 +21,7 @@ DOCKER_NETWORK="192.168.47.0/28"
 BRIDGE_NAME="mispbr01"
 # DB
 QUESTION_OWN_DB="no"
-MYSQL_HOST="misp-db"
+MYSQL_HOST="misp-server"
 MYSQL_PORT="3306"
 MYSQL_DATABASE="misp"
 MYSQL_USER="misp"
@@ -181,8 +181,8 @@ function query_db_settings(){
         [nN][oO]|[nN])
           QUESTION_OWN_DB="no"
           # Set MISP_host to DB Container Name and Port
-          MYSQL_HOST="misp-db"; echo "Set DB Host to docker default: $MYSQL_HOST"
-          MYSQL_PORT=3306; echo "Set DB Host Port to docker default: $MYSQL_PORT"
+          echo "Set DB Host to docker default: $MYSQL_HOST"
+          echo "Set DB Host Port to docker default: $MYSQL_PORT"
           read -p "Which DB Root Password should we use for DB Connection [default: generated PW]: " -ei "$MYSQL_ROOT_PASSWORD" MYSQL_ROOT_PASSWORD
           break;
           ;;
