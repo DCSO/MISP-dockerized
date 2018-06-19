@@ -130,6 +130,8 @@ function check_folder(){
 
 check_folder "config"
 check_folder "config/ssl"
+check_folder "config/pgp"
+check_folder "config/smime"
 check_folder "backup"
 
 
@@ -189,7 +191,7 @@ fi
 
 ###############################  PGP CHECKS    #########################
 echo
-if [ ! -f ./config/pgp/key.pem -a ! -f ./config/pgp/public.pem ]; then
+if [ ! -f ./config/pgp/private.key -a ! -f ./config/pgp/public.key ]; then
     read -r -p "[WARN] No PGP key found. Should we create a pgp key? [Y/n] " -ei "y" response
     case $response in
     [yY][eE][sS]|[yY])
@@ -204,8 +206,8 @@ if [ ! -f ./config/pgp/key.pem -a ! -f ./config/pgp/public.pem ]; then
         ;;
     *)
         STATUS="FAIL"
-        echo "[FAIL] No certificate file exists. Please save your cert at: $PWD/config/pgp/public.pem" 
-        echo "[FAIL] No certificate key exists.  Please save your key at:   $PWD/config/pgp/key.pem"
+        echo "[FAIL] No certificate file exists. Please save your cert at: $PWD/config/pgp/public.key" 
+        echo "[FAIL] No certificate key exists.  Please save your key at:   $PWD/config/pgp/private.key"
         echo
         ;;
     esac
