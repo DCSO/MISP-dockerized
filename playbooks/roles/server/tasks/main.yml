@@ -5,7 +5,7 @@
 - include: tasks/ssl.yml
 
 ##### PGP configs #####
-#- import_tasks: pgp.yml
+- import_tasks: pgp.yml
 
 ##### S/MIME configs #####
 - import_tasks: smime.yml

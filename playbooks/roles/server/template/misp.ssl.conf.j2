@@ -1,5 +1,5 @@
 <VirtualHost *:443>
-  ServerName misp-server
+  ServerName {{MISP_hostname}}
   DocumentRoot /var/www/MISP/app/webroot
   <Directory /var/www/MISP/app/webroot>
           Options -Indexes

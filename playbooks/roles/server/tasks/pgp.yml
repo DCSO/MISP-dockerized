@@ -1,13 +1,13 @@
 - name: PGP | check if PGP public file  exists
   tags: pgp
   stat: 
-    path: "{{PGP_CONFIG_PATH}}/{{PGP_PUBLIC_FILENAME}}"
+    path: "{{MAIN_REPO_CONFIG}}/pgp/{{PGP_PUBLIC_FILENAME}}"
   register: public_file
 
 - name: PGP | check if PGP private file exists
   tags: pgp
   stat: 
-    path: "{{PGP_CONFIG_PATH}}/{{PGP_PRIVATE_FILENAME}}"
+    path: "{{MAIN_REPO_CONFIG}}/pgp/{{PGP_PRIVATE_FILENAME}}"
   register: private_file
 
 
@@ -18,25 +18,30 @@
   shell:
     gpg --import --homedir "{{PGP_HOMEDIR}}" "{{PGP_PUBLIC_FILENAME}}"
     gpg --import --homedir $HOMEDIR "{{PGP_PRIVATE_FILENAME}}"
-  when: (public_file.stat.exists == True) and (private_file.stat.exists == Ture)  
+  when: (public_file.stat.exists == True) and (private_file.stat.exists == True)  
 
 ###############
 # CREATE A NEW PGP KEys
 ###############
+
+- name: PGP | Copy Template gen_pgp.sh script
+  template:
+    src: template/{{ item }}.j2
+    dest: "/{{ item }}"
+    owner: root
+    group: root
+    mode: 0740
+  with_items:
+    - gen_pgp.sh
+
+
 - name: PGP | Generate a new Private and Public Key
-  shell: |
-    #GPG Key parameters
-    cat > gpgparams <<EOF
-    Key-Type: RSA
-    Key-Length: 4096
-    Subkey-Type: RSA
-    Subkey-Length: 4096
-    Name-Real: "{{SENDER_ADDRESS}}"
-    Name-Email: "{{SENDER_ADDRESS}}"
-    Expire-Date: 0
-    %commit
-    EOF
-    gpg --no-permission-warning --homedir "{{PGP_HOMEDIR}}" --batch --gen-key gpgparams 2>&1;
-    gpg --export --armor "{{SENDER_ADDRESS}}" > "{{PGP_HOMEDIR}}"/"{{PGP_PUBLIC_FILENAME}}"
-    gpg --export-secret-key "{{SENDER_ADDRESS}}" > "{{PGP_HOMEDIR}}"/"{{PGP_PRIVATE_FILENAME}}"
+  shell: rngd -r /dev/urandom; /gen_pgp.sh    
   when: (public_file.stat.exists == False) and (private_file.stat.exists == False)  
+
+
+# - name: PGP | Delete gen_pgp.sh script
+#   file:
+#     state: absent
+#     path: /gen_pgp.sh  
+
