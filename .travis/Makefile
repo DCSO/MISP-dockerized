@@ -7,7 +7,7 @@ CONTAINER := robot server proxy postfix
 REPOURL := dcso/misp-dockerized
 DOCKER_COMPOSE_FILE := ../docker-compose.yml
 NORMAL_MAKEFILE := ../Makefile
-ENV_FILE := ../config/.env
+ENV_FILE := ../.env
 
 
 test-travis:
@@ -25,7 +25,9 @@ prepare-docker-compose:
 
 prepare-makefile:	
 	sed -i 's,dcso/misp-robot,dcso/MISP-dockerized-robot:$(r),g' $(NORMAL_MAKEFILE);
-	sed -i 's,build_config.sh,build_config.sh --automated-build,g' $(NORMAL_MAKEFILE);
+
+prepare-env:
+	sed -i 's,^ROBOT_CONTAINER_TAG=.*$$,&-dev,g' $(ENV_FILE);
 
 tag:
 	.travis/tagging.sh $(REPOURL)-server $(server)
