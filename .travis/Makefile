@@ -18,7 +18,7 @@ pull-all:
 	$(foreach c, $(CONTAINER), docker pull -a $(REPOURL)-$(c);)
 
 pull-latest:
-	$(foreach c, $(CONTAINER), docker pull $(REPOURL)-$(c):latest;)
+	$(foreach c, $(CONTAINER), docker pull $(REPOURL)-$(c):latest-dev;)
 
 prepare-docker-compose:
 	sed -i 's,^.*_CONTAINER_TAG=.*-.*$$,&-dev,g' $(ENV_FILE);
