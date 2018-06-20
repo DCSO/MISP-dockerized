@@ -108,6 +108,8 @@ services:
     - misp-vol-pgp:/var/www/MISP/.gnupg
     # Volume with S/MIME Certificate and Key
     - misp-vol-smime:/var/www/MISP/.smime
+    # Redis Volume
+    - misp-vol-redis-data:/redis_data_dir
     # MISP Configurations:
     - misp-vol-server-MISP-app-Config:/var/www/MISP/app/Config
     - misp-vol-server-MISP-cakeresque-config:/var/www/MISP/app/Plugin/CakeResque/Config
@@ -153,12 +155,12 @@ services:
     # Docker.sock File
     - /var/run/docker.sock:/var/run/docker.sock:ro
     # Github Repository
-    - myHOST_PATH:/srv/MISP-dockerized  
-    - myHOST_PATH:/srv/misp-dockerized
+    - /home/max/repos/MISP-dockerized:/srv/MISP-dockerized  
+    - /home/max/repos/MISP-dockerized:/srv/misp-dockerized
     # Ansible scripts
-    - myHOST_PATH/playbooks:/etc/ansible/playbooks/robot-playbook:ro
+    - /home/max/repos/MISP-dockerized/playbooks:/etc/ansible/playbooks/robot-playbook:ro
     # Bash scripts
-    - myHOST_PATH/scripts:/srv/scripts:ro
+    - /home/max/repos/MISP-dockerized/scripts:/srv/scripts:ro
     # Volume with Certificates
     - misp-vol-ssl:/srv/misp-ssl
     # Volume with PGP Key
