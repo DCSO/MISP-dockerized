@@ -177,7 +177,7 @@ fi
 echo
 if [ ! -f ./config/smime/key.pem -a ! -f ./config/smime/cert.pem ]; then
     [ $AUTOMATE_BUILD = true ] || read -r -p "[WARN] No S/MIME certificate found. Would you start with S/MIME? [y/N] " -ei "n" response
-    [ $AUTOMATE_BUILD = true ] echo "[WARN] No S/MIME certificate found. Would you start with S/MIME? [y/N] n" && response="n"
+    [ $AUTOMATE_BUILD = true ] && echo "[WARN] No S/MIME certificate found. Would you start with S/MIME? [y/N] n" && response="n"
     case $response in
     [yY][eE][sS]|[yY])
         STATUS="FAIL"
