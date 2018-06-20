@@ -12,7 +12,7 @@ env:
 
 
 before_install:
-- .travis/main.sh
+- travis_retry .travis/main.sh
 # pull all images 
 - $makefile pull-all
 
