@@ -16,7 +16,7 @@ help:
 	\t make delete-unused 		| delete all unused docker container, volumes and images \n \
 	\t make security	 		| check docker security via misp-robot\n \
 	Configure: \n \
-	\t make change-ssl		| change ssl cert
+	\t make change-ssl		| change ssl cert								\
 	\t make configure 		| configure docker container via misp-robot\n \
 	\t make config-db 		| configure misp-db via misp-robot\n \
 	\t make config-server		| configure misp-server via misp-robot\n \
