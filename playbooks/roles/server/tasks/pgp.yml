@@ -35,8 +35,13 @@
     - gen_pgp.sh
 
 
+- name: PGP | Generate a more high entropy - This can take a long time, so take a break and enjoy a cup of tea or coffee.] ***
+  shell: rngd -r /dev/urandom
+  when: (public_file.stat.exists == False) and (private_file.stat.exists == False)  
+
+
 - name: PGP | Generate a new Private and Public Key
-  shell: rngd -r /dev/urandom; /gen_pgp.sh    
+  shell: cd "{{PGP_HOMEDIR}}"; /gen_pgp.sh    
   when: (public_file.stat.exists == False) and (private_file.stat.exists == False)  
 
 

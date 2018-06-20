@@ -12,7 +12,7 @@
   roles:
    - role: server
      tags: ['server']
-   - role: database
-     tags: ['database']
+  #  - role: database
+  #    tags: ['database']
    - role: proxy
      tags: ['proxy']
