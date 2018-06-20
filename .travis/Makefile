@@ -20,14 +20,12 @@ pull-all:
 pull-latest:
 	$(foreach c, $(CONTAINER), docker pull $(REPOURL)-$(c):latest-dev;)
 
-prepare-docker-compose:
+prepare-env:
 	sed -i 's,^.*_CONTAINER_TAG=.*-.*$$,&-dev,g' $(ENV_FILE);
 
 prepare-makefile:	
 	sed -i 's,dcso/misp-robot,dcso/MISP-dockerized-robot:$(r),g' $(NORMAL_MAKEFILE);
 
-prepare-env:
-	sed -i 's,^ROBOT_CONTAINER_TAG=.*$$,&-dev,g' $(ENV_FILE);
 
 tag:
 	.travis/tagging.sh $(REPOURL)-server $(server)
