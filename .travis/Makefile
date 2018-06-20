@@ -5,14 +5,10 @@
 
 CONTAINER := robot server proxy postfix
 REPOURL := dcso/misp-dockerized
-DOCKER_COMPOSE_FILE := ../docker-compose.yml
-NORMAL_MAKEFILE := ../Makefile
-ENV_FILE := ../.env
-BUILD_CONFIG_SCRIPT := ../scripts/build_config.sh
 
 
 test-travis:
-	.travis/travis-cli.sh check
+	./travis-cli.sh check
 
 pull-all:
 	# pull all images and tags
@@ -22,17 +18,17 @@ pull-latest:
 	$(foreach c, $(CONTAINER), docker pull $(REPOURL)-$(c):latest-dev;)
 
 tag:
-	.travis/tagging.sh $(REPOURL)-server $(server)
-	.travis/tagging.sh $(REPOURL)-proxy $(proxy)
-	.travis/tagging.sh $(REPOURL)-robot $(robot)
-	.travis/tagging.sh $(REPOURL)-postfix $(postfix)
+	./tagging.sh $(REPOURL)-server $(server_tag);
+	./tagging.sh $(REPOURL)-proxy $(proxy_tag);
+	./tagging.sh $(REPOURL)-robot $(robot_tag);
+	./tagging.sh $(REPOURL)-postfix $(postfix_tag);
 
 test:
 	#echo "$(curl -S -k https://localhost/users/login)"|grep Login
 	true
 
 push:
-	.travis/push.sh $(REPOURL)-server $(server)
-	.travis/push.sh $(REPOURL)-proxy $(proxy)
-	.travis/push.sh $(REPOURL)-robot $(robot)
-	.travis/push.sh $(REPOURL)-postfix $(postfix)
+	./push.sh $(REPOURL)-server $(server_tag);
+	./push.sh $(REPOURL)-proxy $(proxy_tag);
+	./push.sh $(REPOURL)-robot $(robot_tag);
+	./push.sh $(REPOURL)-postfix $(postfix_tag);
