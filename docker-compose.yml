@@ -13,6 +13,49 @@ networks:
       - subnet: "192.168.47.0/28"
 
 services:
+  # ### MISP Database ###
+  # # LINK: https://hub.docker.com/_/mariadb/
+  # misp-db:
+  #   image: mariadb:10.3.5
+  #   container_name: misp-db
+  #   restart: always    
+  #   volumes:
+  #   #- misp-vol-db-data:/var/lib/mysql/"
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "mysql -u $MYSQL_USER -p$MYSQL_PASSWORD -h misp-db --execute 'show databases;'"]
+  #     interval: 1m
+  #     timeout: 15s
+  #     retries: 5
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+  #     MYSQL_DATABASE: ${MYSQL_DATABASE}
+  #     MYSQL_USER: ${MYSQL_USER}
+  #     MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+  #   networks:
+  #     misp-backend:
+  #       aliases:
+  #       - misp-db 
+
+  # ### MISP Redis Server ###
+  # # LINK: https://docs.docker.com/samples/library/redis/
+  # # LINK: https://github.com/docker-library/docs/tree/master/redis
+  # misp-redis:
+  #   image: redis:3.2.11
+  #   restart: on-failure
+  #   container_name: misp-redis
+  #   command: ["redis-server", "--appendonly", "yes"] #For Data persistence
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "[ $$(redis-cli -h misp-redis ping) == PONG ] && exit 1"]
+  #     interval: 1m30s
+  #     timeout: 15s
+  #     retries: 3
+  #   volumes:
+  #   - misp-vol-redis-data:/data/
+  #   networks:
+  #     misp-backend:
+  #       aliases:
+  #       - misp-redis
+  
   ### Postfix ###
   misp-postfix:
     image: dcso/misp-dockerized-postfix:${POSTFIX_CONTAINER_TAG}
@@ -49,6 +92,7 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_HOST: ${HOSTNAME}
       #SENDER_ADDRESS: ${SENDER_ADDRESS}
       #CMD_MYSQL: mysqld
       #CMD_APACHE:
@@ -129,6 +173,10 @@ services:
     - misp-vol-server-MISP-attachments:/srv/misp-server/MISP/attachments
     # misp-proxy
     - misp-vol-proxy-conf:/srv/misp-proxy/conf.d
+    # misp-redis
+    - misp-vol-redis-data:/srv/misp-redis
+    # misp-db
+    - misp-vol-db-data:/srv/misp-db
     networks:
       misp-backend:
         aliases:
