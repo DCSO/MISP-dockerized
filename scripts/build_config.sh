@@ -61,8 +61,8 @@ MISP_CONTAINER_TAG="2.4.91-ubuntu"
 PROXY_CONTAINER_TAG="1.0.1-alpine"
 ROBOT_CONTAINER_TAG="1.0.2-ubuntu"
 ####
-# if you want to use dev options execute 'bash build-config dev'
-if [ "$1" == "dev" ] ; then
+# if you want to use dev options see on start of this script
+if [ "AUTOMATE_BUILD" = true ] ; then
   POSTFIX_CONTAINER_TAG="$POSTFIX_CONTAINER_TAG-dev"
   MISP_CONTAINER_TAG="$MISP_CONTAINER_TAG-dev"
   PROXY_CONTAINER_TAG="$PROXY_CONTAINER_TAG-dev"

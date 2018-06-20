@@ -8,6 +8,7 @@ REPOURL := dcso/misp-dockerized
 DOCKER_COMPOSE_FILE := ../docker-compose.yml
 NORMAL_MAKEFILE := ../Makefile
 ENV_FILE := ../.env
+BUILD_CONFIG_SCRIPT := ../scripts/build_config.sh
 
 
 test-travis:
@@ -19,13 +20,6 @@ pull-all:
 
 pull-latest:
 	$(foreach c, $(CONTAINER), docker pull $(REPOURL)-$(c):latest-dev;)
-
-prepare-env:
-	sed -i 's,^.*_CONTAINER_TAG=.*-.*$$,&-dev,g' $(ENV_FILE);
-
-prepare-makefile:	
-	sed -i 's,dcso/misp-robot,dcso/MISP-dockerized-robot:$(r),g' $(NORMAL_MAKEFILE);
-
 
 tag:
 	.travis/tagging.sh $(REPOURL)-server $(server)
