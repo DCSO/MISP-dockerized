@@ -22,6 +22,10 @@ tag:
 	./tagging.sh $(REPOURL)-proxy $(proxy_tag);
 	./tagging.sh $(REPOURL)-robot $(robot_tag);
 	./tagging.sh $(REPOURL)-postfix $(postfix_tag);
+	@echo "###########################################"
+	docker images
+	@echo "###########################################"
+
 
 test:
 	#echo "$(curl -S -k https://localhost/users/login)"|grep Login
