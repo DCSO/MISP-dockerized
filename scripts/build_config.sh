@@ -2,6 +2,9 @@
 #description     :This script build the configuration for the MISP Container and their content.
 #==============================================================================
 #set -xe # for debugging only
+# check if this is an automate build not ask any questions
+[ "$CI" = true ] && AUTOMATE_BUILD=true
+
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 MISP_dockerized_repo="$SCRIPTPATH/.."
 DOCKER_COMPOSE_CONF="${MISP_dockerized_repo}/config/.env"
@@ -271,7 +274,7 @@ function query_network_settings(){
 #################################################
 # Start Execution:
 
-if [ "$1" == "--automated-build" ]
+if [ "$AUTOMATE_BUILD" = true ]
   then
     ################################################
     # Automated Startup only for travis
