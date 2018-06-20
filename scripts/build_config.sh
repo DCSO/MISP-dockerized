@@ -1,7 +1,7 @@
 #!/bin/bash
 #description     :This script build the configuration for the MISP Container and their content.
 #==============================================================================
-#set -xe # for debugging only
+set -xe # for debugging only
 # check if this is an automate build not ask any questions
 [ "$CI" = true ] && AUTOMATE_BUILD=true
 
@@ -60,15 +60,7 @@ POSTFIX_CONTAINER_TAG="1.0.0-alpine"
 MISP_CONTAINER_TAG="2.4.91-ubuntu"
 PROXY_CONTAINER_TAG="1.0.1-alpine"
 ROBOT_CONTAINER_TAG="1.0.2-ubuntu"
-####
-# if you want to use dev options see on start of this script
-if [ "AUTOMATE_BUILD" = true ] ; then
-  POSTFIX_CONTAINER_TAG="$POSTFIX_CONTAINER_TAG-dev"
-  MISP_CONTAINER_TAG="$MISP_CONTAINER_TAG-dev"
-  PROXY_CONTAINER_TAG="$PROXY_CONTAINER_TAG-dev"
-  ROBOT_CONTAINER_TAG="$ROBOT_CONTAINER_TAG-dev"
-fi
-####
+
 MISP_TAG=$(echo $MISP_CONTAINER_TAG|cut -d - -f 1)
 ######################  END GLOBAL  ###########
 
@@ -281,7 +273,11 @@ if [ "$AUTOMATE_BUILD" = true ]
     ################################################
     # ask no questions only defaults
     echo "automatic build"
-    
+    ####
+    POSTFIX_CONTAINER_TAG="$POSTFIX_CONTAINER_TAG-dev"
+    MISP_CONTAINER_TAG="$MISP_CONTAINER_TAG-dev"
+    PROXY_CONTAINER_TAG="$PROXY_CONTAINER_TAG-dev"
+    ROBOT_CONTAINER_TAG="$ROBOT_CONTAINER_TAG-dev"
   else
     ################################################
     # Normal Startup
