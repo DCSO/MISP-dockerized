@@ -19,7 +19,7 @@ before_install:
 script:
   # Install and configure MISP
   - make start
-  - cat .env
+  - ls -la config/*/
   # test if MISP is ready
   - $makefile test
 
@@ -31,6 +31,7 @@ after_script:
   # retag all existing tags dev 2 public repo
   - $makefile tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag}
 
+after_success:
   # check if branch=master and the current build is no pull request, then push it to docker hub
   - if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
       if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 

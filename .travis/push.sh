@@ -11,5 +11,4 @@ do
     docker push $DOCKER_REPO:$i
 done
 
-
 echo "###########################################"

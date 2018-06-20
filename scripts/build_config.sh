@@ -1,7 +1,7 @@
 #!/bin/bash
 #description     :This script build the configuration for the MISP Container and their content.
 #==============================================================================
-set -xe # for debugging only
+#set -xe # for debugging only
 # check if this is an automate build not ask any questions
 [ "$CI" = true ] && AUTOMATE_BUILD=true
 

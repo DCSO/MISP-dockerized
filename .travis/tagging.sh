@@ -1,5 +1,5 @@
 #!/bin/bash
-set -xe
+set -e
 
 
 DOCKER_REPO="$1"
@@ -11,8 +11,3 @@ do
     k=$(echo $i|sed 's,....$,,')
     docker tag $DOCKER_REPO:$i $DOCKER_REPO:$k; \
 done
-
-
-echo "###########################################"
-docker images
-echo "###########################################"
