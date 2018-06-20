@@ -14,7 +14,7 @@ env:
 before_install:
 - travis_retry .travis/main.sh
 # pull all images 
-- $makefile pull-all
+- travis_retry $makefile pull-latest
 
 script:
   # Install and configure MISP
