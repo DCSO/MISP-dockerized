@@ -104,8 +104,10 @@ echo "" # Empty Line for a better overview.
 #   Check Write permissions
 #
 echo
-[ ! -d ./config/ssl ] && echo -n "create config directory..." && mkdir -p ./config/ssl  && echo "finished." 
-[ ! -d ./backup ]     && echo -n "create backup directory..." && mkdir ./backup         && echo "finished."
+[ ! -d ./config/ssl ]     && echo -n "create config and config/ssl directory..." && mkdir -p ./config/ssl  && echo "finished." 
+[ ! -d ./config/smime ]   && echo -n "create config/smime directory..."          && mkdir ./config/smime         && echo "finished."
+[ ! -d ./config/pgp ]     && echo -n "create config/pgp directory..."            && mkdir ./config/pgp         && echo "finished."
+[ ! -d ./backup ]         && echo -n "create backup directory..."                && mkdir ./backup         && echo "finished."
 
 function check_folder(){
     FOLDER="$1"
