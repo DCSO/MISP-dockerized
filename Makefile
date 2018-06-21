@@ -16,7 +16,7 @@ help:
 	\t make delete-unused 		| delete all unused docker container, volumes and images \n \
 	\t make security	 		| check docker security via misp-robot\n \
 	Configure: \n \
-	\t make change-ssl		| change ssl cert
+	\t make change-ssl		| change ssl cert								\
 	\t make configure 		| configure docker container via misp-robot\n \
 	\t make config-db 		| configure misp-db via misp-robot\n \
 	\t make config-server		| configure misp-server via misp-robot\n \
@@ -65,11 +65,16 @@ deploy:
 	@echo "###########	Deploy Environment	###########"
 	@sed -i "s,myHOST_PATH,$(CURDIR),g" "./docker-compose.yml"
 	@docker run --name misp-robot-init --rm -ti \
-		-v $(CURDIR):/srv/misp-dockerized \
-		-v $(CURDIR)/plabooks:/etc/ansible/playbooks/robot-playbook:ro \
+		-v $(CURDIR):/srv/MISP-dockerized \
     	-v $(CURDIR)/scripts:/srv/scripts:ro \
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
-		dcso/misp-dockerized-robot:1.0.2-ubuntu-dev bash -c "scripts/deploy_environment.sh /srv/misp-dockerized/"
+		dcso/misp-dockerized-robot:$(shell cat $(CURDIR)/.env|grep ROBOT_CONTAINER_TAG|cut -d = -f 2) bash -c "scripts/deploy_environment.sh /srv/MISP-dockerized/"
+log:
+	@docker exec -ti misp-robot docker-compose -f /srv/MISP-dockerized/docker-compose.yml logs
+
+log-f:
+	@docker exec -ti misp-robot docker-compose -f /srv/MISP-dockerized/docker-compose.yml logs -f
+
 
 # delete all misp container, volumes and images
 delete:

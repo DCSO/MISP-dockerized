@@ -12,27 +12,33 @@ env:
 
 
 before_install:
-- .travis/main.sh
-# pull all images 
-- $makefile pull-all
+  - travis_retry .travis/main.sh
+  # pull all images 
+  - travis_retry $makefile pull-latest
 
 script:
   # Install and configure MISP
   - travis_retry make start
+  - ls -la config/*/
   # test if MISP is ready
-  - travis_retry $makefile test
+  - $makefile test
 
 after_script:
-# retag all existing tags dev 2 public repo
-- $makefile tag server=${server_v} proxy=${proxy_v} robot=${robot_v} postfix=${postfix_v}
+  - export server_tag=$(cat .env |grep MISP_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export proxy_tag=$(cat .env |grep PROXY_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export robot_tag=$(cat .env |grep ROBOT_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export postfix_tag=$(cat .env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  # retag all existing tags dev 2 public repo
+  - $makefile tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag}
 
-# check if branch=master and the current build is no pull request, then push it to docker hub
-- if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
-    if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
-      echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
-      $makefile push server=${server_v} proxy=${proxy_v} robot=${robot_v} postfix=${postfix_v};
-    fi; 
-  fi;
+after_success:
+  # check if branch=master and the current build is no pull request, then push it to docker hub
+  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
+      if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
+        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
+        $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag};
+      fi; 
+    fi;
 
 # don't notify me when things fail
 notifications:

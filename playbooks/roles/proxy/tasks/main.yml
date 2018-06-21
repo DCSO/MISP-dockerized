@@ -30,17 +30,17 @@
     - "mv {{SERVER_CONFIG_PATH}}/{{HTTP_CONFIG_NAME}}.conf {{SERVER_CONFIG_PATH}}/{{HTTP_CONFIG_NAME}}"
   when: server_http.stat.exists is defined and server_http.stat.exists
 
-# - name: Proxy | copy template for Allowed IPs
-#   template:
-#     src: "template/{{ item }}.j2"
-#     dest: "{{SERVER_CONFIG_PATH}}/{{ item }}"
-#     force: yes
-#     owner: root
-#     group: root
-#     mode: '0644'
-#   with_items:
-#   - GLOBAL_allow_IPs
-#   when: ALLOW_ALL_IPs is defined and ALLOW_ALL_IPs == "no"
+- name: Proxy | copy template for Allowed IPs
+  template:
+    src: "template/{{ item }}.j2"
+    dest: "{{SERVER_CONFIG_PATH}}/{{ item }}"
+    force: yes
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:
+  - GLOBAL_allow_IPs
+  when: ALLOW_ALL_IPs is defined and ALLOW_ALL_IPs == "yes"
 
 - name: Proxy | update vars_common file
   template:

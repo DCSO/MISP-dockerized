@@ -2,6 +2,9 @@
 #description     :This script build the configuration for the MISP Container and their content.
 #==============================================================================
 #set -xe # for debugging only
+# check if this is an automate build not ask any questions
+[ "$CI" = true ] && AUTOMATE_BUILD=true
+
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 MISP_dockerized_repo="$SCRIPTPATH/.."
 DOCKER_COMPOSE_CONF="${MISP_dockerized_repo}/config/.env"
@@ -21,7 +24,7 @@ DOCKER_NETWORK="192.168.47.0/28"
 BRIDGE_NAME="mispbr01"
 # DB
 QUESTION_OWN_DB="no"
-MYSQL_HOST="misp-db"
+MYSQL_HOST="localhost"
 MYSQL_PORT="3306"
 MYSQL_DATABASE="misp"
 MYSQL_USER="misp"
@@ -54,10 +57,11 @@ QUESTION_DEBUG_PEERS="no"
 DB_CONTAINER_TAG="10.3.5"
 REDIS_CONTAINER_TAG="3.2.11"
 POSTFIX_CONTAINER_TAG="1.0.0-alpine"
-MISP_CONTAINER_TAG="2.4.92-ubuntu"
-MISP_TAG=$(echo $MISP_CONTAINER_TAG|cut -d - -f 1)
+MISP_CONTAINER_TAG="2.4.91-ubuntu"
 PROXY_CONTAINER_TAG="1.0.1-alpine"
 ROBOT_CONTAINER_TAG="1.0.2-ubuntu"
+
+MISP_TAG=$(echo $MISP_CONTAINER_TAG|cut -d - -f 1)
 ######################  END GLOBAL  ###########
 
 
@@ -69,7 +73,7 @@ function check_exists_configs(){
   EXIT_ANSIBLE=0
   # check config file and backup if its needed
   if [[ -f $DOCKER_COMPOSE_CONF ]]; then
-    read -r -p "A docker-compose config file exists and will be overwritten, are you sure you want to contine? [y/N] " response
+    read -r -p "A docker-compose config file exists and will be overwritten, are you sure you want to contine? [y/N] " -ei "n" response
     case $response in
       [yY][eE][sS]|[yY])
         # move existing configuration in backup folder and add the date of this movement
@@ -83,7 +87,7 @@ function check_exists_configs(){
   fi
   # check config file and backup if its needed
   if [[ -f $MISP_CONF_YML ]]; then
-    read -r -p "A misp config file exists and will be overwritten, are you sure you want to continue? [y/N] " response
+    read -r -p "A misp config file exists and will be overwritten, are you sure you want to continue? [y/N] " -ei "n" response
     case $response in
       [yY][eE][sS]|[yY])
         # move existing configuration in backup folder and add the date of this movement
@@ -172,8 +176,8 @@ function query_db_settings(){
         [nN][oO]|[nN])
           QUESTION_OWN_DB="no"
           # Set MISP_host to DB Container Name and Port
-          MYSQL_HOST="misp-db"; echo "Set DB Host to docker default: $MYSQL_HOST"
-          MYSQL_PORT=3306; echo "Set DB Host Port to docker default: $MYSQL_PORT"
+          echo "Set DB Host to docker default: $MYSQL_HOST"
+          echo "Set DB Host Port to docker default: $MYSQL_PORT"
           read -p "Which DB Root Password should we use for DB Connection [default: generated PW]: " -ei "$MYSQL_ROOT_PASSWORD" MYSQL_ROOT_PASSWORD
           break;
           ;;
@@ -197,7 +201,7 @@ function query_http_settings(){
   read -p "Which HTTP Serveradmin mailadress should we use [default: admin@${HOSTNAME}]: " -ei "$HTTP_SERVERADMIN" HTTP_SERVERADMIN
   while (true)
   do
-    read -r -p "Should we allow access to misp from every IP? [y/N]" -ei "$ALLOW_ALL_IPs" ALLOW_ALL_IPs
+    read -r -p "Should we allow access to misp from every IP? [y/N] " -ei "$ALLOW_ALL_IPs" ALLOW_ALL_IPs
     case $ALLOW_ALL_IPs in
       [yY][eE][sS]|[yY])
         ALLOW_ALL_IPs=yes
@@ -262,14 +266,18 @@ function query_network_settings(){
 #################################################
 # Start Execution:
 
-if [ "$1" == "--automated-build" ]
+if [ "$AUTOMATE_BUILD" = true ]
   then
     ################################################
     # Automated Startup only for travis
     ################################################
     # ask no questions only defaults
     echo "automatic build"
-    
+    ####
+    POSTFIX_CONTAINER_TAG="$POSTFIX_CONTAINER_TAG-dev"
+    MISP_CONTAINER_TAG="$MISP_CONTAINER_TAG-dev"
+    PROXY_CONTAINER_TAG="$PROXY_CONTAINER_TAG-dev"
+    ROBOT_CONTAINER_TAG="$ROBOT_CONTAINER_TAG-dev"
   else
     ################################################
     # Normal Startup
@@ -292,7 +300,7 @@ if [ "$1" == "--automated-build" ]
     echo "########## HTTP Configs ##########"
     query_http_settings
     echo
-    echo "########## Postifx Configs ##########"
+    echo "########## Postfix Configs ##########"
     query_postfix_settings
     echo
     echo "########## Network Configs ##########"
@@ -337,11 +345,11 @@ NO_PROXY=${NO_PROXY}
 # DB configuration
 # ------------------------------
 QUESTION_OWN_DB=${QUESTION_OWN_DB}
-MYSQL_HOST=${MYSQL_HOST}
-MYSQL_PORT=${MYSQL_PORT}
-MYSQL_DATABASE=${MYSQL_DATABASE}
-MYSQL_USER=${MYSQL_USER}
-MYSQL_PASSWORD=${MYSQL_PASSWORD}
+MYSQL_HOST="${MYSQL_HOST}"
+MYSQL_PORT="${MYSQL_PORT}"
+MYSQL_DATABASE="${MYSQL_DATABASE}"
+MYSQL_USER="${MYSQL_USER}"
+MYSQL_PASSWORD="${MYSQL_PASSWORD}"
 MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 # ------------------------------
 # HTTP/S configuration
@@ -358,17 +366,17 @@ HTTP_SERVERADMIN="${HTTP_SERVERADMIN}"
 # ------------------------------
 # misp-server env configuration
 # ------------------------------
-MISP_TAG=${MISP_TAG}
+MISP_TAG="${MISP_TAG}"
 MISP_prefix=${MISP_prefix}
 MISP_encoding=${MISP_encoding}
 # ------------------------------
 # Postfix Configuration
 # ------------------------------
-DOMAIN=${DOMAIN}
-RELAYHOST=${RELAYHOST}
-RELAY_USER=${RELAY_USER}
-RELAY_PASSWORD=${RELAY_PASSWORD}
-SENDER_ADDRESS=${SENDER_ADDRESS}
+DOMAIN="${DOMAIN}"
+RELAYHOST="${RELAYHOST}"
+RELAY_USER="${RELAY_USER}"
+RELAY_PASSWORD="${RELAY_PASSWORD}"
+SENDER_ADDRESS="${SENDER_ADDRESS}"
 QUESTION_DEBUG_PEERS=${QUESTION_DEBUG_PEERS}
 DEBUG_PEER=${DEBUG_PEER}
 ##################################################################
