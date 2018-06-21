@@ -18,7 +18,7 @@ before_install:
 
 script:
   # Install and configure MISP
-  - make start
+  - travis_retry make start
   - ls -la config/*/
   # test if MISP is ready
   - $makefile test
