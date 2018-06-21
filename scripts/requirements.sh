@@ -63,12 +63,15 @@ function check_URL(){
             echo "       Result: $COMMAND."
     fi
 }
-#check misp.dcso.de
+
+
+
 check_URL https://misp.dcso.de
-#check hub.docker.com
 check_URL https://docker.io
-# check github
 check_URL https://github.com/DCSO/misp-dockerized
+check_URL https://registry-1.docker.io/
+check_URL https://auth.docker.io
+check_URL production.cloudflare.docker.com
 
 ###############################  USER CHECKS    #########################
 echo "" # Empty Line for a better overview.
