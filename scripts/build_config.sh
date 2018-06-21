@@ -73,7 +73,7 @@ function check_exists_configs(){
   EXIT_ANSIBLE=0
   # check config file and backup if its needed
   if [[ -f $DOCKER_COMPOSE_CONF ]]; then
-    read -r -p "A docker-compose config file exists and will be overwritten, are you sure you want to contine? [y/N] " response
+    read -r -p "A docker-compose config file exists and will be overwritten, are you sure you want to contine? [y/N] " -ei "n" response
     case $response in
       [yY][eE][sS]|[yY])
         # move existing configuration in backup folder and add the date of this movement
@@ -87,7 +87,7 @@ function check_exists_configs(){
   fi
   # check config file and backup if its needed
   if [[ -f $MISP_CONF_YML ]]; then
-    read -r -p "A misp config file exists and will be overwritten, are you sure you want to continue? [y/N] " response
+    read -r -p "A misp config file exists and will be overwritten, are you sure you want to continue? [y/N] " -ei "n" response
     case $response in
       [yY][eE][sS]|[yY])
         # move existing configuration in backup folder and add the date of this movement
