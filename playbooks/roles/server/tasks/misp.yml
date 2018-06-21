@@ -34,13 +34,14 @@
     owner: www-data
     group: www-data
 
-- name: Configure MISP | Set Redis URL in config.php
-  replace:
-    name: "{{MISP_PATH}}/CakeResque/Config/config.php"
-    regexp: "'host'\\s*=>\\s*'localhost'" # 'host' => 'misp-redis'
-    replace: "'host' => '{{ REDIS_hostname }}'"
-    owner: www-data
-    group: www-data
+# IF redis is installed in misp-server this doesnt required.
+# - name: Configure MISP | Set Redis URL in CakeResque config.php
+#   replace:
+#     name: "{{MISP_PATH}}/CakeResque/Config/config.php"
+#     regexp: "'host'\\s*=>\\s*'localhost'" # 'host' => 'misp-redis'
+#     replace: "'host' => '{{ REDIS_hostname }}'"
+#     owner: www-data
+#     group: www-data
 
 ##### Check permissions #####
 - name: Configure MISP | Check permissions

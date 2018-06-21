@@ -50,3 +50,9 @@
 #     state: absent
 #     path: /gen_pgp.sh  
 
+# - name: PGP | Copy created public and private key back to outer MISP-dockerized GIT folder
+#   shell: "cp {{PGP_HOMEDIR}}/{{ item }} {{MAIN_REPO_CONFIG}}/pgp/"
+#   with_items:
+#   - "{{PGP_PUBLIC_FILENAME}}"
+#   - "{{PGP_PRIVATE_FILENAME}}"
+#   when: (public_file.stat.exists == False) and (private_file.stat.exists == False)

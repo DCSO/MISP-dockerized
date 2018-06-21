@@ -13,19 +13,19 @@
 - name: SSL | check if SSL DH params exists
   tags: ssl
   stat: 
-    path: "{{SSL_CONFIG_PATH}}/{{SSL_DH_FILENAME}}"
+    path: "{{MAIN_REPO_CONFIG}}/ssl/{{SSL_DH_FILENAME}}"
   register: dh_params
 
 - name: SSL | check if SSL cert  exists
   tags: ssl
   stat: 
-    path: "{{SSL_CONFIG_PATH}}/{{SSL_CERT_FILENAME}}"
+    path: "{{MAIN_REPO_CONFIG}}/ssl/{{SSL_CERT_FILENAME}}"
   register: cert_file
 
 - name: SSL | check if SSL key exists
   tags: ssl
   stat: 
-    path: "{{SSL_CONFIG_PATH}}/{{SSL_KEY_FILENAME}}"
+    path: "{{MAIN_REPO_CONFIG}}/ssl/{{SSL_KEY_FILENAME}}"
   register: cert_key_file
 ########################### CHECK if exists ###############################
 
@@ -115,3 +115,12 @@
     valid_in: 1209600
   ignore_errors: True
   run_once: true
+
+- name: SSL | Copy created cert and private key and dh back to outer MISP-dockerized GIT folder
+  shell: "cp {{SSL_CONFIG_PATH}}/{{ item }} {{MAIN_REPO_CONFIG}}/ssl/"
+  with_items:
+  - "{{SSL_DH_FILENAME}}"
+  - "{{SSL_CERT_FILENAME}}"
+  - "{{SSL_KEY_FILENAME}}"
+  - "{{SSL_CSR_FILENAME}}"
+  when: (cert_file.stat.exists == False) and (cert_key_file.stat.exists == False)
