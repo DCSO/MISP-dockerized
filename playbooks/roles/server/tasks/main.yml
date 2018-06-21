@@ -21,6 +21,10 @@
 #     group: root
 #     mode: 0640
 
+- name: Apache2 | Disable standard MISP config
+  shell: "mv {{ SERVER_CONFIG_PATH }}/misp.conf {{ SERVER_CONFIG_PATH }}/misp"
+  ignore_errors: True
+
 - name: Apache2 | Create & activate SSL configuration
   template:
     src: template/{{ item }}.j2

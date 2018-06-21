@@ -24,7 +24,7 @@
   with_items:
   - { regexp: "db password", replace: "{{ MYSQL_PASSWORD }}" }
   - { regexp: "db login", replace: "{{ MYSQL_USER }}" }
-  - { regexp: "localhost", replace: "{{ MYSQL_HOST }}" }
+  #- { regexp: "localhost", replace: "{{ MYSQL_HOST }}" }
 
 - name: Configure MISP | Set MISP-Url in config.php
   replace:

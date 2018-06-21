@@ -69,6 +69,12 @@ deploy:
     	-v $(CURDIR)/scripts:/srv/scripts:ro \
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
 		dcso/misp-dockerized-robot:$(shell cat $(CURDIR)/.env|grep ROBOT_CONTAINER_TAG|cut -d = -f 2) bash -c "scripts/deploy_environment.sh /srv/MISP-dockerized/"
+log:
+	@docker exec -ti misp-robot docker-compose -f /srv/MISP-dockerized/docker-compose.yml logs
+
+log-f:
+	@docker exec -ti misp-robot docker-compose -f /srv/MISP-dockerized/docker-compose.yml logs -f
+
 
 # delete all misp container, volumes and images
 delete:

@@ -10,14 +10,14 @@
     path: "{{MAIN_REPO_CONFIG}}/pgp/{{PGP_PRIVATE_FILENAME}}"
   register: private_file
 
-
 ################
 # IMPORT PGP Keys
 ################
 - name: PGP | Import Private and Public Key
-  shell:
-    gpg --import --homedir "{{PGP_HOMEDIR}}" "{{PGP_PUBLIC_FILENAME}}"
-    gpg --import --homedir $HOMEDIR "{{PGP_PRIVATE_FILENAME}}"
+  shell: gpg --import --homedir "{{PGP_HOMEDIR}}" "{{ item }}"
+  with_items:
+  - "{{PGP_PUBLIC_FILENAME}}"
+  - "{{PGP_PRIVATE_FILENAME}}"
   when: (public_file.stat.exists == True) and (private_file.stat.exists == True)  
 
 ###############
@@ -35,14 +35,14 @@
     - gen_pgp.sh
 
 
-- name: PGP | Generate a more high entropy - This can take a long time, so take a break and enjoy a cup of tea or coffee.] ***
+- name: PGP | Generate a more high entropy
   shell: rngd -r /dev/urandom
   when: (public_file.stat.exists == False) and (private_file.stat.exists == False)  
 
 
-- name: PGP | Generate a new Private and Public Key
-  shell: cd "{{PGP_HOMEDIR}}"; /gen_pgp.sh    
-  when: (public_file.stat.exists == False) and (private_file.stat.exists == False)  
+# - name: PGP | Generate a new Private and Public Key - This can take a long time, so take a break and enjoy a cup of tea or coffee.
+#   shell: cd "{{PGP_HOMEDIR}}"; /gen_pgp.sh    
+#  when: (public_file.stat.exists == False) and (private_file.stat.exists == False)  
 
 
 # - name: PGP | Delete gen_pgp.sh script
