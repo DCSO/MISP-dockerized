@@ -14,7 +14,8 @@ fi
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 COMPOSE_FILE=${SCRIPT_DIR}/../docker-compose.yml
-source ${SCRIPT_DIR}/../.env
+#source ${SCRIPT_DIR}/../.env
+source /srv/misp-dockerized/.env
 
 
 
@@ -29,26 +30,27 @@ function backup() {
   DOCKER_BACKUPDIR="${BACKUP_LOCATION}/misp-${DATE}"
   mkdir -p ${DOCKER_BACKUPDIR}
   chmod 755 ${DOCKER_BACKUPDIR}
-  
+  echo "--- Start Backup ---"
   while (( "$#" )); do
     case "$1" in
       server|all)
-        echo "Backup server at ${DOCKER_BACKUPDIR}/misp-${DATE}"
-        tar -cvpzf ${DOCKER_BACKUPDIR}/backup_server_data.tar.gz /srv/misp-server/MISP
-        tar -cvpzf ${DOCKER_BACKUPDIR}/backup_server_config.tar.gz /srv/misp-server/apache2
+        echo "Backup server at ${DOCKER_BACKUPDIR}"
+        tar -cvpzPf ${DOCKER_BACKUPDIR}/backup_server_data.tar.gz /srv/misp-server/MISP
+        tar -cvpzPf ${DOCKER_BACKUPDIR}/backup_server_config.tar.gz /srv/misp-server/apache2
       ;;&
       redis|all)
-        echo "Backup redis at ${DOCKER_BACKUPDIR}/misp-${DATE}"
+        echo "Backup redis at ${DOCKER_BACKUPDIR}"
         docker exec $(docker ps -qf name=misp-server) redis-cli save
-        tar -cvpzf ${DOCKER_BACKUPDIR}/backup_redis.tar.gz /srv/misp-redis
+        tar -cvpzPf ${DOCKER_BACKUPDIR}/backup_redis.tar.gz /srv/misp-redis
       ;;&      
       proxy|all)
-        echo "Backup proxy at ${DOCKER_BACKUPDIR}/misp-${DATE}"
-        tar -cvpzf ${DOCKER_BACKUPDIR}/backup_proxy_data.tar.gz /srv/misp-proxy/conf.d
+        echo "Backup proxy at ${DOCKER_BACKUPDIR}"
+        tar -cvpzPf ${DOCKER_BACKUPDIR}/backup_proxy_data.tar.gz /srv/misp-proxy/conf.d
       ;;&
       mysql|all)
-        echo "Backup mysql at ${DOCKER_BACKUPDIR}/misp-${DATE}"
-        mysqldump -u root -p${MYSQL_ROOT_PASSWORD} -h misp-db --all-databases | gzip > ${DOCKER_BACKUPDIR}/backup_mysql.gz
+        echo "Backup mysql at ${DOCKER_BACKUPDIR} - This could take a while"
+        mysqldump -u root -p${MYSQL_ROOT_PASSWORD} -h misp-server --all-databases | gzip > ${DOCKER_BACKUPDIR}/backup_mysql.gz & pid=$! 
+        loading_animation ${pid}
       ;;#&
       #config|all)
       #  echo "Backup config files at ${DOCKER_BACKUPDIR}/misp-${DATE}"
@@ -57,33 +59,43 @@ function backup() {
     esac
     shift
   done
+  echo "--- Done ---"
 }
 
 function restore() {
-  RESTORE_LOCATION="${BACKUP_LOCATION}"
+  RESTORE_LOCATION="${1}"
+  echo "--- Start Restore ---"
+  # echo "Restore location: ${RESTORE_LOCATION}" # Debug Output
   shift
   while (( "$#" )); do
     case "$1" in    
       redis|all)
         echo "Restore MISP Redis" #Debug
-        tar -xvzf /backup_redis.tar.gz
+        tar -xvzPf ${RESTORE_LOCATION}backup_redis.tar.gz
         docker exec misp-server service redis-server restart
       ;;&
       server|all)
         echo "Restore MISP Server" #Debug
-        tar -xvzf /backup_server_data.tar.gz
-        tar -xvzf /backup_server_config.tar.gz;
+        tar -xvzPf ${RESTORE_LOCATION}backup_server_data.tar.gz
+        tar -xvzPf ${RESTORE_LOCATION}backup_server_config.tar.gz;
         docker exec misp-server service apache2 restart
       ;;&
       mysql|all)
-        echo "Restore MISP DB" #Debug
-        gunzip < /backup_mysql.gz | cat > /backup_mysql.sql
-        mysql -u root -p${MYSQL_ROOT_PASSWORD} -h misp-db < /backup_mysql.sql
-        rm /backup_mysql.sql        
+        echo "Restore MISP DB - This could take a while" #Debug
+        echo "-> unpacking .sql file"
+        gunzip < ${RESTORE_LOCATION}backup_mysql.gz | cat > ${RESTORE_LOCATION}backup_mysql.sql & pid=$!
+        loading_animation ${pid}
+        echo "-> restore database"
+        mysql -u root -p${MYSQL_ROOT_PASSWORD} -h misp-server < ${RESTORE_LOCATION}backup_mysql.sql & pid=$!
+        loading_animation ${pid}
+        echo "-> clean up"
+        rm ${RESTORE_LOCATION}backup_mysql.sql    
+        #echo "-> restarting MySQL"
+        #docker exec misp-server service mysql restart
       ;;&
       proxy|all)
         echo "Restore MISP Proxy" #Debug
-        tar -xvzf /backup_proxy_data.tar.gz
+        tar -xvzPf ${RESTORE_LOCATION}backup_proxy_data.tar.gz
       ;;#&
       #config|all)
       #  echo "Restore config files"
@@ -91,7 +103,23 @@ function restore() {
       #;;&
     esac
     shift
+    echo "--- Done ---"
   done
+}
+
+function loading_animation() {
+  pid=${1}
+
+  spin='-\|/'
+
+  i=0
+  while kill -0 $pid 2>/dev/null
+  do
+    i=$(( (i+1) %4 ))
+    printf "\r${spin:$i:1} ...working"
+    sleep .1
+  done
+  echo ""
 }
 
 if [[ ${1} == "backup" ]]; then
@@ -105,7 +133,7 @@ elif [[ ${1} == "restore" ]]; then
   fi
   for folder in $(ls -d ${BACKUP_LOCATION}/misp-*/); do
     echo "[ ${i} ] - ${folder}"
-    FOLDER_SELECTION[${i}]="${fold er}"
+    FOLDER_SELECTION[${i}]="${folder}"
     ((i++))
   done
   echo
@@ -138,12 +166,15 @@ elif [[ ${1} == "restore" ]]; then
       echo "[ ${i} ] - SQL DB"
       FILE_SELECTION[${i}]="mysql"
       ((i++))
-    elif [[ ${file} =~ config ]]; then
-      echo "[ ${i} ] - Config files "
-      FILE_SELECTION[${i}]="config"
-      ((i++))
     fi
+    #elif [[ ${file} =~ config ]]; then
+    #  echo "[ ${i} ] - Config files "
+    #  FILE_SELECTION[${i}]="config"
+    #  ((i++))    
   done
+  echo "[ ${i} ] - All"
+  FILE_SELECTION[${i}]="all"
+  
   echo
   input_sel=0
   while [[ ${input_sel} -lt 1 ||  ${input_sel} -gt ${i} ]]; do
