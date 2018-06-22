@@ -1,11 +1,12 @@
 #!/bin/bash
+set -xe
 
 #examples:
 #lint .travis.yml
 
 #   travis cli
 function check_via_travis_cli(){
-    docker run -ti -v $(pwd):/project --rm skandyla/travis-cli "$1" "$2" $3
+    docker run -ti -v $(pwd)/..:/project --rm skandyla/travis-cli "$1" "$2" $3
 }
 
 while (($#)); do

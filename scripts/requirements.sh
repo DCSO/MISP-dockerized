@@ -1,9 +1,14 @@
 #!/bin/bash
 
+# check if this is an automate build not ask any questions
+[ "$CI" = true ] && AUTOMATE_BUILD=true
+
 # Variables
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 STATUS="OK"
 DOCKER_SOCK="/var/run/docker.sock"
+
+
 # Load Variables from Configuration
 source $SCRIPTPATH/../.env
 
@@ -58,12 +63,15 @@ function check_URL(){
             echo "       Result: $COMMAND."
     fi
 }
-#check misp.dcso.de
+
+
+
 check_URL https://misp.dcso.de
-#check hub.docker.com
 check_URL https://docker.io
-# check github
 check_URL https://github.com/DCSO/misp-dockerized
+check_URL https://registry-1.docker.io/
+check_URL https://auth.docker.io
+check_URL https://production.cloudflare.docker.com
 
 ###############################  USER CHECKS    #########################
 echo "" # Empty Line for a better overview.
@@ -104,8 +112,10 @@ echo "" # Empty Line for a better overview.
 #   Check Write permissions
 #
 echo
-[ ! -d ./config/ssl ] && echo -n "create config directory..." && mkdir -p ./config/ssl  && echo "finished." 
-[ ! -d ./backup ]     && echo -n "create backup directory..." && mkdir ./backup         && echo "finished."
+[ ! -d ./config/ssl ]     && echo -n "create config and config/ssl directory..." && mkdir -p ./config/ssl  && echo "finished." 
+[ ! -d ./config/smime ]   && echo -n "create config/smime directory..."          && mkdir ./config/smime         && echo "finished."
+[ ! -d ./config/pgp ]     && echo -n "create config/pgp directory..."            && mkdir ./config/pgp         && echo "finished."
+[ ! -d ./backup ]         && echo -n "create backup directory..."                && mkdir ./backup         && echo "finished."
 
 function check_folder(){
     FOLDER="$1"
@@ -130,18 +140,25 @@ function check_folder(){
 
 check_folder "config"
 check_folder "config/ssl"
+check_folder "config/pgp"
+check_folder "config/smime"
 check_folder "backup"
 
 
 
 ###############################  CERT CHECKS    #########################
 
+
+
+
 #
 #   Check SSL
 #
 echo
 if [ ! -f ./config/ssl/key.pem -a ! -f ./config/ssl/cert.pem ]; then
-    read -r -p "[WARN] No SSL certificate found. Should we create a self-signed certificate? [Y/n] " -ei "y" response
+    
+    [ "$AUTOMATE_BUILD" = true ] || read -r -p "[WARN] No SSL certificate found. Should we create a self-signed certificate? [Y/n] " -ei "y" response
+    [ "$AUTOMATE_BUILD" = true ] && echo "[WARN] No SSL certificate found. Should we create a self-signed certificate? [Y/n] y" && response="y"
     case $response in
     [yY][eE][sS]|[yY])
         echo "[OK] We create a self-signed certificate in the volume."
@@ -149,7 +166,7 @@ if [ ! -f ./config/ssl/key.pem -a ! -f ./config/ssl/cert.pem ]; then
         echo "     1. save certificate into:      $PWD/config/ssl/cert.pem"
         echo "     2. save private keyfile into:  $PWD/config/ssl/key.pem"
         echo "     3. do:                         make change-ssl"
-        read -r -p "     continue with ENTER"     
+        [ "$AUTOMATE_BUILD" = true ] || read -r -p "     continue with ENTER"     
         echo
         echo
         ;;
@@ -165,22 +182,24 @@ fi
 ###############################  SMIME CHECKS    #########################
 echo
 if [ ! -f ./config/smime/key.pem -a ! -f ./config/smime/cert.pem ]; then
-    read -r -p "[WARN] No S/MIME certificate found. Should we create a self-signed certificate? [Y/n] " -ei "y" response
+    [ "$AUTOMATE_BUILD" = true ] || read -r -p "[WARN] No S/MIME certificate found. Would you start with S/MIME? [y/N] " -ei "n" response
+    [ "$AUTOMATE_BUILD" = true ] && echo "[WARN] No S/MIME certificate found. Would you start with S/MIME? [y/N] n" && response="n"
     case $response in
     [yY][eE][sS]|[yY])
-        echo "[OK] We create a self-signed certificate in the volume."
-        echo "     To change the SSL certificate and private key later: "
+        STATUS="FAIL"
+        echo "[FAIL] Please save a S/MIME Certificate and the private Key."
         echo "     1. save certificate into:      $PWD/config/smime/cert.pem"
         echo "     2. save private keyfile into:  $PWD/config/smime/key.pem"
-        echo "     3. do:                         make change-smime"
         read -r -p "     continue with ENTER"     
         echo
         echo
+        exit 1
         ;;
     *)
-        STATUS="FAIL"
-        echo "[FAIL] No certificate file exists. Please save your cert at: $PWD/config/smime/cert.pem" 
-        echo "[FAIL] No certificate key exists. Please save your key at:   $PWD/config/smime/key.pem"
+        echo "[OK] No S/MIME want be used. If you want to use S/MIME Later:"
+        echo "     1. Please save your cert at:  $PWD/config/smime/cert.pem" 
+        echo "     2. Please save your key  at:  $PWD/config/smime/key.pem"
+        echo "     3. do:                        make change-smime"
         echo
         ;;
     esac
@@ -188,23 +207,24 @@ fi
 
 ###############################  PGP CHECKS    #########################
 echo
-if [ ! -f ./config/pgp/key.pem -a ! -f ./config/pgp/public.pem ]; then
-    read -r -p "[WARN] No PGP key found. Should we create a pgp key? [Y/n] " -ei "y" response
+if [ ! -f ./config/pgp/private.key -a ! -f ./config/pgp/public.key ]; then
+    [ "$AUTOMATE_BUILD" = true ] || read -r -p "[WARN] No PGP key found. Should we create a pgp key? [Y/n] " -ei "y" response
+    [ "$AUTOMATE_BUILD" = true ] && echo "[WARN] No PGP key found. Should we create a pgp key? [Y/n] y" && response="y"
     case $response in
     [yY][eE][sS]|[yY])
-        echo "[OK] We create a pgp key in the volume."
-        echo "     To change the SSL certificate and private key later: "
-        echo "     1. save public key into:      $PWD/config/pgp/public.pem"
-        echo "     2. save private key into:  $PWD/config/pgp/key.pem"
-        echo "     3. do:                         make change-pgp"
-        read -r -p "     continue with ENTER"     
+        echo "[OK] We create a pgp key in the volume. It will be saved to: $PWD/config/pgp/"
+        # echo "     To change the SSL certificate and private key later: "
+        # echo "     1. save public key into:      $PWD/config/pgp/public.pem"
+        # echo "     2. save private key into:  $PWD/config/pgp/key.pem"
+        # echo "     3. do:                         make change-pgp"
+        [ "$AUTOMATE_BUILD" = true ] || read -r -p "     continue with ENTER"     
         echo
         echo
         ;;
     *)
         STATUS="FAIL"
-        echo "[FAIL] No certificate file exists. Please save your cert at: $PWD/config/pgp/public.pem" 
-        echo "[FAIL] No certificate key exists. Please save your key at:   $PWD/config/pgp/key.pem"
+        echo "[FAIL] No certificate file exists. Please save your cert at: $PWD/config/pgp/public.key" 
+        echo "[FAIL] No certificate key exists.  Please save your key at:   $PWD/config/pgp/private.key"
         echo
         ;;
     esac
@@ -222,3 +242,4 @@ if [ $STATUS == "FAIL" ]
         echo
         exit 0
 fi
+##########################################################################

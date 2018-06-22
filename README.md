@@ -73,19 +73,18 @@ For the Installation the followed Connections need to available:
 
 | URL                  | Direction    | Protocol | Destination Port |
 | -------------------- | ------------ | -------- | ---------------- |
-| registry-1.docker.io | outgoing TCP | 443      |
+| *.docker.io | outgoing TCP | 443      |
+| *.docker.com | outgoing TCP | 443      |
 | github.com*          | outgoing     | TCP      | 443              |
-| hub.docker.com       | outgoing     | TCP      | 443              |
+| misp.dcso.de       | outgoing     | TCP      | 443              |
 
 ### Why registry-1.docker.io:
 This contains all required docker container:
 
 | Container   | based on         | purpose                        |
 | ----------- | ---------------- | ------------------------------ |
-| misp-redis  | official redis   | scheduled tasks                |
-| misp-db     | official mariadb | database to save MISP settings |
 | misp-proxy  | alpine           | reverse proxy                  |
-| misp-server | ubuntu           | MISP application server        |
+| misp-server | ubuntu           | MISP application server, redis server and DB server        |
 | misp-robot  | ubuntu           | deploy & configuration manager |
 
 ### Why github.com
@@ -181,14 +180,19 @@ $> make restore
 ```
 $ systemctl enable docker.service
 ```
-### Delete the Repository
+### Delete the Docker Instance
 To delete everything e.g. to start from scratch you can use this:
 ```
 &> make delete
 ```
+This delete the MISP images, network, containers and volumes.
 
 **Warning**
 `make delete` delete all volumes, leading to a loss of all your data. Make sure you have saved everything before you run it.
+
+### Logging
+If was possible, all logfiles are forwarded to docker log mechanism. Therefore you can do:
+`docker logs -f misp-server` or any other container name.
 
 ### Rebuild from Backup
 If you want to start from scratch or reinitialse your MISP instance, make sure you have delete everything. Clone the repository and start the container deployment with `make start`. After that restore all your volumes as described at `Backup and Recovery`.
