@@ -32,6 +32,8 @@ test:
 	true
 
 push:
+	@echo '### remove MISP images ###'
+    docker image rm $(docker image ls --format '{{.Repository}}:{{.Tag}}'|grep -e "-dev")
 	./push.sh $(REPOURL)-server $(server_tag);
 	./push.sh $(REPOURL)-proxy $(proxy_tag);
 	./push.sh $(REPOURL)-robot $(robot_tag);
