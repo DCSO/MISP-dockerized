@@ -28,35 +28,35 @@ MISP dockerized
 
 [1]: https://travis-ci.org/DCSO/MISP-dockerized-proxy.svg?branch=master
 [2]: https://travis-ci.org/DCSO/MISP-dockerized-proxy
-[3]: https://images.microbadger.com/badges/license/dcso/misp-proxy.svg
-[4]: https://images.microbadger.com/badges/image/dcso/misp-proxy.svg
-[5]: https://images.microbadger.com/badges/version/dcso/misp-proxy.svg
-[6]: https://images.microbadger.com/badges/commit/dcso/misp-proxy.svg
-[7]: https://microbadger.com/images/dcso/misp-proxy
+[3]: https://images.microbadger.com/badges/license/dcso/misp-dockerized-proxy.svg
+[4]: https://images.microbadger.com/badges/image/dcso/misp-dockerized-proxy.svg
+[5]: https://images.microbadger.com/badges/version/dcso/misp-dockerized-proxy.svg
+[6]: https://images.microbadger.com/badges/commit/dcso/misp-dockerized-proxy.svg
+[7]: https://microbadger.com/images/dcso/misp-dockerized-proxy
 
 [8]: https://travis-ci.org/DCSO/MISP-dockerized-server.svg?branch=master
 [9]: https://travis-ci.org/DCSO/MISP-dockerized-server
-[10]: https://images.microbadger.com/badges/license/dcso/misp-server.svg
-[11]: https://images.microbadger.com/badges/image/dcso/misp-server.svg
-[12]: https://images.microbadger.com/badges/version/dcso/misp-server.svg
-[13]: https://images.microbadger.com/badges/commit/dcso/misp-server.svg
-[14]: https://microbadger.com/images/dcso/misp-server
+[10]: https://images.microbadger.com/badges/license/dcso/misp-dockerized-server.svg
+[11]: https://images.microbadger.com/badges/image/dcso/misp-dockerized-server.svg
+[12]: https://images.microbadger.com/badges/version/dcso/misp-dockerized-server.svg
+[13]: https://images.microbadger.com/badges/commit/dcso/misp-dockerized-server.svg
+[14]: https://microbadger.com/images/dcso/misp-dockerized-server
 
 [15]: https://travis-ci.org/DCSO/MISP-dockerized-robot.svg?branch=master
 [16]: https://travis-ci.org/DCSO/MISP-dockerized-robot
-[17]: https://images.microbadger.com/badges/license/dcso/misp-robot.svg
-[18]: https://images.microbadger.com/badges/image/dcso/misp-robot.svg
-[19]: https://images.microbadger.com/badges/version/dcso/misp-robot.svg
-[20]: https://images.microbadger.com/badges/commit/dcso/misp-robot.svg
-[21]: https://microbadger.com/images/dcso/misp-robot
+[17]: https://images.microbadger.com/badges/license/dcso/misp-dockerized-robot.svg
+[18]: https://images.microbadger.com/badges/image/dcso/misp-dockerized-robot.svg
+[19]: https://images.microbadger.com/badges/version/dcso/misp-dockerized-robot.svg
+[20]: https://images.microbadger.com/badges/commit/dcso/misp-dockerized-robot.svg
+[21]: https://microbadger.com/images/dcso/misp-dockerized-robot
 
 [22]: https://travis-ci.org/DCSO/MISP-dockerized-postfix.svg?branch=master
 [23]: https://travis-ci.org/DCSO/MISP-dockerized-postfix
-[24]: https://images.microbadger.com/badges/license/dcso/misp-postfix.svg
-[25]: https://images.microbadger.com/badges/image/dcso/misp-postfix.svg
-[26]: https://images.microbadger.com/badges/version/dcso/misp-postfix.svg
-[27]: https://images.microbadger.com/badges/commit/dcso/misp-postfix.svg
-[28]: https://microbadger.com/images/dcso/misp-postfix
+[24]: https://images.microbadger.com/badges/license/dcso/misp-dockerized-postfix.svg
+[25]: https://images.microbadger.com/badges/image/dcso/misp-dockerized-postfix.svg
+[26]: https://images.microbadger.com/badges/version/dcso/misp-dockerized-postfix.svg
+[27]: https://images.microbadger.com/badges/commit/dcso/misp-dockerized-postfix.svg
+[28]: https://microbadger.com/images/dcso/misp-dockerized-postfix
 
 # Installation
 ## Software Prerequsites
