@@ -57,7 +57,7 @@ QUESTION_DEBUG_PEERS="no"
 DB_CONTAINER_TAG="10.3.5"
 REDIS_CONTAINER_TAG="3.2.11"
 POSTFIX_CONTAINER_TAG="1.0.0-alpine"
-MISP_CONTAINER_TAG="2.4.91-ubuntu"
+MISP_CONTAINER_TAG="2.4.92-ubuntu"
 PROXY_CONTAINER_TAG="1.0.1-alpine"
 ROBOT_CONTAINER_TAG="1.0.2-ubuntu"
 
@@ -165,7 +165,7 @@ function query_db_settings(){
   # check if a own DB is needed
     while (true)
     do
-      read -r -p "Do you want to use an existing Database? [y/N] " -ei "$QUESTION_OWN_DB" QUESTION_OWN_DB
+      read -r -p "Do you want to use an external Database? [y/N] " -ei "$QUESTION_OWN_DB" QUESTION_OWN_DB
       case $QUESTION_OWN_DB in
         [yY][eE][sS]|[yY])
           QUESTION_OWN_DB="yes"
