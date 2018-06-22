@@ -199,7 +199,7 @@ if [ ! -f ./config/smime/key.pem -a ! -f ./config/smime/cert.pem ]; then
         echo "[OK] No S/MIME want be used. If you want to use S/MIME Later:"
         echo "     1. Please save your cert at:  $PWD/config/smime/cert.pem" 
         echo "     2. Please save your key  at:  $PWD/config/smime/key.pem"
-        echo "     3. do:                        make change-smime"
+        echo "     3. do:                        make config-smime"
         echo
         ;;
     esac
@@ -212,11 +212,11 @@ if [ ! -f ./config/pgp/private.key -a ! -f ./config/pgp/public.key ]; then
     [ "$AUTOMATE_BUILD" = true ] && echo "[WARN] No PGP key found. Should we create a pgp key? [Y/n] y" && response="y"
     case $response in
     [yY][eE][sS]|[yY])
-        echo "[OK] We create a pgp key in the volume. It will be saved to: $PWD/config/pgp/"
-        # echo "     To change the SSL certificate and private key later: "
-        # echo "     1. save public key into:      $PWD/config/pgp/public.pem"
-        # echo "     2. save private key into:  $PWD/config/pgp/key.pem"
-        # echo "     3. do:                         make change-pgp"
+        #echo "[OK] We create a pgp key in the volume. It will be saved to: $PWD/config/pgp/"
+        echo "     To change the SSL certificate and private key later: "
+        echo "     1. save public key into:      $PWD/config/pgp/public.key"
+        echo "     2. save private key into:  $PWD/config/pgp/private.key"
+        echo "     3. do:                         make config-pgp"
         [ "$AUTOMATE_BUILD" = true ] || read -r -p "     continue with ENTER"     
         echo
         echo
