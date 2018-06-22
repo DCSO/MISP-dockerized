@@ -1,7 +1,7 @@
 #
 #	Makefile for robot
 #
-.PHONY:  push-image test test-travis tags show-images pull-all clone-all prepare-docker-compose prepare-makefile
+.PHONY:  push test test-travis tag pull-all pull-latest
 
 CONTAINER := robot server proxy postfix
 REPOURL := dcso/misp-dockerized
@@ -32,9 +32,8 @@ test:
 	true
 
 push:
-	@echo '### remove MISP images ###'
-    docker image rm $(docker image ls --format '{{.Repository}}:{{.Tag}}'|grep -e "-dev")
 	./push.sh $(REPOURL)-server $(server_tag);
 	./push.sh $(REPOURL)-proxy $(proxy_tag);
 	./push.sh $(REPOURL)-robot $(robot_tag);
 	./push.sh $(REPOURL)-postfix $(postfix_tag);
+

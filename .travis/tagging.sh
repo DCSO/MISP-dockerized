@@ -8,6 +8,6 @@ image_id=$(docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep $DOCKE
 image_tags=$(docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep $image_id|cut -d : -f 2;)
 for i in $image_tags
 do
-    k=$(echo $i|sed 's,....$,,')
+    k=$(echo $i|sed 's,-dev$,,')
     docker tag $DOCKER_REPO:$i $DOCKER_REPO:$k; \
 done
