@@ -38,10 +38,7 @@
 
 ##### restart Docker Container #####
 - name: Apache2 | Restart Apache2 docker container
-  # docker_container:
-  #   name: misp-server
-  #   state: started
-  #   restart: yes
+  tags: server, pgp, smime
   shell: docker restart misp-server
 
 
