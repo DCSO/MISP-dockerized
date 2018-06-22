@@ -9,45 +9,36 @@ env:
   # Docker Password only valid for this repo
   - secure: "DbvcY54cCCFfCNcqGNL4leThq/a9HTCVf5dj4hX7LKgh7xi9UYWVE9y/v/3i9kmVvptDu4c3xkUw1hKaLXIMJ0xSRvzJMtMQTz4awlymJmYXyJrV1Hvy6O+Xq961xff/gFSLYvntomlhDiA3f5e2VGYLacrVXExyQdy/uvy0I23ceyFgcRb2U0iRuBscWyvvXLyTYtvQFFnMlGwxXl789YK6YYIKf30AOZ6Q7ffm4VRPJ+ppRxJk4HxglBHcE+Ez81OW9PdXJTsUSBw8UcS0ZV7tD1cSOwL3lTCdlVYKEwDnSwIYLbXnnBhm4aG0L2flJ4hHUUk6TIQGTHtG2Z9wihLEjeEqLGg9vr9xE0XJdaL2stM6UgLJa9Oyb2Zl3UUQeaxkXU0LDWnwOBvamGhhWvHWi6qvVOh011Qb7WlLZcBY+Di+EGellb4NG8MvLmU0K0DEUQuCpi9yz5opiy1TYgZwNLBwRcX15nc3ePaqKLPkH5SQxFPMY9DkOpgtGNda7HRkEZ9Zy0d2MizzmS6/PfTKXQOzJordnWJdZ8lPh2mZmPN0Jpv4WsJZtszN+airztCeC0pkkkOurRI1Cz+cxky15QtfOPbuC7/3OCi60m5SoYxqNN172PdCZQdO2VY25YTTRiExLBJkA/Xwmc0b0DZ2maTownJX3yi8HOAhKcA="
   - makefile="make -C .travis/"
-  matrix:
-  # latest:
-  - server_v=latest proxy_v=latest robot_v=latest 
-  # every server version:
-  - server_v=2.4.88 proxy_v=latest robot_v=latest 
-  - server_v=2.4.89 proxy_v=latest robot_v=latest 
+
 
 before_install:
-- './.travis/main.sh'
-- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-# pull all private images 
-- $makefile pull-all
-# clone all repo in ~/<container name> e.g.: server, robot, proxy
-- $makefile clone-all
+  - travis_retry .travis/main.sh
+  # pull all images 
+  - travis_retry $makefile pull-latest
 
 script:
-  # check requirements
-  - make requirements
-  # before deploy rewrite docker-compose to use the private container
-  - $makefile prepare-docker-compose s=${server_v} p=${proxy_v} r=${robot_v}
-  # before deploy rewrite makefile to use the private container
-  - $makefile prepare-makefile r=${robot_v}
-  # build configuration
-  - docker run --name misp-robot-init --rm -ti -v $TRAVIS_BUILD_DIR:/srv/misp-dockerized dcso/misp-robot-private bash -c "scripts/build_config.sh --automated-build"
-  # deploy env
-  - make deploy
-  # configure env
-  - travis_retry make configure
-  - travis_retry $makefile test
+  # Install and configure MISP
+  - travis_retry make start
+  - ls -la config/*/
+  # test if MISP is ready
+  - $makefile test
 
 after_script:
-# retag all existing tags private 2 public repo
-- $makefile tag s=${server_v} p=${proxy_v} r=${robot_v}
-# check if branch=master and the current build is no pull request, then push it to docker hub
-- if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
-    if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
-      $makefile push;
-    fi; 
-  fi;
+  - export server_tag=$(cat .env |grep MISP_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export proxy_tag=$(cat .env |grep PROXY_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export robot_tag=$(cat .env |grep ROBOT_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export postfix_tag=$(cat .env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  # retag all existing tags dev 2 public repo
+  - $makefile tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag}
+
+after_success:
+  # check if branch=master and the current build is no pull request, then push it to docker hub
+  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
+      if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
+        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
+        $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag};
+      fi; 
+    fi;
 
 # don't notify me when things fail
 notifications:

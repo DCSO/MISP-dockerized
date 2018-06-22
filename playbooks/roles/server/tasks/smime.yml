@@ -1,0 +1,49 @@
+- name: S/MIME | check if SSL cert  exists
+  tags: smime
+  stat: 
+    path: "{{MAIN_REPO_CONFIG}}/smime/{{ SSL_CERT_FILENAME }}"
+  register: cert_file
+
+- name: S/MIME | check if SSL key exists
+  tags: smime
+  stat: 
+    path: "{{SMIME_CONFIG_PATH}}/{{SSL_KEY_FILENAME}}"
+  register: cert_key_file
+
+- name: S/MIME | Ensure that the existing certificate is still valid 2 weeks (1209600 seconds) from now
+  tags: smime
+  openssl_certificate:
+    path: "{{MAIN_REPO_CONFIG}}/smime/{{ SSL_CERT_FILENAME }}"
+    provider: assertonly
+    valid_in: 1209600
+  ignore_errors: True
+  run_once: true
+  when: (cert_file.stat.exists == True) and (cert_key_file.stat.exists == True) 
+
+- name: S/MIME | Copy certficate
+  tags: smime
+  copy:
+    src: "{{MAIN_REPO_CONFIG}}/smime/{{ item }}"
+    dest: "{{MISP_PATH}}/.smime/{{ SENDER_ADDRESS }}.pem"
+    force: yes
+    owner: root
+    group: root
+    mode: 0440
+  with_items:
+    - "{{SSL_CERT_FILENAME}}"
+  when: (cert_file.stat.exists == True)
+  run_once: true
+
+- name: S/MIME | Copy key file
+  tags: smime
+  copy:
+    src: "{{MAIN_REPO_CONFIG}}/smime/{{ item }}"
+    dest: "{{SMIME_CONFIG_PATH}}/{{ SENDER_ADDRESS }}.key"
+    force: yes
+    owner: root
+    group: root
+    mode: 0440
+  with_items:
+    - "{{SSL_KEY_FILENAME}}"
+  when: (cert_key_file.stat.exists == True) 
+  run_once: true
