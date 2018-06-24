@@ -23,15 +23,13 @@ script:
   # test if MISP is ready
   - $makefile test
 
-after_script:
+after_success:
   - export server_tag=$(cat .env |grep MISP_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   - export proxy_tag=$(cat .env |grep PROXY_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   - export robot_tag=$(cat .env |grep ROBOT_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   - export postfix_tag=$(cat .env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   # retag all existing tags dev 2 public repo
   - $makefile tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag}
-
-after_success:
   # check if branch=master and the current build is no pull request, then push it to docker hub
   - if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
       if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
