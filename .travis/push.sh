@@ -5,6 +5,7 @@ echo "###################################################################"
 echo "### remove MISP images ###";
 echo "### remove: $1 with tag $2"
 [ -z $(docker image ls --format '{{.Repository}}:{{.Tag}}'|grep -e "$2-dev") ] || docker image rm $(docker image ls --format '{{.Repository}}:{{.Tag}}'|grep -e "$2-dev")
+[ -z $(docker image ls --format '{{.Repository}}:{{.Tag}}'|grep -e "$1:latest-dev") ] || docker image rm $(docker image ls --format '{{.Repository}}:{{.Tag}}'|grep -e "$1:latest-dev")
 echo "###################################################################"
 docker images
 echo "###################################################################"
