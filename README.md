@@ -25,7 +25,7 @@ MISP dockerized
 | 2.4.91 | current | |
 | 2.4.92 | current | |
 
-See https://github.com/DCSO/MISP-dockerized-server for more details like avaiable and supported tags
+See https://github.com/DCSO/MISP-dockerized-server for more details like available and supported tags
 
 ### Docker Container Information
 
