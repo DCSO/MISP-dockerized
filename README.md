@@ -16,6 +16,17 @@ MISP dockerized
 </tr>
 </table>
 
+### Available MISP-Versions
+| Version | Status | Notes |
+| ---- | --- | --- | 
+| 2.4.88 | deprecated | |
+| 2.4.89 | deprecated | |
+| 2.4.90 | deprecated | |
+| 2.4.91 | current | |
+| 2.4.92 | current | |
+
+See https://github.com/DCSO/MISP-dockerized-server for more details like avaiable and supported tags
+
 ### Docker Container Information
 
 | Name         | Travis        | Docker Size & Layers | Latest Docker Version | Commit        | Container License |
@@ -160,8 +171,6 @@ Special for Quick Start in MISP: `https://www.circl.lu/doc/misp/quick-start/`
 ### Backup
 To back up your instance, **MISP dockerized** comes with a backup and restore script that will do the job for you. To create a backup start:
 ```
-$> ./scripts/backup_restore backup [service]
-or 
 $> make backup-[service] for example: make backup-all
 ```
 `[service]` is the service you want to create a backup. you can chose between `redis|mysql|server|proxy|all`
@@ -169,8 +178,6 @@ $> make backup-[service] for example: make backup-all
 ### Restore
 Works similar to the backup process. Just run the backup and restore script
 ```
-$> ./scripts/backup_restore restore
-or
 $> make restore
 ```
 
@@ -227,9 +234,9 @@ docker logs -f misp-server
 
 # What's missing
 Currently the following things are not yet implemented but are planned
-* GnuPG Support
-* Postfix
 * MISP-Modules
+* Wiki
+* FAQ's
 
 # Additional Informations
 ## MariaDB and Docker
