@@ -11,29 +11,24 @@
 - import_tasks: smime.yml
 
 
-
-# - name: Apache2 | Activate SSL config
-#   copy:
-#     src: "{{SERVER_CONFIG_PATH}}/misp.ssl.conf"
-#     dest: "{{SERVER_CONFIG_PATH}}/sites-enabled/misp.ssl.conf"
-#     force: yes
-#     owner: root
-#     group: root
-#     mode: 0640
-
 - name: Apache2 | Disable standard MISP config
   shell: "mv {{ SERVER_CONFIG_PATH }}/misp.conf {{ SERVER_CONFIG_PATH }}/misp"
   ignore_errors: True
 
-- name: Apache2 | Create & activate SSL configuration
-  template:
-    src: template/{{ item }}.j2
-    dest: "{{ SERVER_CONFIG_PATH }}/{{ item }}"
-    owner: root
-    group: root
-    mode: 0640
-  with_items:
-    - misp.ssl.conf
+- name: Apache2 | Enable SSL MISP config
+  shell: "mv {{ SERVER_CONFIG_PATH }}/misp.ssl {{ SERVER_CONFIG_PATH }}/misp.ssl.conf"
+  ignore_errors: True
+
+
+# - name: Apache2 | Create & activate SSL configuration
+#   template:
+#     src: template/{{ item }}.j2
+#     dest: "{{ SERVER_CONFIG_PATH }}/{{ item }}"
+#     owner: root
+#     group: root
+#     mode: 0640
+#   with_items:
+#     - misp.ssl.conf
 
 
 ##### restart Docker Container #####
