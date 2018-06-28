@@ -1,6 +1,5 @@
 - name: Configure MISP | Copy MISP default configuration files
   copy:
-    remote_src: True
     src: "{{MISP_PATH}}/Config/{{ item }}.default.php"
     dest: "{{MISP_PATH}}/Config/{{ item }}.php"
     #force: yes
@@ -24,13 +23,38 @@
   with_items:
   - { regexp: "db password", replace: "{{ MYSQL_PASSWORD }}" }
   - { regexp: "db login", replace: "{{ MYSQL_USER }}" }
-  #- { regexp: "localhost", replace: "{{ MYSQL_HOST }}" }
+  - { regexp: "localhost", replace: "{{ MYSQL_HOST }}" }
 
 - name: Configure MISP | Set MISP-Url in config.php
   replace:
     name: "{{MISP_PATH}}/Config/config.php"
     regexp: "'baseurl'\\s*=>\\s*''"
-    replace: "'baseurl'                        => 'https://{{ MISP_hostname }}:{{ MISP_hostport }}'"
+    replace: "'baseurl'                        => 'https://{{ MISP_FQDN }}'"
+    owner: www-data
+    group: www-data
+
+- name: Configure MISP | Set Email in config.php
+  replace:
+    name: "{{MISP_PATH}}/Config/config.php"
+    regexp: "'email'\\s*=>\\s*''"
+    replace: "'email'                        => '{{ SENDER_ADDRESS }}'"
+    owner: www-data
+    group: www-data
+
+- name: Configure MISP | Set Email in config.php
+  replace:
+    name: "{{MISP_PATH}}/Config/config.php"
+    regexp: "'contact'\\s*=>\\s*''"
+    replace: "'contact'                        => '{{ SENDER_ADDRESS }}'"
+    owner: www-data
+    group: www-data
+
+
+- name: Configure MISP | Change Salt in config.php
+  replace:
+    name: "{{MISP_PATH}}/Config/config.php"
+    regexp: "'salt'\\s*=>\\s*''"
+    replace: "'salt'                        => '{{ MISP_SALT }}'"
     owner: www-data
     group: www-data
 
@@ -39,7 +63,7 @@
 #   replace:
 #     name: "{{MISP_PATH}}/CakeResque/Config/config.php"
 #     regexp: "'host'\\s*=>\\s*'localhost'" # 'host' => 'misp-redis'
-#     replace: "'host' => '{{ REDIS_hostname }}'"
+#     replace: "'host' => '{{ REDIS_FQDN }}'"
 #     owner: www-data
 #     group: www-data
 
@@ -55,7 +79,3 @@
   - {file: "{{MISP_PATH}}/tmp", mode: "g+ws" }
   - {file: "{{MISP_PATH}}/attachments", mode: "g+ws" }
 
-
-
-
-## Configure the section "SMIME" in the server settings (Administration -> Server settings -> Encryption tab)
