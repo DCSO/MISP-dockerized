@@ -33,6 +33,7 @@ MYSQL_ROOT_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)"
 # MISP
 MISP_prefix=""
 MISP_encoding="utf8"
+MISP_SALT="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 50)"
 # HTTP
 HTTP_PORT="80"
 HTTPS_PORT="443"
@@ -224,8 +225,9 @@ function query_http_settings(){
 
 function query_misp_settings(){
   # read and set MISP config settings
-  read -p "Which MISP DB prefix should we use [default: '']: " -ei $MISP_prefix MISP_prefix
-  read -p "Which MISP Encoding should we use [default: utf8]: " -ei $MISP_encoding  MISP_encoding
+  # read -p "Which MISP DB prefix should we use [default: '']: " -ei $MISP_prefix MISP_prefix
+  # read -p "Which MISP Encoding should we use [default: utf8]: " -ei $MISP_encoding  MISP_encoding
+  read -p "If you do a fresh Installation, you should have a Salt. Is this SALT ok? " -ei $MISP_SALT  MISP_SALT
 }
 
 function query_postfix_settings(){
@@ -285,8 +287,6 @@ if [ "$AUTOMATE_BUILD" = true ]
     echo
     echo "########## Exists Configs ##########"
     check_exists_configs
-    # deactivated for the current releases:
-    #query_misp_tag
     echo
     echo "########## Hostname Configs ##########"
     query_hostname
@@ -305,10 +305,9 @@ if [ "$AUTOMATE_BUILD" = true ]
     echo
     echo "########## Network Configs ##########"
     query_network_settings
-    # deactivated for the current releases:
-    #echo
-    #echo "########## MISP Settings ##########"
-    #query_misp_settings
+    echo
+    echo "########## MISP Settings ##########"
+    query_misp_settings
 fi
 
 # Write Configuration
@@ -370,6 +369,7 @@ HTTP_SERVERADMIN="${HTTP_SERVERADMIN}"
 MISP_TAG="${MISP_TAG}"
 MISP_prefix=${MISP_prefix}
 MISP_encoding=${MISP_encoding}
+MISP_SALT=${MISP_SALT}
 # ------------------------------
 # Postfix Configuration
 # ------------------------------
@@ -402,13 +402,14 @@ MYSQL_PASSWORD: ${MYSQL_PASSWORD}
 # ------------------------------
 # MISP server configuration
 # ------------------------------
-MISP_hostname: ${HOSTNAME}
+MISP_FQDN: ${HOSTNAME}
 MISP_hostport: ${HTTPS_PORT}
 MISP_TAG: ${MISP_TAG}
+MISP_SALT=${MISP_SALT}
 # ------------------------------
 # MISP redis configuration
 # ------------------------------
-REDIS_hostname: misp-redis
+REDIS_FQDN: misp-redis
 REDIS_passwort:
 REDIS_port:
 # ------------------------------
