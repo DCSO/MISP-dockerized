@@ -22,24 +22,24 @@ MISP dockerized
 | 2.4.88 | deprecated | |
 | 2.4.89 | deprecated | |
 | 2.4.90 | deprecated | |
-| 2.4.91 | current | |
+| 2.4.91 | deprecated | |
 | 2.4.92 | current | |
+| 2.4.93 | current
 
 See https://github.com/DCSO/MISP-dockerized-server for more details like available and supported tags
 
 ### Docker Container Information
 
-| Name         | Travis        | Docker Size & Layers | Latest Docker Version | Commit        | Container License |
-| ------------ | ------------- | -------------------- | --------------------- | ------------- | ----------------- |
-| misp-proxy   | [![][1]][2]   | [![][3]][7]          | [![][4]][7]           | [![][5]][7]   | [![][6]][7]       |  |
-| misp-server  | [![][8]][9]   | [![][10]][14]        | [![][11]][14]         | [![][12]][14] | [![][13]][14]     |  |
-| misp-robot   | [![][15]][16] | [![][17]][21]        | [![][18]][21]         | [![][19]][21] | [![][20]][21]     |  |
-| misp-postfix | [![][22]][23] | [![][24]][28]        | [![][25]][28]         | [![][26]][28] | [![][27]][28]     |  |
+| Name         | Travis        | Commit | Docker Size & Layers | Latest Docker Version        | 
+| ------------ | ------------- | -------------------- | --------------------- | ------------- | 
+| misp-dockerized-proxy   | [![][1]][2]   | [![][6]][7]          | [![][4]][7]           | [![][5]][7]   | 
+| misp-dockerized-server  | [![][8]][9]   | [![][13]][14]        | [![][11]][14]         | [![][12]][14] | 
+| misp-dockerized-robot   | [![][15]][16] | [![][20]][21]        | [![][18]][21]         | [![][19]][21] | 
+| misp-dockerized-postfix | [![][22]][23] | [![][27]][28]        | [![][25]][28]         | [![][26]][28] | 
 
 
 [1]: https://travis-ci.org/DCSO/MISP-dockerized-proxy.svg?branch=master
 [2]: https://travis-ci.org/DCSO/MISP-dockerized-proxy
-[3]: https://images.microbadger.com/badges/license/dcso/misp-dockerized-proxy.svg
 [4]: https://images.microbadger.com/badges/image/dcso/misp-dockerized-proxy.svg
 [5]: https://images.microbadger.com/badges/version/dcso/misp-dockerized-proxy.svg
 [6]: https://images.microbadger.com/badges/commit/dcso/misp-dockerized-proxy.svg
@@ -47,7 +47,6 @@ See https://github.com/DCSO/MISP-dockerized-server for more details like availab
 
 [8]: https://travis-ci.org/DCSO/MISP-dockerized-server.svg?branch=master
 [9]: https://travis-ci.org/DCSO/MISP-dockerized-server
-[10]: https://images.microbadger.com/badges/license/dcso/misp-dockerized-server.svg
 [11]: https://images.microbadger.com/badges/image/dcso/misp-dockerized-server.svg
 [12]: https://images.microbadger.com/badges/version/dcso/misp-dockerized-server.svg
 [13]: https://images.microbadger.com/badges/commit/dcso/misp-dockerized-server.svg
@@ -55,7 +54,6 @@ See https://github.com/DCSO/MISP-dockerized-server for more details like availab
 
 [15]: https://travis-ci.org/DCSO/MISP-dockerized-robot.svg?branch=master
 [16]: https://travis-ci.org/DCSO/MISP-dockerized-robot
-[17]: https://images.microbadger.com/badges/license/dcso/misp-dockerized-robot.svg
 [18]: https://images.microbadger.com/badges/image/dcso/misp-dockerized-robot.svg
 [19]: https://images.microbadger.com/badges/version/dcso/misp-dockerized-robot.svg
 [20]: https://images.microbadger.com/badges/commit/dcso/misp-dockerized-robot.svg
@@ -63,7 +61,6 @@ See https://github.com/DCSO/MISP-dockerized-server for more details like availab
 
 [22]: https://travis-ci.org/DCSO/MISP-dockerized-postfix.svg?branch=master
 [23]: https://travis-ci.org/DCSO/MISP-dockerized-postfix
-[24]: https://images.microbadger.com/badges/license/dcso/misp-dockerized-postfix.svg
 [25]: https://images.microbadger.com/badges/image/dcso/misp-dockerized-postfix.svg
 [26]: https://images.microbadger.com/badges/version/dcso/misp-dockerized-postfix.svg
 [27]: https://images.microbadger.com/badges/commit/dcso/misp-dockerized-postfix.svg
@@ -84,12 +81,12 @@ For the Installation the followed Connections need to available:
 
 | URL                  | Direction    | Protocol | Destination Port |
 | -------------------- | ------------ | -------- | ---------------- |
-| *.docker.io | outgoing TCP | 443      |
-| *.docker.com | outgoing TCP | 443      |
+| *.docker.io | outgoing | TCP | 443      |
+| *.docker.com | outgoing |  TCP | 443      |
 | github.com*          | outgoing     | TCP      | 443              |
 | misp.dcso.de       | outgoing     | TCP      | 443              |
 
-### Why registry-1.docker.io:
+### Why docker.io and docker.com:
 This contains all required docker container:
 
 | Container   | based on         | purpose                        |
@@ -108,7 +105,7 @@ This contains:
 ### 1. Clone Repository
 After cloning the repository change the branch to the required, for example:
 ```
-$> git clone https://github.com/DCSO/MISP-dockerized.git && git checkout tags/2.4.88-beta.3
+$> git clone https://github.com/DCSO/MISP-dockerized.git
 ```
 
 ### 2. Configure TLS Certificates and Diffie-Hellmann File (optional)
