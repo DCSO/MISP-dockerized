@@ -5,7 +5,7 @@ networks:
   misp-backend:
     driver: bridge
     driver_opts:
-     com.docker.network.bridge.name: "mispbr0"
+     com.docker.network.bridge.name: "mispbr01"
      com.docker.network.enable_ipv6: "false"
     #internal: true
     ipam:
@@ -56,6 +56,20 @@ services:
   #       aliases:
   #       - misp-redis
   
+    ### MISP Modules ###
+  misp-modules:
+    image: dcso/misp-dockerized-misp-modules:${MISP_MODULES_CONTAINER_TAG}
+    container_name: misp-modules
+    depends_on:
+      - "misp-server"
+    restart: on-failure
+    environment:
+      REDIS_FQDN: misp-server
+    networks:
+      misp-backend:
+        aliases:
+          - misp-modules
+
   ### Postfix ###
   misp-postfix:
     image: dcso/misp-dockerized-postfix:${POSTFIX_CONTAINER_TAG}
