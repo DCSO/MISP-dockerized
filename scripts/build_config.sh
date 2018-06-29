@@ -55,12 +55,13 @@ QUESTION_DEBUG_PEERS="no"
 ############################################
 # Start Global Variable Section
 ############################################
-DB_CONTAINER_TAG="10.3.5"
-REDIS_CONTAINER_TAG="3.2.11"
+DB_CONTAINER_TAG="10.3"
+REDIS_CONTAINER_TAG="4.0-alpine"
 POSTFIX_CONTAINER_TAG="1.0.0-alpine"
 MISP_CONTAINER_TAG="2.4.92-ubuntu"
 PROXY_CONTAINER_TAG="1.0.1-alpine"
 ROBOT_CONTAINER_TAG="1.0.2-ubuntu"
+MISP_MODULES_CONTAINER_TAG="1.0.0-debian"
 
 MISP_TAG=$(echo $MISP_CONTAINER_TAG|cut -d - -f 1)
 ######################  END GLOBAL  ###########
@@ -200,27 +201,29 @@ function query_http_settings(){
   read -p "Which HTTPS Port should we expose [default: 443]: " -ei "$HTTPS_PORT" HTTPS_PORT
   read -p "Which HTTP Port should we expose [default: 80]: " -ei "$HTTP_PORT" HTTP_PORT
   read -p "Which HTTP Serveradmin mailadress should we use [default: admin@${HOSTNAME}]: " -ei "$HTTP_SERVERADMIN" HTTP_SERVERADMIN
-  while (true)
-  do
-    read -r -p "Should we allow access to misp from every IP? [y/N] " -ei "$ALLOW_ALL_IPs" ALLOW_ALL_IPs
-    case $ALLOW_ALL_IPs in
-      [yY][eE][sS]|[yY])
-        ALLOW_ALL_IPs=yes
-        break
-        ;;
-      [nN][oO]|[nN])
-        ALLOW_ALL_IPs=no
-        read -p "Which IPs should have access? [default: 192.168.0.0/16 172.16.0.0/12 10.0.0.0/8]: " -ei "$HTTP_ALLOWED_IP" HTTP_ALLOWED_IP
-        break
-        ;;
-      [eE][xX][iI][tT])
-        exit 1
-        ;;
-      *)
-        echo -e "\nplease only choose [y|n] for the question!\n"
-      ;;
-    esac
-  done
+ 
+  ### DEACTIVATED
+  # while (true)
+  # do
+  #   read -r -p "Should we allow access to misp from every IP? [y/N] " -ei "$ALLOW_ALL_IPs" ALLOW_ALL_IPs
+  #   case $ALLOW_ALL_IPs in
+  #     [yY][eE][sS]|[yY])
+  #       ALLOW_ALL_IPs=yes
+  #       break
+  #       ;;
+  #     [nN][oO]|[nN])
+  #       ALLOW_ALL_IPs=no
+  #       read -p "Which IPs should have access? [default: 192.168.0.0/16 172.16.0.0/12 10.0.0.0/8]: " -ei "$HTTP_ALLOWED_IP" HTTP_ALLOWED_IP
+  #       break
+  #       ;;
+  #     [eE][xX][iI][tT])
+  #       exit 1
+  #       ;;
+  #     *)
+  #       echo -e "\nplease only choose [y|n] for the question!\n"
+  #     ;;
+  #   esac
+  # done
 }
 
 function query_misp_settings(){
@@ -280,6 +283,7 @@ if [ "$AUTOMATE_BUILD" = true ]
     MISP_CONTAINER_TAG="$MISP_CONTAINER_TAG-dev"
     PROXY_CONTAINER_TAG="$PROXY_CONTAINER_TAG-dev"
     ROBOT_CONTAINER_TAG="$ROBOT_CONTAINER_TAG-dev"
+    MISP_MODULES_CONTAINER_TAG="$MISP_MODULES_CONTAINER_TAG-dev"
   else
     ################################################
     # Normal Startup
@@ -333,6 +337,7 @@ POSTFIX_CONTAINER_TAG=${POSTFIX_CONTAINER_TAG}
 MISP_CONTAINER_TAG=${MISP_CONTAINER_TAG}
 PROXY_CONTAINER_TAG=${PROXY_CONTAINER_TAG}
 ROBOT_CONTAINER_TAG=${ROBOT_CONTAINER_TAG}
+MISP_MODULES_CONTAINER_TAG=${MISP_MODULES_CONTAINER_TAG}
 # ------------------------------
 # Proxy Configuration
 # ------------------------------
@@ -405,7 +410,7 @@ MYSQL_PASSWORD: ${MYSQL_PASSWORD}
 MISP_FQDN: ${HOSTNAME}
 MISP_hostport: ${HTTPS_PORT}
 MISP_TAG: ${MISP_TAG}
-MISP_SALT=${MISP_SALT}
+MISP_SALT: ${MISP_SALT}
 # ------------------------------
 # MISP redis configuration
 # ------------------------------
