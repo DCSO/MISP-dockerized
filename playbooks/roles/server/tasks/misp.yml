@@ -2,7 +2,7 @@
   copy:
     src: "{{MISP_PATH}}/Config/{{ item }}.default.php"
     dest: "{{MISP_PATH}}/Config/{{ item }}.php"
-    #force: yes
+    force: no
     owner: www-data
     group: www-data
     mode: 0750
@@ -36,19 +36,26 @@
 - name: Configure MISP | Set Email in config.php
   replace:
     name: "{{MISP_PATH}}/Config/config.php"
-    regexp: "'email'\\s*=>\\s*''"
-    replace: "'email'                        => '{{ SENDER_ADDRESS }}'"
+    regexp: "email@address.com"
+    replace: "{{ SENDER_ADDRESS }}"
     owner: www-data
     group: www-data
 
 - name: Configure MISP | Set Email in config.php
   replace:
     name: "{{MISP_PATH}}/Config/config.php"
-    regexp: "'contact'\\s*=>\\s*''"
-    replace: "'contact'                        => '{{ SENDER_ADDRESS }}'"
+    regexp: "admin@misp.example.com"
+    replace: "{{ SENDER_ADDRESS }}"
     owner: www-data
     group: www-data
 
+- name: Configure MISP | Set GNUPG Homedir in config.php
+  replace:
+    name: "{{MISP_PATH}}/Config/config.php"
+    regexp: "'homedir'\\s*=>\\s*''"
+    replace: "'homedir'                        => '/var/www/MISP/.gnupg'"
+    owner: www-data
+    group: www-data
 
 - name: Configure MISP | Change Salt in config.php
   replace:
