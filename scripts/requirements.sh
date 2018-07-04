@@ -10,7 +10,7 @@ DOCKER_SOCK="/var/run/docker.sock"
 
 
 # Load Variables from Configuration
-source $SCRIPTPATH/../.env
+[ -e "$SCRIPTPATH/../.env" ] && source $SCRIPTPATH/../.env
 
 # to add options to the echo command
     echo () {
