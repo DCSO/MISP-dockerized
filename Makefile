@@ -8,61 +8,62 @@
 help:
 	@echo "Please use one of the following options:\n \
 	General: \n \
-	\t make start			| Initial Command for: requirements, build-config, deploy\n \
-	\t make requirements	 	| check if server fullfill all requirements\n \
-	\t make build-config	 	| build configuration\n \
-	\t make deploy 			| deploy docker container\n \
-	\t make delete 			| delete all docker container, volumes and images for MISP\n \
-	\t make delete-unused 		| delete all unused docker container, volumes and images \n \
-	\t make security	 		| check docker security via misp-robot\n \
+	       make start			| Initial Command for: requirements, build-config, deploy\n \
+	       make requirements	 	| check if server fullfill all requirements\n \
+	       make build-config	 	| build configuration\n \
+	       make deploy 			| deploy docker container\n \
+	       make delete 			| delete all docker container, volumes and images for MISP\n \
+	       make delete-unused 		| delete all unused docker container, volumes and images \n \
+	       make security	 		| check docker security via misp-robot\n \
 	Configure: \n \
-	\t make change-ssl		| change ssl cert								\
-	\t make configure 		| configure docker container via misp-robot\n \
-	\t make config-db 		| configure misp-db via misp-robot\n \
-	\t make config-server		| configure misp-server via misp-robot\n \
-	\t make config-proxy 		| configure misp-proxy via misp-robot\n \
+	       make change-ssl		| change ssl cert								\
+	       make configure 		| configure docker container via misp-robot\n \
+	       make config-db 		| configure misp-db via misp-robot\n \
+	       make config-server		| configure misp-server via misp-robot\n \
+	       make config-proxy 		| configure misp-proxy via misp-robot\n \
 	Backup: \n \
-	\t make backup-all 		| backup all misp volumes via misp-robot\n \
-	\t make backup-server		| backup misp-server volumes via misp-robot\n \
-	\t make backup-redis		| backup misp-redis volumes via misp-robot\n \
-	\t make backup-db			| backup misp-db volumes via misp-robot\n \
-	\t make backup-proxy		| backup misp-proxy volumes via misp-robot\n \
-	\t make backup-robot		| backup misp-robot volumes via misp-robot\n \
-	\t make restore			| restore volumes via misp-robot\n \
+	       make backup-all 		| backup all misp volumes via misp-robot\n \
+	       make backup-server		| backup misp-server volumes via misp-robot\n \
+	       make backup-redis		| backup misp-redis volumes via misp-robot\n \
+	       make backup-db			| backup misp-db volumes via misp-robot\n \
+	       make backup-proxy		| backup misp-proxy volumes via misp-robot\n \
+	       make backup-robot		| backup misp-robot volumes via misp-robot\n \
+	       make restore			| restore volumes via misp-robot\n \
 	\nFor testing or manul docker container only:\n \
-	\t make build-all	 		| build all misp container\n \
-	\t make build-server	 	| build misp-server\n \
-	\t make build-proxy 		| build misp-proxy\n \
-	\t make build-robot 		| build misp-robot\n \
-	\t make help	 		| show help\n"
+	       make build-all	 		| build all misp container\n \
+	       make build-server	 	| build misp-server\n \
+	       make build-proxy 		| build misp-proxy\n \
+	       make build-robot 		| build misp-robot\n \
+	       make help	 		| show help\n"
 
 # Start
 start: requirements build-config deploy configure
 	@echo
-	@echo "###########	MISP environment is ready	###########"
+	@echo " ###########	MISP environment is ready	###########"
 	@echo "Please go to: $(shell cat .env|grep HOSTNAME|cut -d = -f 2)"
 	@echo "Login credentials:"
-	@echo "\tUsername: admin@admin.test"
-	@echo "\tPassword: admin"
+	@echo "      Username: admin@admin.test"
+	@echo "      Password: admin"
 	@echo
 	@echo "Do not forget to change your SSL certificate with:    make change-ssl"
-	@echo "##########################################################"
+	@echo " ##########################################################"
 	@echo
 
 ####################	used as host
 # Check requirements
 requirements:
-	@echo "###########	Checking Requirements	###########"
+	@echo " ###########	Checking Requirements	###########"
 	@scripts/requirements.sh
 
 # Build Configuration
 build-config:
-	@echo "###########	Build Configuration	###########"
+	@echo " ###########	Build Configuration	###########"
 	@scripts/build_config.sh
+	@echo " ###################################################"
 
 # Start Docker environment
 deploy: 
-	@echo "###########	Deploy Environment	###########"
+	@echo " ###########	Deploy Environment	###########"
 	@sed -i "s,myHOST_PATH,$(CURDIR),g" "./docker-compose.yml"
 	@docker run --name misp-robot-init --rm -ti \
 		-v $(CURDIR):/srv/MISP-dockerized \
@@ -87,12 +88,12 @@ delete-unused:
 
 # check with docker security check
 security:
-	@echo "###########	Check Docker Security	###########	"
+	@echo " ###########	Check Docker Security	###########	"
 	docker exec -it misp-robot /bin/bash -c "scripts/check_docker_security.sh"
 
 # configure
 configure:
-	@echo "	###########	Configure Environment	###########	"
+	@echo " ###########	Configure Environment	###########	"
 	@docker exec -it misp-robot /bin/bash -c "/srv/scripts/configure_misp.sh"
 config-server:
 	docker exec -it misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t server /etc/ansible/playbooks/robot-playbook/site.yml"
