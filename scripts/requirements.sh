@@ -50,7 +50,7 @@ function check_URL(){
     #set -xv
     URL="$1"
     [ "$USE_PROXY" == "yes" ] && PROXY=" -x $HTTP_PROXY"
-    OPTIONS="-vs --connect-timeout 5 -m 7 $PROXY"
+    OPTIONS="-vs --connect-timeout 60 -m 30 $PROXY"
     COMMAND="$(curl $OPTIONS $URL 2>&1|grep 'Connected to')"
     
     if [ -z "$COMMAND" ]
