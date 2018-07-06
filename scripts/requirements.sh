@@ -10,7 +10,7 @@ DOCKER_SOCK="/var/run/docker.sock"
 
 
 # Load Variables from Configuration
-[ -e "$SCRIPTPATH/../.env" ] && source $SCRIPTPATH/../.env
+[ -e "$SCRIPTPATH/../.env" ] && source $SCRIPTPATH/../config/config.env
 
 # to add options to the echo command
     echo () {
@@ -67,11 +67,13 @@ function check_URL(){
 
 
 check_URL https://misp.dcso.de
-check_URL https://docker.io
-check_URL https://github.com/DCSO/misp-dockerized
-check_URL https://registry-1.docker.io/
-check_URL https://auth.docker.io
-check_URL https://production.cloudflare.docker.com
+check_URL https://dockerhub.dcso.de
+check_URL http://dockerhub.dcso.de
+# check_URL https://docker.io
+# check_URL https://github.com/DCSO/misp-dockerized
+# check_URL https://registry-1.docker.io/
+# check_URL https://auth.docker.io
+# check_URL https://production.cloudflare.docker.com
 
 ###############################  USER CHECKS    #########################
 echo "" # Empty Line for a better overview.
@@ -213,23 +215,28 @@ if [ ! -f ./config/pgp/private.key -a ! -f ./config/pgp/public.key ]; then
     case $response in
     [yY][eE][sS]|[yY])
         #echo "[OK] We create a pgp key in the volume. It will be saved to: $PWD/config/pgp/"
-        echo "     To change the SSL certificate and private key later: "
+        echo "     To change the PGP public and private file later: "
         echo "     1. save public key into:      $PWD/config/pgp/public.key"
         echo "     2. save private key into:  $PWD/config/pgp/private.key"
         echo "     3. do:                         make config-pgp"
         [ "$AUTOMATE_BUILD" = true ] || read -r -p "     continue with ENTER"     
         echo
         echo
+        touch ./config/pgp/pgp.enable
         ;;
     *)
         STATUS="FAIL"
+        # echo "     To change the PGP public and private file later: "
+        # echo "     1. save public key into:      $PWD/config/pgp/public.key"
+        # echo "     2. save private key into:  $PWD/config/pgp/private.key"
+        # echo "     3. do:                         make config-pgp"
+        # [ "$AUTOMATE_BUILD" = true ] || read -r -p "     continue with ENTER" 
         echo "[FAIL] No certificate file exists. Please save your cert at: $PWD/config/pgp/public.key" 
         echo "[FAIL] No certificate key exists.  Please save your key at:   $PWD/config/pgp/private.key"
         echo
         ;;
     esac
 fi
-
 ###############################  END Result    #########################
 echo "End result:"
 if [ $STATUS == "FAIL" ]
