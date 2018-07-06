@@ -59,7 +59,6 @@ requirements:
 build-config:
 	@echo " ###########	Build Configuration	###########"
 	@scripts/build_config.sh
-	@echo " ###################################################"
 
 # Start Docker environment
 deploy: 
@@ -132,3 +131,13 @@ backup-robot:
 # restore service
 restore:
 	docker exec -it misp-robot /bin/bash -c "scripts/backup_restore.sh restore"
+
+# upgrade to a new version
+upgrade:
+	@echo " ###########	Upgrade MISP-dockerized to a new version	###########"
+	@scripts/upgrade.sh
+
+# Update current MISP to all new functions in this Version without a new version
+update:
+	@echo " ###########	Update MISP-dockerized	###########"
+	@scripts/update.sh
