@@ -69,8 +69,8 @@ function check_URL(){
 check_URL https://misp.dcso.de
 check_URL https://dockerhub.dcso.de
 check_URL http://dockerhub.dcso.de
+check_URL https://github.com/DCSO/misp-dockerized
 # check_URL https://docker.io
-# check_URL https://github.com/DCSO/misp-dockerized
 # check_URL https://registry-1.docker.io/
 # check_URL https://auth.docker.io
 # check_URL https://production.cloudflare.docker.com
