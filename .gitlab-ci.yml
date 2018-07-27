@@ -1,0 +1,57 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+stages:
+- build
+- deploy
+
+variables:
+  #CONTAINER_TEST_IMAGE: my-docker-hub/$CI_PROJECT_ID:$CI_BUILD_REF_NAME_test
+  # The following variables are setup via gitlab project group:
+  # DOCKER_HUB_TOKEN
+  # DOCKER_USERNAME
+  # DOCKER_PASSWORD
+  # INTERNAL_REGISTRY_HOST
+  # INTERNAL_REGISTRY_USER
+  # INTERNAL_REGISTRY_PW
+
+before_script:
+- apk add --no-cache make bash sudo git
+- export makefile="make -C .travis/"
+- export CI="true"
+
+Test:
+  stage: build
+  script:
+  # download latest images from registry
+  - $makefile pull-latest
+  # start deploy script
+  - make install
+  - ls -la config/*/
+  # test if MISP is ready
+  - $makefile test
+  # prepare retagging
+  - export server_tag=$(cat .env |grep MISP_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export proxy_tag=$(cat .env |grep PROXY_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export robot_tag=$(cat .env |grep ROBOT_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export postfix_tag=$(cat .env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  # retag all existing tags dev 2 public repo
+  - $makefile tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag}
+
+upload_image_internal_registry:
+  stage: deploy
+  only: 
+  - master
+  script:
+    - echo "$INTERNAL_REGISTRY_PW" | docker login -u "$INTERNAL_REGISTRY_USER" --password-stdin "$INTERNAL_REGISTRY_HOST"
+    - $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag};
+
+.upload_image_hub.docker.com:
+  stage: deploy
+  only: 
+  - master
+  script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag};
