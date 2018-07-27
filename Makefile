@@ -37,7 +37,7 @@ help:
 	       make help	 		| show help\n"
 
 # Start
-start: requirements build-config deploy configure
+install: requirements build-config deploy configure
 	@echo
 	@echo " ###########	MISP environment is ready	###########"
 	@echo "Please go to: $(shell cat .env|grep HOSTNAME|cut -d = -f 2)"
@@ -82,6 +82,18 @@ delete:
 
 delete-unused:
 	docker system prune
+
+stop-all:
+	docker stop misp-server
+	docker stop misp-proxy
+	docker stop misp-postfix
+	docker stop misp-robot
+
+start-all:
+	docker start misp-server
+	docker start misp-proxy
+	docker start misp-postfix
+	docker start misp-robot
 
 ####################	used in misp-robot	####################
 
