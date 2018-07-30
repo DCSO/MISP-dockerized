@@ -26,44 +26,44 @@ function check_if_vars_exists() {
   echo -n "check if all vars exists..."
   # Default Variables for the config:
   # Hostname
-  [ -z "$HOSTNAME" ] && query_hostname
+  [ -z "$HOSTNAME" ] && HOSTNAME="`hostname -f`" && QUERY_HOSTNAME="yes"
   # Network
-  [ -z "$DOCKER_NETWORK" ] && query_network_settings 
-  [ -z "$BRIDGE_NAME" ] && query_network_settings
-  # DB
-  [ -z "$QUESTION_OWN_DB" ] && query_db_settings
-  [ -z "$MYSQL_HOST" ]  && query_db_settings
-  [ -z "$MYSQL_PORT" ]  && query_db_settings
-  [ -z "$MYSQL_DATABASE" ]  && query_db_settings
-  [ -z "$MYSQL_USER" ]  && query_db_settings
-  [ -z "$MYSQL_PASSWORD" ]  && query_db_settings
-  [ -z "$MYSQL_ROOT_PASSWORD" ]  && query_db_settings
-  # MISP
-  #[ -z "$MISP_prefix" ] && query_misp_settings
-  #[ -z "$MISP_encoding" ] && query_misp_settings
-  [ -z "$MISP_SALT" ] && query_misp_settings
-  # HTTP
-  [ -z "$HTTP_PORT" ] && query_http_settings
-  [ -z "$HTTPS_PORT" ] && query_http_settings
-  [ -z "$HTTP_SERVERADMIN" ] && query_http_settings
-  [ -z "$ALLOW_ALL_IPs" ] && query_http_settings
-  [ -z "$client_max_body_size" ] && query_http_settings
-  [ -z "$HTTP_ALLOWED_IP" ] && query_http_settings
+  [ -z "$DOCKER_NETWORK" ] && DOCKER_NETWORK="192.168.47.0/28" && QUERY_NETWORK="yes" 
+  [ -z "$BRIDGE_NAME" ] && BRIDGE_NAME="mispbr0" && QUERY_NETWORK="yes"
   # PROXY
-  [ -z "$QUESTION_USE_PROXY" ] && query_proxy_settings
-  [ -z "$HTTP_PROXY" ] && query_proxy_settings
-  [ -z "$HTTPS_PROXY" ] && query_proxy_settings
-  [ -z "$NO_PROXY" ] && query_proxy_settings
+  [ -z "$QUESTION_USE_PROXY" ] && QUESTION_USE_PROXY="no" && QUERY_PROXY="yes"
+  [ -z "$HTTP_PROXY" ] && HTTP_PROXY="" && QUERY_PROXY="yes"
+  [ -z "$HTTPS_PROXY" ] && HTTPS_PROXY="" && QUERY_PROXY="yes"
+  [ -z "$NO_PROXY" ] && NO_PROXY="" && QUERY_PROXY="yes"
+    # DB
+  [ -z "$QUESTION_OWN_DB" ] && QUESTION_OWN_DB="no" && QUERY_DB="yes"
+  [ -z "$MYSQL_HOST" ]  && MYSQL_HOST="localhost" && QUERY_DB="yes"
+  [ -z "$MYSQL_PORT" ]  && MYSQL_PORT="3306" && QUERY_DB="yes"
+  [ -z "$MYSQL_DATABASE" ]  && MYSQL_DATABASE="misp" && QUERY_DB="yes"
+  [ -z "$MYSQL_USER" ]  && MYSQL_USER="misp" && QUERY_DB="yes"
+  [ -z "$MYSQL_PASSWORD" ]  && MYSQL_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)" && QUERY_DB="yes"
+  [ -z "$MYSQL_ROOT_PASSWORD" ]  && MYSQL_ROOT_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)" && QUERY_DB="yes"
+    # HTTP
+  [ -z "$HTTP_PORT" ] && HTTP_PORT="80" && QUERY_HTTP="yes"
+  [ -z "$HTTPS_PORT" ] && HTTPS_PORT="443" && QUERY_HTTP="yes"
+  [ -z "$HTTP_SERVERADMIN" ] && HTTP_SERVERADMIN="admin@${HOSTNAME}" && QUERY_HTTP="yes"
+  [ -z "$ALLOW_ALL_IPs" ] && ALLOW_ALL_IPs="yes" && QUERY_HTTP="yes"
+  [ -z "$client_max_body_size" ] && client_max_body_size="50M" && QUERY_HTTP="yes"
+  [ -z "$HTTP_ALLOWED_IP" ] && HTTP_ALLOWED_IP="all" && QUERY_HTTP="yes"
+  # MISP
+  [ -z "$MISP_prefix" ] && MISP_prefix="" && QUERY_MISP="yes"
+  [ -z "$MISP_encoding" ] && MISP_encoding="utf8" && QUERY_MISP="yes"
+  [ -z "$MISP_SALT" ] && MISP_SALT="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 50)" && QUERY_MISP="yes"
   # Postfix
-  [ -z "$DOMAIN" ] && query_postfix_settings
-  [ -z "$RELAY_USER" ] && query_postfix_settings
-  [ -z "$RELAY_PASSWORD" ] && query_postfix_settings
-  [ -z "$RELAYHOST" ] && query_postfix_settings
-  [ -z "$QUESTION_DEBUG_PEERS" ] && query_postfix_settings
+  [ -z "$DOMAIN" ] && DOMAIN="example.com" && QUERY_POSTFIX="yes"
+  [ -z "$RELAY_USER" ] && RELAY_USER="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 10)" && QUERY_POSTFIX="yes"
+  [ -z "$RELAY_PASSWORD" ] && RELAY_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)" && QUERY_POSTFIX="yes"
+  [ -z "$RELAYHOST" ] && RELAYHOST="mail.example.com" && QUERY_POSTFIX="yes"
+  [ -z "$QUESTION_DEBUG_PEERS" ] && QUESTION_DEBUG_PEERS="no" && QUERY_POSTFIX="yes"
   # Redis
-  [ -z "$REDIS_FQDN" ] && query_redis_settings
-  [ -z "$REDIS_PORT" ] && query_redis_settings
-  [ -z "$REDIS_PW" ] && query_redis_settings
+  [ -z "$REDIS_FQDN" ] && REDIS_FQDN="misp-server"  && QUERY_REDIS="yes"
+  [ -z "$REDIS_PORT" ] && REDIS_PORT=""             && QUERY_REDIS="yes"
+  [ -z "$REDIS_PW" ]   && REDIS_PW=""               && QUERY_REDIS="yes"
   echo "...done"
 }
 # Function for the Container Versions
@@ -151,20 +151,11 @@ function query_hostname(){
 }
 
 function query_network_settings(){
-  [ -z "$DOCKER_NETWORK" ] && DOCKER_NETWORK="192.168.47.0/28"
-  [ -z "$BRIDGE_NAME" ] && BRIDGE_NAME="mispbr0"
-
   read -p "Which MISP Network should we use [DEFAULT: $DOCKER_NETWORK]: " -ei $DOCKER_NETWORK DOCKER_NETWORK
   read -p "Which MISP Network BRIDGE Interface Name should we use [DEFAULT: $BRIDGE_NAME]: " -ei $BRIDGE_NAME BRIDGE_NAME
 }
 
 function query_proxy_settings(){
-  # set default values
-  [ -z "$QUESTION_USE_PROXY" ] && QUESTION_USE_PROXY="no"
-  [ -z "$HTTP_PROXY" ] && HTTP_PROXY=""
-  [ -z "$HTTPS_PROXY" ] && HTTPS_PROXY=""
-  [ -z "$NO_PROXY" ] && NO_PROXY=""
-
   # read Proxy Settings MISP Instance
   while (true)
   do
@@ -190,14 +181,6 @@ function query_proxy_settings(){
 }
 
 function query_db_settings(){
-  # set default DB Settings
-  [ -z "$QUESTION_OWN_DB" ] && QUESTION_OWN_DB="no"
-  [ -z "$MYSQL_HOST" ] && MYSQL_HOST="localhost" 
-  [ -z "$MYSQL_PORT" ] && MYSQL_PORT="3306" 
-  [ -z "$MYSQL_DATABASE" ] && MYSQL_DATABASE="misp" 
-  [ -z "$MYSQL_USER" ] && MYSQL_USER="misp"
-  [ -z "$MYSQL_PASSWORD" ] && MYSQL_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)"
-  [ -z "$MYSQL_ROOT_PASSWORD" ] && MYSQL_ROOT_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)"
   # check if a own DB is needed
     while (true)
     do
@@ -231,13 +214,6 @@ function query_db_settings(){
 }
 
 function query_http_settings(){
-  [ -z "$HTTP_PORT" ] && HTTP_PORT="80"
-  [ -z "$HTTPS_PORT" ] && HTTPS_PORT="443"
-  [ -z "$HTTP_SERVERADMIN" ] && HTTP_SERVERADMIN="admin@${HOSTNAME}"
-  [ -z "$ALLOW_ALL_IPs" ] && ALLOW_ALL_IPs="yes"
-  [ -z "$client_max_body_size" ] && client_max_body_size="50M"
-  [ -z "$HTTP_ALLOWED_IP" ] && HTTP_ALLOWED_IP="all"
-  
   # read HTTP Settings
   read -p "Which HTTPS Port should we expose [DEFAULT: $HTTPS_PORT]: " -ei "$HTTPS_PORT" HTTPS_PORT
   read -p "Which HTTP Port should we expose [DEFAULT: $HTTP_PORT]: " -ei "$HTTP_PORT" HTTP_PORT
@@ -268,9 +244,6 @@ function query_http_settings(){
 }
 
 function query_misp_settings(){
-  [ -z "$MISP_prefix" ] && MISP_prefix=""
-  [ -z "$MISP_encoding" ] && MISP_encoding="utf8"
-  [ -z "$MISP_SALT" ] && MISP_SALT="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 50)"
   # read and set MISP config settings
   # read -p "Which MISP DB prefix should we use [default: '']: " -ei $MISP_prefix MISP_prefix
   # read -p "Which MISP Encoding should we use [default: utf8]: " -ei $MISP_encoding  MISP_encoding
@@ -278,12 +251,6 @@ function query_misp_settings(){
 }
 
 function query_postfix_settings(){
-  [ -z "$DOMAIN" ] && DOMAIN="example.com"
-  [ -z "$RELAY_USER" ] && RELAY_USER="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 10)"
-  [ -z "$RELAY_PASSWORD" ] && RELAY_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)"
-  [ -z "$RELAYHOST" ] && RELAYHOST="mail.example.com"
-  [ -z "$QUESTION_DEBUG_PEERS" ] && QUESTION_DEBUG_PEERS="no"
-
   read -p "Which mail domain we should use [DEFAULT: $DOMAIN]: " -ei $DOMAIN DOMAIN
   read -p "Which relay host we should use [ IP or DNS]: " -ei $RELAYHOST RELAYHOST
   read -p "Which relay user we should use [DEFAULT: generated]: " -ei $RELAY_USER RELAY_USER
@@ -314,9 +281,6 @@ function query_postfix_settings(){
 }
 
 function query_redis_settings(){
-  [ -z "$REDIS_FQDN" ] && REDIS_FQDN="misp-server"
-  [ -z "$REDIS_PORT" ] && REDIS_PORT=""
-  [ -z "$REDIS_PW" ] && REDIS_PW=""
   # read -p "Which MISP DB prefix should we use [default: '']: " -ei $MISP_prefix MISP_prefix
   # read -p "Which MISP Encoding should we use [default: utf8]: " -ei $MISP_encoding  MISP_encoding
   #read -p "If you do a fresh Installation, you should have a Salt. Is this SALT ok [DEFAULT: generated]: " -ei $MISP_SALT  MISP_SALT
@@ -349,6 +313,23 @@ if [ "$AUTOMATE_BUILD" = true ]
     PROXY_CONTAINER_TAG="$PROXY_CONTAINER_TAG-dev"
     ROBOT_CONTAINER_TAG="$ROBOT_CONTAINER_TAG-dev"
     MISP_MODULES_CONTAINER_TAG="$MISP_MODULES_CONTAINER_TAG-dev"
+  else
+    # Hostname
+    [ "$QUERY_HOSTNAME" == "yes" ] && query_hostname
+    # Network
+    [ "$QUERY_NETWORK" == "yes" ] && query_network_settings
+    # DB
+    [ "$QUERY_DB" == "yes" ] && query_db_settings
+    # MISP
+    [ "$QUERY_MISP" == "yes" ] && query_misp_settings
+    # HTTP
+    [ "$QUERY_HTTP" == "yes" ] && query_http_settings
+    # PROXY
+    [ "$QUERY_PROXY" == "yes" ] && query_proxy_settings
+    # Postfix
+    [ "$QUERY_POSTFIX" == "yes" ] && query_postfix_settings
+    # Redis
+    [ "$QUERY_REDIS" == "yes" ] && query_redis_settings
 fi
 ###################################
 # Write Configuration
