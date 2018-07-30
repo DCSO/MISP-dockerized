@@ -283,7 +283,7 @@ function query_postfix_settings(){
 function query_redis_settings(){
   # read -p "Which MISP DB prefix should we use [default: '']: " -ei $MISP_prefix MISP_prefix
   # read -p "Which MISP Encoding should we use [default: utf8]: " -ei $MISP_encoding  MISP_encoding
-  #read -p "If you do a fresh Installation, you should have a Salt. Is this SALT ok [DEFAULT: generated]: " -ei $MISP_SALT  MISP_SALT
+  read -p "If you do a fresh Installation, you should have a Salt. Is this SALT ok [DEFAULT: generated]: " -ei $MISP_SALT  MISP_SALT
 }
 
 function query_pgp_settings(){
