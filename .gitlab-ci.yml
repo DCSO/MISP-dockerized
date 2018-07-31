@@ -21,16 +21,7 @@ before_script:
   - apk add --no-cache make bash sudo git
   - export makefile="make -C .travis/"
   - export CI="true"
-  - nslokup github.com
-  - dig github.com
-  - ping github.com
-  - nslookup misp.dcso.de
-  - dig misp.dcso.de
-  - ping misp.dcso.de
-  - nslookup dockerhub.dcso.de
-  - dig dockerhub.dcso.de
-  - ping dockerhub.dcso.de
-  allow_failure: true
+  - nslokup github.com; dig github.com; ping github.com; nslookup misp.dcso.de;; dig misp.dcso.de; ping misp.dcso.de; nslookup dockerhub.dcso.de; dig dockerhub.dcso.de; ping dockerhub.dcso.de
 
 Test:
   stage: build
