@@ -55,19 +55,17 @@ function check_URL(){
     
     if [ -z "$COMMAND" ]
         then
-            STATUS="FAIL"
-            echo "[FAIL] Check: $URL"
+            echo "[WARN] Check: $URL"
             echo "       Result: Connection not available."
+            [ "$AUTOMATE_BUILD" == "true" ] || read -r -p "     continue with ENTER"  
         else
             echo "[OK]   Check: $URL"
             echo "       Result: $COMMAND."
     fi
 }
 
-
-
 check_URL https://misp.dcso.de
-check_URL https://dockerhub.dcso.de
+check_URL https://dockerhub.dcso.de/v2/
 check_URL https://github.com/DCSO/misp-dockerized
 # check_URL https://docker.io
 # check_URL https://registry-1.docker.io/
