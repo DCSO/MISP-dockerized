@@ -2,8 +2,9 @@
 set -ex
 
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )" # path of the script
-MISP_dockerized_path="$SCRIPTPATH/../"
-
+MISP_dockerized_repo="$SCRIPTPATH/../"
+CONFIG_FILE="${MISP_dockerized_repo}/config/config.env"
+DOCKER_COMPOSE_CONF="${MISP_dockerized_repo}/.env"
 
 #########
 USE_CURL=y                                          # use curl or wget?
@@ -20,8 +21,8 @@ declare -A TAG_SELECTION                            # declare an Array
 
 
 # Import configs:
-[ -f $MISP_dockerized_path/.env ] && source $MISP_dockerized_path/.env
-[ -f $MISP_dockerized_path/config/config.env ] && source $MISP_dockerized_path/config/config.env
+[ -f $CONFIG_FILE ] && source $CONFIG_FILE
+[ -f $DOCKER_COMPOSE_CONF ] && source $DOCKER_COMPOSE_CONF
 
 # check_URL: check a url with 2 parameters: URL_BASE=github.com & URL_PROTOCOL=http/https
 function check_URL(){
@@ -130,6 +131,11 @@ function start_backup(){
   echo "Backup...Finished"
 }
 
+function delete_container_versions_from_configs() {
+  sed -i 's/.*CONTAINER_TAG=.*$//' $CONFIG_FILE
+  sed -i 's/.*CONTAINER_TAG=.*$//' $DOCKER_COMPOSE_CONF
+}
+
 #############################################
 # DCSO Upgrade Functions
 #############################################
@@ -138,8 +144,10 @@ function upgrade_2_new_version(){
   start_backup
   # switch git repo
   git checkout $NEW_TAG
+  # delete old container versions in configs
+  delete_container_versions_from_configs
   # make start
-  make start
+  make install
   echo "Upgrade from '$myTAG' to '$NEW_TAG' is finished."
 }
 
@@ -157,7 +165,7 @@ check_URL https://dockerhub.dcso.de
 check_URL https://github.com/DCSO/misp-dockerized
 
 # check if all binaries existing
-check_components docker git awk sha1sum 
+check_components docker git awk sha1sum make
 
 # search all existing tags in repo
 search_existing_tags
