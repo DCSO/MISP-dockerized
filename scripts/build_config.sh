@@ -1,7 +1,8 @@
 #!/bin/bash
 #description     :This script build the configuration for the MISP Container and their content.
 #==============================================================================
-#set -xe # for debugging only
+set -e
+#set -xv # for debugging only
 
 # check if this is an automate build not ask any questions
 [ "$CI" = true ] && AUTOMATE_BUILD=true
@@ -17,8 +18,8 @@ BACKUP_PATH="${MISP_dockerized_repo}/backup"
 # Function to import configuration
 function import_config(){
   echo -n "check and import existing configuration..."
-  [ -f $DOCKER_COMPOSE_CONF ] && source $DOCKER_COMPOSE_CONF
   [ -f $CONFIG_FILE ] && source $CONFIG_FILE
+  [ -f $DOCKER_COMPOSE_CONF ] && source $DOCKER_COMPOSE_CONF
   echo "done"
 }
 # Function to set default values
@@ -32,9 +33,9 @@ function check_if_vars_exists() {
   [ -z "$BRIDGE_NAME" ] && BRIDGE_NAME="mispbr0" && QUERY_NETWORK="yes"
   # PROXY
   [ -z "$QUESTION_USE_PROXY" ] && QUESTION_USE_PROXY="no" && QUERY_PROXY="yes"
-  [ -z "$HTTP_PROXY" ] && HTTP_PROXY="" && QUERY_PROXY="yes"
-  [ -z "$HTTPS_PROXY" ] && HTTPS_PROXY="" && QUERY_PROXY="yes"
-  [ -z "$NO_PROXY" ] && NO_PROXY="" && QUERY_PROXY="yes"
+  [ -z "${HTTP_PROXY+x}" ] && HTTP_PROXY="" && QUERY_PROXY="yes"
+  [ -z "${HTTPS_PROXY+x}" ] && HTTPS_PROXY="" && QUERY_PROXY="yes"
+  [ -z "$NO_PROXY" ] && NO_PROXY="0.0.0.0" && QUERY_PROXY="yes"
     # DB
   [ -z "$QUESTION_OWN_DB" ] && QUESTION_OWN_DB="no" && QUERY_DB="yes"
   [ -z "$MYSQL_HOST" ]  && MYSQL_HOST="localhost" && QUERY_DB="yes"
@@ -51,9 +52,10 @@ function check_if_vars_exists() {
   [ -z "$client_max_body_size" ] && client_max_body_size="50M" && QUERY_HTTP="yes"
   [ -z "$HTTP_ALLOWED_IP" ] && HTTP_ALLOWED_IP="all" && QUERY_HTTP="yes"
   # MISP
-  [ -z "$MISP_prefix" ] && MISP_prefix="" && QUERY_MISP="yes"
+  [ -z "${MISP_prefix+x}" ] && MISP_prefix="" && QUERY_MISP="yes"
   [ -z "$MISP_encoding" ] && MISP_encoding="utf8" && QUERY_MISP="yes"
   [ -z "$MISP_SALT" ] && MISP_SALT="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 50)" && QUERY_MISP="yes"
+  [ -z "$ADD_ANALYZE_COLUMN" ] && ADD_ANALYZE_COLUMN="no" && QUERY_MISP="yes"
   # Postfix
   [ -z "$DOMAIN" ] && DOMAIN="example.com" && QUERY_POSTFIX="yes"
   [ -z "$RELAY_USER" ] && RELAY_USER="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 10)" && QUERY_POSTFIX="yes"
@@ -62,8 +64,8 @@ function check_if_vars_exists() {
   [ -z "$QUESTION_DEBUG_PEERS" ] && QUESTION_DEBUG_PEERS="no" && QUERY_POSTFIX="yes"
   # Redis
   [ -z "$REDIS_FQDN" ] && REDIS_FQDN="misp-server"  && QUERY_REDIS="yes"
-  [ -z "$REDIS_PORT" ] && REDIS_PORT=""             && QUERY_REDIS="yes"
-  [ -z "$REDIS_PW" ]   && REDIS_PW=""               && QUERY_REDIS="yes"
+  [ -z "${REDIS_PORT+x}" ] && REDIS_PORT=""             && QUERY_REDIS="yes"
+  [ -z "${REDIS_PW+x}" ]   && REDIS_PW=""               && QUERY_REDIS="yes"
   echo "...done"
 }
 # Function for the Container Versions
@@ -71,13 +73,13 @@ function default_container_version() {
   ############################################
   # Start Global Variable Section
   ############################################
-  DB_CONTAINER_TAG="10.3"
-  REDIS_CONTAINER_TAG="4.0-alpine"
-  POSTFIX_CONTAINER_TAG="1.0.0-alpine"
-  MISP_CONTAINER_TAG="2.4.92-ubuntu"
-  PROXY_CONTAINER_TAG="1.0.1-alpine"
-  ROBOT_CONTAINER_TAG="1.0.2-ubuntu"
-  MISP_MODULES_CONTAINER_TAG="1.0.0-debian"
+  [ -z "$DB_CONTAINER_TAG" ] && DB_CONTAINER_TAG="10.3"
+  [ -z "$REDIS_CONTAINER_TAG" ] && REDIS_CONTAINER_TAG="4.0-alpine"
+  [ -z "$POSTFIX_CONTAINER_TAG" ] && POSTFIX_CONTAINER_TAG="1.0.0-alpine"
+  [ -z "$MISP_CONTAINER_TAG" ] && MISP_CONTAINER_TAG="2.4.92-ubuntu"
+  [ -z "$PROXY_CONTAINER_TAG" ] && PROXY_CONTAINER_TAG="1.0.1-alpine"
+  [ -z "$ROBOT_CONTAINER_TAG" ] && ROBOT_CONTAINER_TAG="1.0.2-ubuntu"
+  [ -z "$MISP_MODULES_CONTAINER_TAG" ] && MISP_MODULES_CONTAINER_TAG="1.0.0-debian"
   ###
   MISP_TAG=$(echo $MISP_CONTAINER_TAG|cut -d - -f 1)
   ######################  END GLOBAL  ###########
@@ -248,6 +250,8 @@ function query_misp_settings(){
   # read -p "Which MISP DB prefix should we use [default: '']: " -ei $MISP_prefix MISP_prefix
   # read -p "Which MISP Encoding should we use [default: utf8]: " -ei $MISP_encoding  MISP_encoding
   read -p "If you do a fresh Installation, you should have a Salt. Is this SALT ok [DEFAULT: generated]: " -ei $MISP_SALT  MISP_SALT
+  read -p "Do you require the analyse column at List Events page? [DEFAULT: no]: " -ei $ADD_ANALYZE_COLUMN  ADD_ANALYZE_COLUMN
+
 }
 
 function query_postfix_settings(){
@@ -281,9 +285,7 @@ function query_postfix_settings(){
 }
 
 function query_redis_settings(){
-  # read -p "Which MISP DB prefix should we use [default: '']: " -ei $MISP_prefix MISP_prefix
-  # read -p "Which MISP Encoding should we use [default: utf8]: " -ei $MISP_encoding  MISP_encoding
-  read -p "If you do a fresh Installation, you should have a Salt. Is this SALT ok [DEFAULT: generated]: " -ei $MISP_SALT  MISP_SALT
+  echo
 }
 
 function query_pgp_settings(){
@@ -300,7 +302,7 @@ check_if_vars_exists
 # change to currents container
 default_container_version
 # check if its automated?
-if [ "$AUTOMATE_BUILD" = true ]
+if [ "$AUTOMATE_BUILD" = "true" ]
   then
     ################################################
     # Automated Startup only for travis
@@ -339,12 +341,13 @@ echo -n "write configuration..."
 cat << EOF > $DOCKER_COMPOSE_CONF
 #description     :This script set the Environment variables for the right MISP Docker Container and Environments
 #=================================================
+#         ALL SETTINGS REQUIRED WITHOUT ""!!!
 # ------------------------------
-# Hostname
+# Hostname Environment Variables
 # ------------------------------
 HOSTNAME=${HOSTNAME}
 # ------------------------------
-# Container Configuration
+# Container Environment Variables
 # ------------------------------
 DB_CONTAINER_TAG=${DB_CONTAINER_TAG}
 REDIS_CONTAINER_TAG=${REDIS_CONTAINER_TAG}
@@ -354,15 +357,14 @@ PROXY_CONTAINER_TAG=${PROXY_CONTAINER_TAG}
 ROBOT_CONTAINER_TAG=${ROBOT_CONTAINER_TAG}
 MISP_MODULES_CONTAINER_TAG=${MISP_MODULES_CONTAINER_TAG}
 # ------------------------------
-# Proxy Configuration
+# Proxy Environment Variables
 # ------------------------------
 HTTP_PROXY=${HTTP_PROXY}
 HTTPS_PROXY=${HTTPS_PROXY}
 NO_PROXY=${NO_PROXY}
 # ------------------------------
-# DB configuration
+# DB Environment Variables
 # ------------------------------
-#         ALL DB SETTINGS REQUIRED WITHOUT ""!!!
 MYSQL_HOST=${MYSQL_HOST}
 MYSQL_PORT=${MYSQL_PORT}
 MYSQL_DATABASE=${MYSQL_DATABASE}
@@ -370,18 +372,18 @@ MYSQL_USER=${MYSQL_USER}
 MYSQL_PASSWORD=${MYSQL_PASSWORD}
 MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 # ------------------------------
-# HTTP/S configuration
+# HTTP/S Environment Variables
 # ------------------------------
 HTTP_PORT=${HTTP_PORT}
 HTTPS_PORT=${HTTPS_PORT}
 # ------------------------------
-# Redis configuration
+# Redis Environment Variables
 # ------------------------------
 REDIS_FQDN=misp-redis
 REDIS_PW=
 REDIS_PORT=
 # ------------------------------
-# Mail Configuration
+# Mail Environment Variables
 # ------------------------------
 DOMAIN=${DOMAIN}
 RELAYHOST=${RELAYHOST}
@@ -390,10 +392,14 @@ RELAY_PASSWORD=${RELAY_PASSWORD}
 SENDER_ADDRESS=${SENDER_ADDRESS}
 DEBUG_PEER=${DEBUG_PEER}
 DOCKER_NETWORK=${DOCKER_NETWORK}
+# ------------------------------
+# MISP Environment Variables
+# ------------------------------
+ADD_ANALYZE_COLUMN=${ADD_ANALYZE_COLUMN}
 ##################################################################
 
 EOF
-
+###############################################
 # Only Ansible variables
 cat << EOF > $MISP_CONF_YML
 #description     :This Config sets the MISP Configuration inside the MISP Robot via Ansible
@@ -446,6 +452,7 @@ RELAY_PASSWORD: "${RELAY_PASSWORD}"
 
 EOF
 
+#####################################
 # ALL Variables
 cat << EOF > $CONFIG_FILE
 #description     :This file is the global configuration file
@@ -511,6 +518,7 @@ MISP_TAG="${MISP_TAG}"
 MISP_prefix="${MISP_prefix}"
 MISP_encoding="${MISP_encoding}"
 MISP_SALT="${MISP_SALT}"
+ADD_ANALYZE_COLUMN="${ADD_ANALYZE_COLUMN}"
 # ------------------------------
 # misp-postfix Configuration
 # ------------------------------
