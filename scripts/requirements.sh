@@ -47,7 +47,7 @@ DOCKER_SOCK="/var/run/docker.sock"
 echo
 # check_URL: check a url with 2 parameters: URL_BASE=github.com & URL_PROTOCOL=http/https
 function check_URL(){
-    #set -xv
+    set -xv
     URL="$1"
     [ "$USE_PROXY" == "yes" ] && PROXY=" -x $HTTP_PROXY"
     OPTIONS="-vs --connect-timeout 5 -m 7 $PROXY"
