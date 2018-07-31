@@ -47,7 +47,7 @@ DOCKER_SOCK="/var/run/docker.sock"
 echo
 # check_URL: check a url with 2 parameters: URL_BASE=github.com & URL_PROTOCOL=http/https
 function check_URL(){
-    set -xv
+    #set -xv
     URL="$1"
     [ "$USE_PROXY" == "yes" ] && PROXY=" -x $HTTP_PROXY"
     OPTIONS="-vs --connect-timeout 5 -m 7 $PROXY"
@@ -68,7 +68,6 @@ function check_URL(){
 
 check_URL https://misp.dcso.de
 check_URL https://dockerhub.dcso.de
-#check_URL http://dockerhub.dcso.de
 check_URL https://github.com/DCSO/misp-dockerized
 # check_URL https://docker.io
 # check_URL https://registry-1.docker.io/
