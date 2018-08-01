@@ -167,14 +167,14 @@ Special for Quick Start in MISP: `https://www.circl.lu/doc/misp/quick-start/`
 ## Backup and Recovery
 ### Backup
 To back up your instance, **MISP dockerized** comes with a backup and restore script that will do the job for you. To create a backup start:
-```
+```bash
 $> make backup-[service] for example: make backup-all
 ```
 `[service]` is the service you want to create a backup. you can chose between `redis|mysql|server|proxy|all`
 
 ### Restore
 Works similar to the backup process. Just run the backup and restore script
-```
+```bash
 $> make restore
 ```
 
@@ -193,6 +193,40 @@ This delete the MISP images, network, containers and volumes.
 
 **Warning**
 `make delete` delete all volumes, leading to a loss of all your data. Make sure you have saved everything before you run it.
+
+
+### Cannot download Docker images behind a proxy
+
+First, create a systemd drop-in directory for the docker service:
+```bash
+$> mkdir /etc/systemd/system/docker.service.d
+```
+
+Now create a file called /etc/systemd/system/docker.service.d/http-proxy.conf that adds the HTTP_PROXY environment variable:
+```bash
+[Service]
+Environment="HTTP_PROXY=http://proxy.example.com:80/"
+```
+If you have internal Docker registries that you need to contact without proxying you can specify them via the NO_PROXY environment variable:
+```bash
+Environment="HTTP_PROXY=http://proxy.example.com:80/"
+Environment="NO_PROXY=localhost,127.0.0.0/8,docker-registry.somecorporation.com"
+```
+Flush changes:
+```bash
+$> sudo systemctl daemon-reload
+```
+Verify that the configuration has been loaded:
+```bash
+$> sudo systemctl show --property Environment docker
+Environment=HTTP_PROXY=http://proxy.example.com:80/
+```
+Restart Docker:
+```bash
+$> sudo systemctl restart docker
+```
+
+
 
 ### Logging
 If was possible, all logfiles are forwarded to docker log mechanism. Therefore you can do:
