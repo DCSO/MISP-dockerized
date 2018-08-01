@@ -95,6 +95,8 @@ start-all:
 	docker start misp-postfix
 	docker start misp-robot
 
+restart-all: stop-all start-all
+
 ####################	used in misp-robot	####################
 
 # check with docker security check
