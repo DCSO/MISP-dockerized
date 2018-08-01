@@ -1,14 +1,24 @@
 ##### MISP configs #####
 - import_tasks: misp.yml
+  tags: misp
 
 ##### Configure SSL #####
 - include: tasks/ssl.yml
+  tags: ssl
 
 ##### PGP configs #####
+- name: PGP | check if PGP should enabled
+  stat: 
+    path: "{{MAIN_REPO_CONFIG}}/pgp/pgp.enable"
+  register: pgp_enabled
+
 - import_tasks: pgp.yml
+  tags: pgp
+  when: pgp_enabled.stat.exists == True
 
 ##### S/MIME configs #####
 - import_tasks: smime.yml
+  tags: smime
 
 
 - name: Apache2 | Disable standard MISP config
