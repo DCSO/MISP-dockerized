@@ -211,8 +211,15 @@ if [ ! -f ./config/pgp/private.key -a ! -f ./config/pgp/public.key ]; then
     [ "$AUTOMATE_BUILD" == "true" ] && echo "[WARN] No PGP key found. Should we create a pgp key? [Y/n] y" && response="y"
     case $response in
     [yY][eE][sS]|[yY])
-        #echo "[OK] We create a pgp key in the volume. It will be saved to: $PWD/config/pgp/"
-        echo "     To change the PGP public and private file later: "
+        ENTROPY=$(cat /proc/sys/kernel/random/entropy_avail)
+        if [[ $ENTROPY -gt 1000 ]]
+        then
+            echo "[OK] We create a pgp key in the volume. It will be saved to: $PWD/config/pgp/"
+        else
+            echo "[FAIL] Sorry but we can't create your pgp key in the volume. Your entropy ($ENTROPY >= 1000) is to low. Please create your PGP key outside of docker."
+            STATUS="FAIL"
+        fi
+        echo "     To replace the PGP public and private file later: "
         echo "     1. save public key into:      $PWD/config/pgp/public.key"
         echo "     2. save private key into:  $PWD/config/pgp/private.key"
         echo "     3. do:                         make config-pgp"
