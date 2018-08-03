@@ -14,6 +14,7 @@ DOCKER_COMPOSE_CONF="${MISP_dockerized_repo}/.env"
 DOCKER_COMPOSE_FILE="${MISP_dockerized_repo}/docker-compose.yml"
 MISP_CONF_YML="${MISP_dockerized_repo}/config/misp.conf.yml"
 BACKUP_PATH="${MISP_dockerized_repo}/backup"
+ENABLE_FILE_DCSO_DOCKER_REGISTRY="${MISP_dockerized_repo}/config/use_secure_DCSO_Docker_Registry.enable"
 ######################################################################
 # Function to import configuration
 function import_config(){
@@ -292,6 +293,17 @@ function query_pgp_settings(){
   echo
 }
 
+function query_docker_registry() {
+  if [ -e "$ENABLE_FILE_DCSO_DOCKER_REGISTRY" ]
+  then
+    # On our own registry we have none group tag, but we have another URL
+    DOCKER_REGISTRY="dockerhub.dcso.de"
+  else
+    # PUBLIC one from hub.docker.com we need only the organistion group. Because the URL is the default one
+    DOCKER_REGISTRY="dcso"
+  fi
+}
+
 #################################################
 ########  main part
 #################################################
@@ -299,6 +311,8 @@ function query_pgp_settings(){
 import_config
 # if vars not exists
 check_if_vars_exists
+# Docker Registry
+query_docker_registry
 # change to currents container
 default_container_version
 # check if its automated?
@@ -346,6 +360,10 @@ cat << EOF > $DOCKER_COMPOSE_CONF
 # Hostname Environment Variables
 # ------------------------------
 HOSTNAME=${HOSTNAME}
+# ------------------------------
+# Docker Registry Environment Variables
+# ------------------------------
+DOCKER_REGISTRY=${DOCKER_REGISTRY}
 # ------------------------------
 # Container Environment Variables
 # ------------------------------
@@ -467,6 +485,10 @@ HOSTNAME="${HOSTNAME}"
 DOCKER_NETWORK="${DOCKER_NETWORK}"
 BRIDGE_NAME="${BRIDGE_NAME}"
 # ------------------------------
+# Docker Registry Environment Variables
+# ------------------------------
+DOCKER_REGISTRY=${DOCKER_REGISTRY}
+# ------------------------------
 # Container Configuration
 # ------------------------------
 DB_CONTAINER_TAG=${DB_CONTAINER_TAG}
@@ -534,6 +556,7 @@ DEBUG_PEER="${DEBUG_PEER}"
 EOF
 
 echo "...done"
+sleep 2
 ##########################################
 #
 # Post-Tasks
