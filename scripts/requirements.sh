@@ -242,6 +242,40 @@ if [ ! -f ./config/pgp/private.key -a ! -f ./config/pgp/public.key ]; then
         ;;
     esac
 fi
+
+###############################  DCSO Check    #########################
+FILE="./config/use_secure_DCSO_Docker_Registry.enable"
+
+[ "$AUTOMATE_BUILD" == "true" ] || read -r -p "Are you a DCSO TI MISP Customer? [Y/n] " -ei "y" response
+# for internal GITLAB:
+[ "$AUTOMATE_BUILD" == "true" ] && response="y"
+# for travis:
+[ "$TRAVIS" == "true" ] && response="n"
+
+case $response in
+[yY][eE][sS]|[yY])
+    [ "$AUTOMATE_BUILD" == "true" ] || read -r -p "Do you want to load the MISP containers from secure DCSO Registry? [Y/n] " -ei "y" response
+    case $response in
+    [yY][eE][sS]|[yY])
+        touch $FILE
+        echo "We switched the container repository to secure DCSO registry."
+        echo "      If you want to use the public one from hub.docker.com, please delete $FILE and 'make install'"
+        [ "$AUTOMATE_BUILD" == "true" ] || read -r -p "     continue with ENTER"     
+        ;;
+    *)
+        rm -f $FILE
+        ;;
+    esac
+    echo
+    echo
+    ;;
+*)
+    rm -f $FILE
+    ;;
+esac
+
+
+
 ###############################  END Result    #########################
 echo "End result:"
 if [ $STATUS == "FAIL" ]
