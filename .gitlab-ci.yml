@@ -21,6 +21,7 @@ before_script:
   - apk add --no-cache make bash sudo git
   - export makefile="make -C .travis/"
   - export CI="true"
+  - export REPOURL="dockerhub.dcso.de"
   - docker login -u "$INTERNAL_REGISTRY_USER" -p "$INTERNAL_REGISTRY_PW" "$INTERNAL_REGISTRY_HOST"
 
 
@@ -28,7 +29,7 @@ Test_without_push:
   stage: build
   script:
   # download latest images from registry
-  - $makefile pull-latest
+  - $makefile pull-latest REPOURL=${REPOURL}
   # start deploy script
   - make install
   # test if MISP is ready
@@ -39,15 +40,15 @@ Test_without_push:
   - export robot_tag=$(cat .env |grep ROBOT_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   - export postfix_tag=$(cat .env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   # retag all existing tags dev 2 public repo
-  - $makefile tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag}
+  - $makefile tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} REPOURL=${REPOURL}
   # Push Images to registry
-  - $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag};
+  - $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} REPOURL=${REPOURL};
 
 Test_with_push:
   stage: build
   script:
   # download latest images from registry
-  - $makefile pull-latest
+  - $makefile pull-latest REPOURL=${REPOURL}
   # start deploy script
   - make install
   # test if MISP is ready
@@ -58,9 +59,9 @@ Test_with_push:
   - export robot_tag=$(cat .env |grep ROBOT_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   - export postfix_tag=$(cat .env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   # retag all existing tags dev 2 public repo
-  - $makefile tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag}
+  - $makefile tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} REPOURL=${REPOURL}
   # Push Images to registry
-  - $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag};
+  - $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} REPOURL=${REPOURL};
   only: 
   - master
 

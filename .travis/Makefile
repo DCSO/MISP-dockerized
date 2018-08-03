@@ -4,7 +4,7 @@
 .PHONY:  push test test-travis tag pull-all pull-latest
 
 CONTAINER := robot server proxy postfix
-REPOURL := dcso/misp-dockerized
+REPOURL := dcso
 
 
 test-travis:
@@ -32,8 +32,8 @@ test:
 	true
 
 push:
-	./push.sh $(REPOURL)-server $(server_tag);
-	./push.sh $(REPOURL)-proxy $(proxy_tag);
-	./push.sh $(REPOURL)-robot $(robot_tag);
-	./push.sh $(REPOURL)-postfix $(postfix_tag);
+	./push.sh $(REPOURL)/misp-dockerized-server $(server_tag);
+	./push.sh $(REPOURL)/misp-dockerized-proxy $(proxy_tag);
+	./push.sh $(REPOURL)/misp-dockerized-robot $(robot_tag);
+	./push.sh $(REPOURL)/misp-dockerized-postfix $(postfix_tag);
 
