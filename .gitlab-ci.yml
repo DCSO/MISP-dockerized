@@ -21,16 +21,16 @@ before_script:
   - apk add --no-cache make bash sudo git
   - export makefile="make -C .travis/"
   - export CI="true"
-  - nslookup github.com; nslookup misp.dcso.de; nslookup dockerhub.dcso.de;
+  - docker login -u "$INTERNAL_REGISTRY_USER" -p "$INTERNAL_REGISTRY_PW" "$INTERNAL_REGISTRY_HOST"
 
-Test:
+
+Test_without_push:
   stage: build
   script:
   # download latest images from registry
   - $makefile pull-latest
   # start deploy script
   - make install
-  - ls -la config/*/
   # test if MISP is ready
   - $makefile test
   # prepare retagging
@@ -40,8 +40,31 @@ Test:
   - export postfix_tag=$(cat .env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   # retag all existing tags dev 2 public repo
   - $makefile tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag}
+  # Push Images to registry
+  - $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag};
 
-upload_image_internal_registry:
+Test_with_push:
+  stage: build
+  script:
+  # download latest images from registry
+  - $makefile pull-latest
+  # start deploy script
+  - make install
+  # test if MISP is ready
+  - $makefile test
+  # prepare retagging
+  - export server_tag=$(cat .env |grep MISP_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export proxy_tag=$(cat .env |grep PROXY_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export robot_tag=$(cat .env |grep ROBOT_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export postfix_tag=$(cat .env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  # retag all existing tags dev 2 public repo
+  - $makefile tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag}
+  # Push Images to registry
+  - $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag};
+  only: 
+  - master
+
+.upload_image_internal_registry:
   stage: deploy
   only: 
   - master
