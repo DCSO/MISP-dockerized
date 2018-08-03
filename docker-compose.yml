@@ -58,7 +58,7 @@ services:
   
     ### MISP Modules ###
   # misp-modules:
-  #   image: dcso/misp-dockerized-misp-modules:${MISP_MODULES_CONTAINER_TAG}
+  #   image: ${DOCKER_REGISTRY}/misp-dockerized-misp-modules:${MISP_MODULES_CONTAINER_TAG}
   #   container_name: misp-modules
   #   depends_on:
   #     - "misp-server"
@@ -94,7 +94,7 @@ services:
 
   ### Postfix ###
   misp-postfix:
-    image: dcso/misp-dockerized-postfix:${POSTFIX_CONTAINER_TAG}
+    image: ${DOCKER_REGISTRY}/misp-dockerized-postfix:${POSTFIX_CONTAINER_TAG}
     container_name: misp-postfix
     restart: on-failure
     environment:
@@ -135,7 +135,7 @@ services:
 
   ### MISP Apache Server ###    
   misp-server:
-    image: dcso/misp-dockerized-server:${MISP_CONTAINER_TAG}
+    image: ${DOCKER_REGISTRY}/misp-dockerized-server:${MISP_CONTAINER_TAG}
     container_name: misp-server
     depends_on:
       - "misp-postfix"
@@ -198,7 +198,7 @@ services:
 
   ### Reverse Proxy ###
   misp-proxy:
-    image: dcso/misp-dockerized-proxy:${PROXY_CONTAINER_TAG}
+    image: ${DOCKER_REGISTRY}/misp-dockerized-proxy:${PROXY_CONTAINER_TAG}
     container_name: misp-proxy
     depends_on:
       - "misp-server"
@@ -242,12 +242,12 @@ services:
 
   ### Robot ###
   misp-robot:
-    image: dcso/misp-dockerized-robot:${ROBOT_CONTAINER_TAG}
+    image: ${DOCKER_REGISTRY}/misp-dockerized-robot:${ROBOT_CONTAINER_TAG}
     container_name: misp-robot
     depends_on:
       - "misp-server"
       - "misp-proxy"
-    tty: true
+    #tty: true
     stdin_open: true
     healthcheck:
       disable: true
