@@ -64,7 +64,7 @@ build-config:
 deploy: 
 	@echo " ###########	Deploy Environment	###########"
 	sed -i "s,myHOST_PATH,$(CURDIR),g" "./docker-compose.yml"
-	docker run --name misp-robot-init --rm -ti \
+	docker run --name misp-robot-init --rm \
 		-v $(CURDIR):/srv/MISP-dockerized \
     	-v $(CURDIR)/scripts:/srv/scripts:ro \
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
@@ -106,7 +106,7 @@ update: install
 
 
 ####################	used in misp-robot	####################
-DOCKER_EXEC=docker exec -it
+DOCKER_EXEC=docker exec
 #DOCKER_EXEC= "docker run -it --rm "
 
 # check with docker security check
