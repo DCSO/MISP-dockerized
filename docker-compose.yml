@@ -248,7 +248,7 @@ services:
       - "misp-server"
       - "misp-proxy"
     #tty: true
-    stdin_open: true
+    #stdin_open: true
     healthcheck:
       disable: true
     #environment:
