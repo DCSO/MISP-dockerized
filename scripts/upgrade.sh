@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -e
 
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )" # path of the script
 MISP_dockerized_repo="$SCRIPTPATH/../"
@@ -10,11 +10,11 @@ DOCKER_COMPOSE_CONF="${MISP_dockerized_repo}/.env"
 USE_CURL=y                                          # use curl or wget?
 export LC_ALL=C                                     # export LC_ALL as language C
 DATE=$(date +%Y-%m-%d_%H_%M_%S)                     # current date
-BRANCH=$(pushd $MISP_dockerized_repo; git rev-parse --abbrev-ref HEAD)           # my branch
+BRANCH=$(git rev-parse --abbrev-ref HEAD)           # my branch
 TAGS=""                                             # existing commits
-myCOMMIT="$(pushd $MISP_dockerized_repo; git log --format="%H"|head -1)"         # my currently installed commit
+myCOMMIT="$(git log --format="%H"|head -1)"         # my currently installed commit
 myTAG=""                                            # my current installed tag
-myTAG_TIMESTAMP="$(pushd $MISP_dockerized_repo; git log --format="%ct"|head -1)" # Date of the current installed tag 
+myTAG_TIMESTAMP=$(git log --format="%ct"|head -1) # Date of the current installed tag 
 NEW_TAG=""                                          # my new tag after update
 declare -A TAG_SELECTION                            # declare an Array
 ######################  END GLOBAL  ####################################
@@ -98,8 +98,8 @@ function update_2_which_tag(){
   i=1
   # search all TAGS newer then the current one
   for TAG in $TAGS; do
-      CURRENT_TAG_TIMESTAMP="$(git log $TAG --format="%ct"|head -1)"
-      if [ $CURRENT_TAG_TIMESTAMP -lt $myTAG_TIMESTAMP ] ; then continue;fi; # only show newer release tags!
+      CURRENT_TAG_TIMESTAMP=$(git log $TAG --format="%ct"|head -1)
+      if [ $CURRENT_TAG_TIMESTAMP -le $myTAG_TIMESTAMP ] ; then continue; fi; # only show newer release tags!
       TAG_SELECTION[${i}]="${TAG}"
       ((i++))
   done
