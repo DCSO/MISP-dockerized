@@ -46,6 +46,8 @@ Test_without_push:
 
 Test_with_push:
   stage: build
+  only: 
+  - master
   script:
   # download latest images from registry
   - $makefile pull-latest REPOURL=${REPOURL}
@@ -62,8 +64,7 @@ Test_with_push:
   - $makefile tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} REPOURL=${REPOURL}
   # Push Images to registry
   - $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} REPOURL=${REPOURL};
-  only: 
-  - master
+  
 
 .upload_image_internal_registry:
   stage: deploy
