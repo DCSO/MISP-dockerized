@@ -23,8 +23,9 @@ MISP dockerized
 | 2.4.89 | deprecated | |
 | 2.4.90 | deprecated | |
 | 2.4.91 | deprecated | |
-| 2.4.92 | current | |
-| 2.4.93 | current
+| 2.4.92 | deprecated | |
+| 2.4.93 | current ||
+| 2.4.94 | current ||
 
 See https://github.com/DCSO/MISP-dockerized-server for more details like available and supported tags
 
