@@ -79,7 +79,7 @@ function default_container_version() {
   [ -z "$POSTFIX_CONTAINER_TAG" ] && POSTFIX_CONTAINER_TAG="1.0.0-alpine"
   [ -z "$MISP_CONTAINER_TAG" ] && MISP_CONTAINER_TAG="2.4.92-ubuntu"
   [ -z "$PROXY_CONTAINER_TAG" ] && PROXY_CONTAINER_TAG="1.0.1-alpine"
-  [ -z "$ROBOT_CONTAINER_TAG" ] && ROBOT_CONTAINER_TAG="1.0.2-ubuntu"
+  [ -z "$ROBOT_CONTAINER_TAG" ] && ROBOT_CONTAINER_TAG="1.0.2-debian"
   [ -z "$MISP_MODULES_CONTAINER_TAG" ] && MISP_MODULES_CONTAINER_TAG="1.0.0-debian"
   ###
   MISP_TAG=$(echo $MISP_CONTAINER_TAG|cut -d - -f 1)
