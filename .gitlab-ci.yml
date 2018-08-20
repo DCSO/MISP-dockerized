@@ -27,6 +27,9 @@ before_script:
 
 Test_without_push:
   stage: build
+  except:
+  - master
+  - stable
   script:
   # download latest images from registry
   - $makefile pull-latest REPOURL=${REPOURL}
@@ -34,20 +37,12 @@ Test_without_push:
   - make install
   # test if MISP is ready
   - $makefile test
-  # prepare retagging
-  - export server_tag=$(cat .env |grep MISP_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export proxy_tag=$(cat .env |grep PROXY_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export robot_tag=$(cat .env |grep ROBOT_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export postfix_tag=$(cat .env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  # retag all existing tags dev 2 public repo
-  - $makefile tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} REPOURL=${REPOURL}
-  # Push Images to registry
-  - $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} REPOURL=${REPOURL};
 
 Test_with_push:
   stage: build
   only: 
   - master
+  - stable
   script:
   # download latest images from registry
   - $makefile pull-latest REPOURL=${REPOURL}
@@ -64,20 +59,3 @@ Test_with_push:
   - $makefile tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} REPOURL=${REPOURL}
   # Push Images to registry
   - $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} REPOURL=${REPOURL};
-  
-
-.upload_image_internal_registry:
-  stage: deploy
-  only: 
-  - master
-  script:
-    - echo "$INTERNAL_REGISTRY_PW" | docker login -u "$INTERNAL_REGISTRY_USER" --password-stdin "$INTERNAL_REGISTRY_HOST"
-    - $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag};
-
-.upload_image_hub.docker.com:
-  stage: deploy
-  only: 
-  - master
-  script:
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag};
