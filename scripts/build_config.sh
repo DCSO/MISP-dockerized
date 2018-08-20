@@ -15,6 +15,8 @@ DOCKER_COMPOSE_FILE="${MISP_dockerized_repo}/docker-compose.yml"
 MISP_CONF_YML="${MISP_dockerized_repo}/config/misp.conf.yml"
 BACKUP_PATH="${MISP_dockerized_repo}/backup"
 ENABLE_FILE_DCSO_DOCKER_REGISTRY="${MISP_dockerized_repo}/config/use_secure_DCSO_Docker_Registry.enable"
+ENABLE_FILE_SMIME="${MISP_dockerized_repo}/config/smime/smime.enable"
+ENABLE_FILE_PGP="${MISP_dockerized_repo}/config/pgp/pgp.enable"
 ######################################################################
 # Function to import configuration
 function import_config(){
@@ -67,6 +69,9 @@ function check_if_vars_exists() {
   [ -z "$REDIS_FQDN" ] && REDIS_FQDN="misp-server"  && QUERY_REDIS="yes"
   [ -z "${REDIS_PORT+x}" ] && REDIS_PORT=""             && QUERY_REDIS="yes"
   [ -z "${REDIS_PW+x}" ]   && REDIS_PW=""               && QUERY_REDIS="yes"
+  # SMIME / PGP
+  [ -z ${USE_PGP+x} ] && QUERY_PGP="yes"
+  [ -z ${USE_SMIME+x} ] && QUERY_SMIME="yes"
   echo "...done"
 }
 # Function for the Container Versions
@@ -290,10 +295,66 @@ function query_redis_settings(){
 }
 
 function query_pgp_settings(){
-  echo
+  read -r -p "Should we try to create a pgp key into the docker container? [Y/n] " -ei "y" response
+  case $response in
+  [yY][eE][sS]|[yY])
+    ENTROPY=$(cat /proc/sys/kernel/random/entropy_avail)
+    if [[ $ENTROPY -gt 1000 ]]
+    then
+        echo "We try to create a pgp key in the volume. It will be saved to: $PWD/config/pgp/"
+        touch $ENABLE_FILE_PGP
+    else
+        echo "Sorry but we can't create your pgp key in the volume. Your entropy ($ENTROPY >= 1000) is to low. Please create your PGP key outside of this environment."
+        echo "     To replace the PGP public and private file later: "
+        echo "     1. save public key into:      $PWD/config/pgp/public.key"
+        echo "     2. save private key into:  $PWD/config/pgp/private.key"
+        echo "     3. do:                         make config-server"
+        echo
+        sleep 3
+        echo
+    fi
+    USE_PGP="yes"
+    ;;
+  *)
+    [ -e $ENABLE_FILE_PGP ] && rm $ENABLE_FILE_PGP
+    USE_PGP="no"
+    ;;
+  esac
+
+}
+
+function query_smime_settings(){
+  read -r -p "Would you start with S/MIME? [y/N] " -ei "n" response
+  case $response in
+  [yY][eE][sS]|[yY])
+    touch $ENABLE_FILE_SMIME
+    USE_SMIME="yes"
+    ;;
+  *)
+    [ -e $ENABLE_FILE_SMIME ] && rm -f $ENABLE_FILE_SMIME
+    USE_SMIME="no"
+    ;;
+  esac
+    
 }
 
 function query_docker_registry() {
+  [ "$AUTOMATE_BUILD" = "true" ] || read -r -p "Do you want to load the MISP containers from secure DCSO Registry? [Y/n] " -ei "y" response
+  [ "$AUTOMATE_BUILD" = "true" ] && response="yes"
+  [ "$TRAVIS" == "true" ] && response="no"
+  case $response in
+  [yY][eE][sS]|[yY])
+    touch $ENABLE_FILE_DCSO_DOCKER_REGISTRY
+    echo "We switched the container repository to secure DCSO registry."
+    echo "      If you want to use the public one from hub.docker.com,"
+    echo "      please delete $ENABLE_FILE_DCSO_DOCKER_REGISTRY and 'make install'"
+    read -r -p "     continue with ENTER"     
+    ;;
+  *)
+    rm -f $ENABLE_FILE_DCSO_DOCKER_REGISTRY
+    ;;
+  esac
+  
   if [ -e "$ENABLE_FILE_DCSO_DOCKER_REGISTRY" ]
   then
     # On our own registry we have none group tag, but we have another URL
@@ -322,7 +383,7 @@ if [ "$AUTOMATE_BUILD" = "true" ]
     # Automated Startup only for travis
     ################################################
     # ask no questions only defaults
-    echo "automatic build"
+    echo "automatic build..."
     ####
     POSTFIX_CONTAINER_TAG="$POSTFIX_CONTAINER_TAG-dev"
     MISP_CONTAINER_TAG="$MISP_CONTAINER_TAG-dev"
@@ -346,6 +407,10 @@ if [ "$AUTOMATE_BUILD" = "true" ]
     [ "$QUERY_POSTFIX" == "yes" ] && query_postfix_settings
     # Redis
     [ "$QUERY_REDIS" == "yes" ] && query_redis_settings
+    # SMIME
+    [ "$QUERY_SMIME" == "yes" ] && query_smime_settings
+    # PGP
+    [ "$QUERY_PGP" == "yes" ] && query_pgp_settings
 fi
 ###################################
 # Write Configuration
@@ -469,7 +534,6 @@ RELAY_PASSWORD: "${RELAY_PASSWORD}"
 ##################################################################
 
 EOF
-
 #####################################
 # ALL Variables
 cat << EOF > $CONFIG_FILE
@@ -541,6 +605,8 @@ MISP_prefix="${MISP_prefix}"
 MISP_encoding="${MISP_encoding}"
 MISP_SALT="${MISP_SALT}"
 ADD_ANALYZE_COLUMN="${ADD_ANALYZE_COLUMN}"
+USE_PGP="${USE_PGP}"
+USE_SMIME="${USE_SMIME}"
 # ------------------------------
 # misp-postfix Configuration
 # ------------------------------
@@ -554,7 +620,7 @@ DEBUG_PEER="${DEBUG_PEER}"
 ##################################################################
 
 EOF
-
+###############################################
 echo "...done"
 sleep 2
 ##########################################
