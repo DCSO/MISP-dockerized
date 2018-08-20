@@ -57,7 +57,7 @@ function check_URL(){
         then
             echo "[WARN] Check: $URL"
             echo "       Result: Connection not available."
-            [ "$AUTOMATE_BUILD" == "true" ] || read -r -p "     continue with ENTER"  
+            #[ "$AUTOMATE_BUILD" == "true" ] || read -r -p "     continue with ENTER"  
         else
             echo "[OK]   Check: $URL"
             echo "       Result: $COMMAND."
@@ -67,10 +67,7 @@ function check_URL(){
 check_URL https://misp.dcso.de
 check_URL https://dockerhub.dcso.de/v2/
 check_URL https://github.com/DCSO/misp-dockerized
-# check_URL https://docker.io
-# check_URL https://registry-1.docker.io/
-# check_URL https://auth.docker.io
-# check_URL https://production.cloudflare.docker.com
+check_URL https://github.com/misp/misp
 
 ###############################  USER CHECKS    #########################
 echo "" # Empty Line for a better overview.
@@ -145,136 +142,39 @@ check_folder "backup"
 
 
 
-###############################  CERT CHECKS    #########################
-
-
-
-
-#
-#   Check SSL
-#
+###############################  SSL CERT CHECKS    #########################
 echo
 if [ ! -f ./config/ssl/key.pem -a ! -f ./config/ssl/cert.pem ]; then
-    
-    [ "$AUTOMATE_BUILD" == "true" ] || read -r -p "[WARN] No SSL certificate found. Should we create a self-signed certificate? [Y/n] " -ei "y" response
-    [ "$AUTOMATE_BUILD" == "true" ] && echo "[WARN] No SSL certificate found. Should we create a self-signed certificate? [Y/n] y" && response="y"
-    case $response in
-    [yY][eE][sS]|[yY])
-        echo "[OK] We create a self-signed certificate in the volume."
-        echo "     To change the SSL certificate and private key later: "
-        echo "     1. save certificate into:      $PWD/config/ssl/cert.pem"
-        echo "     2. save private keyfile into:  $PWD/config/ssl/key.pem"
-        echo "     3. do:                         make change-ssl"
-        [ "$AUTOMATE_BUILD" == "true" ] || read -r -p "     continue with ENTER"     
-        echo
-        echo
-        ;;
-    *)
-        STATUS="FAIL"
-        echo "[FAIL] No certificate file exists. Please save your cert at: $PWD/config/ssl/cert.pem" 
-        echo "[FAIL] No certificate key exists. Please save your key at:   $PWD/config/ssl/key.pem"
-        echo
-        ;;
-    esac
+    echo "[WARN] No SSL certificate found. We create a self-signed certificate in the volume."
+    echo "     To change the SSL certificate and private key later: "
+    echo "     1. save certificate into:      $PWD/config/ssl/cert.pem"
+    echo "     2. save private keyfile into:  $PWD/config/ssl/key.pem"
+    echo "     3. do:                         make change-ssl"
+    echo
+    echo
 fi
 
 ###############################  SMIME CHECKS    #########################
 echo
 if [ ! -f ./config/smime/key.pem -a ! -f ./config/smime/cert.pem ]; then
-    [ "$AUTOMATE_BUILD" == "true" ] || read -r -p "[WARN] No S/MIME certificate found. Would you start with S/MIME? [y/N] " -ei "n" response
-    [ "$AUTOMATE_BUILD" == "true" ] && echo "[WARN] No S/MIME certificate found. Would you start with S/MIME? [y/N] n" && response="n"
-    case $response in
-    [yY][eE][sS]|[yY])
-        STATUS="FAIL"
-        echo "[FAIL] Please save a S/MIME Certificate and the private Key."
-        echo "     1. save certificate into:      $PWD/config/smime/cert.pem"
-        echo "     2. save private keyfile into:  $PWD/config/smime/key.pem"
-        read -r -p "     continue with ENTER"     
-        echo
-        echo
-        exit 1
-        ;;
-    *)
-        echo "[OK] No S/MIME want be used. If you want to use S/MIME Later:"
-        echo "     1. Please save your cert at:  $PWD/config/smime/cert.pem" 
-        echo "     2. Please save your key  at:  $PWD/config/smime/key.pem"
-        echo "     3. do:                        make config-smime"
-        echo
-        ;;
-    esac
+    echo "[WARN] No S/MIME certificate found. If you want to use S/MIME Later:"
+    echo "     1. Please save your cert at:  $PWD/config/smime/cert.pem" 
+    echo "     2. Please save your key  at:  $PWD/config/smime/key.pem"
+    echo "     3. do:                        make config-server"
+    echo
 fi
 
 ###############################  PGP CHECKS    #########################
 echo
 if [ ! -f ./config/pgp/private.key -a ! -f ./config/pgp/public.key ]; then
-    [ "$AUTOMATE_BUILD" == "true" ] || read -r -p "[WARN] No PGP key found. Should we create a pgp key? [Y/n] " -ei "y" response
-    [ "$AUTOMATE_BUILD" == "true" ] && echo "[WARN] No PGP key found. Should we create a pgp key? [Y/n] y" && response="y"
-    case $response in
-    [yY][eE][sS]|[yY])
-        ENTROPY=$(cat /proc/sys/kernel/random/entropy_avail)
-        if [[ $ENTROPY -gt 1000 ]]
-        then
-            echo "[OK] We create a pgp key in the volume. It will be saved to: $PWD/config/pgp/"
-            touch ./config/pgp/pgp.enable
-        else
-            echo "[FAIL] Sorry but we can't create your pgp key in the volume. Your entropy ($ENTROPY >= 1000) is to low. Please create your PGP key outside of docker."
-            # Bringt STATUS in Fail State if it is not automated
-            [ "$AUTOMATE_BUILD" == "true" ] || STATUS="FAIL"
-        fi
-        echo "     To replace the PGP public and private file later: "
-        echo "     1. save public key into:      $PWD/config/pgp/public.key"
-        echo "     2. save private key into:  $PWD/config/pgp/private.key"
-        echo "     3. do:                         make config-pgp"
-        [ "$AUTOMATE_BUILD" == "true" ] || read -r -p "     continue with ENTER"     
-        echo
-        echo
-        ;;
-    *)
-        STATUS="FAIL"
-        # echo "     To change the PGP public and private file later: "
-        # echo "     1. save public key into:      $PWD/config/pgp/public.key"
-        # echo "     2. save private key into:  $PWD/config/pgp/private.key"
-        # echo "     3. do:                         make config-pgp"
-        # [ "$AUTOMATE_BUILD" = "true" ] || read -r -p "     continue with ENTER" 
-        echo "[FAIL] No certificate file exists. Please save your cert at: $PWD/config/pgp/public.key" 
-        echo "[FAIL] No certificate key exists.  Please save your key at:   $PWD/config/pgp/private.key"
-        echo
-        ;;
-    esac
+    echo "[WARN] No PGP key found."
+    echo "     To replace the PGP public and private file later: "
+    echo "     1. save public key into:      $PWD/config/pgp/public.key"
+    echo "     2. save private key into:  $PWD/config/pgp/private.key"
+    echo "     3. do:                         make config-server"
+    echo
+    echo
 fi
-
-###############################  DCSO Check    #########################
-FILE="./config/use_secure_DCSO_Docker_Registry.enable"
-
-[ "$AUTOMATE_BUILD" == "true" ] || read -r -p "Are you a DCSO TI MISP Customer? [Y/n] " -ei "y" response
-# for internal GITLAB:
-[ "$AUTOMATE_BUILD" == "true" ] && response="y"
-# for travis:
-[ "$TRAVIS" == "true" ] && response="n"
-
-case $response in
-[yY][eE][sS]|[yY])
-    [ "$AUTOMATE_BUILD" == "true" ] || read -r -p "Do you want to load the MISP containers from secure DCSO Registry? [Y/n] " -ei "y" response
-    case $response in
-    [yY][eE][sS]|[yY])
-        touch $FILE
-        echo "We switched the container repository to secure DCSO registry."
-        echo "      If you want to use the public one from hub.docker.com, please delete $FILE and 'make install'"
-        [ "$AUTOMATE_BUILD" == "true" ] || read -r -p "     continue with ENTER"     
-        ;;
-    *)
-        rm -f $FILE
-        ;;
-    esac
-    echo
-    echo
-    ;;
-*)
-    rm -f $FILE
-    ;;
-esac
-
-
 
 ###############################  END Result    #########################
 echo "End result:"
