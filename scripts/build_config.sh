@@ -348,7 +348,7 @@ function query_docker_registry() {
     echo "We switched the container repository to secure DCSO registry."
     echo "      If you want to use the public one from hub.docker.com,"
     echo "      please delete $ENABLE_FILE_DCSO_DOCKER_REGISTRY and 'make install'"
-    read -r -p "     continue with ENTER"     
+    [ "$AUTOMATE_BUILD" = "true" ] || read -r -p "     continue with ENTER"     
     ;;
   *)
     rm -f $ENABLE_FILE_DCSO_DOCKER_REGISTRY
