@@ -248,8 +248,8 @@ services:
     depends_on:
       - "misp-server"
       - "misp-proxy"
-    #tty: true
-    #stdin_open: true
+    tty: true
+    stdin_open: true
     healthcheck:
       disable: true
     #environment:
