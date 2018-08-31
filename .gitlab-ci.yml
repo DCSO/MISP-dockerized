@@ -25,11 +25,21 @@ before_script:
   - docker login -u "$INTERNAL_REGISTRY_USER" -p "$INTERNAL_REGISTRY_PW" "$INTERNAL_REGISTRY_HOST"
 
 
-Test_without_push:
+Short_Test_without_Push:
   stage: build
   except:
-  - master
   - stable
+  - unstable
+  script:
+  # download latest images from registry
+  - $makefile pull-latest REPOURL=${REPOURL}
+  # start deploy script
+  - make install
+
+Long_Test_without_Push:
+  stage: build
+  only:
+  - unstable
   script:
   # download latest images from registry
   - $makefile pull-latest REPOURL=${REPOURL}
@@ -38,10 +48,9 @@ Test_without_push:
   # test if MISP is ready
   - $makefile test
 
-Test_with_push:
+Upload_2_Repository:
   stage: build
   only: 
-  - master
   - stable
   script:
   # download latest images from registry
@@ -55,7 +64,9 @@ Test_with_push:
   - export proxy_tag=$(cat .env |grep PROXY_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   - export robot_tag=$(cat .env |grep ROBOT_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   - export postfix_tag=$(cat .env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export postfix_tag=$(cat .env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export modules_tag=$(cat .env |grep MISP_MODULES_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   # retag all existing tags dev 2 public repo
-  - $makefile tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} REPOURL=${REPOURL}
+  - $makefile tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag}
   # Push Images to registry
-  - $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} REPOURL=${REPOURL};
+  - $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} REPOURL=${REPOURL};
