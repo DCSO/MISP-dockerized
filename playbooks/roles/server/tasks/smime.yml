@@ -18,32 +18,19 @@
     valid_in: 1209600
   ignore_errors: True
   run_once: true
-  when: (cert_file.stat.exists == True) and (cert_key_file.stat.exists == True) 
+  when: (cert_file.stat.exists == True)
 
-- name: S/MIME | Copy certficate
+- name: S/MIME | Copy certficate and key
   tags: smime
   copy:
     src: "{{MAIN_REPO_CONFIG}}/smime/{{ item }}"
-    dest: "{{MISP_PATH}}/.smime/{{ SENDER_ADDRESS }}.pem"
+    dest: "{{SMIME_CONFIG_PATH}}/{{ item }}"
     force: yes
     owner: root
     group: root
     mode: 0440
   with_items:
     - "{{SSL_CERT_FILENAME}}"
-  when: (cert_file.stat.exists == True)
-  run_once: true
-
-- name: S/MIME | Copy key file
-  tags: smime
-  copy:
-    src: "{{MAIN_REPO_CONFIG}}/smime/{{ item }}"
-    dest: "{{SMIME_CONFIG_PATH}}/{{ SENDER_ADDRESS }}.key"
-    force: yes
-    owner: root
-    group: root
-    mode: 0440
-  with_items:
     - "{{SSL_KEY_FILENAME}}"
-  when: (cert_key_file.stat.exists == True) 
+  when: (cert_file.stat.exists == True) and (cert_key_file.stat.exists == True)
   run_once: true
