@@ -149,7 +149,7 @@ if [ ! -f ./config/ssl/key.pem -a ! -f ./config/ssl/cert.pem ]; then
     echo "     To change the SSL certificate and private key later: "
     echo "     1. save certificate into:      $PWD/config/ssl/cert.pem"
     echo "     2. save private keyfile into:  $PWD/config/ssl/key.pem"
-    echo "     3. do:                         make change-ssl"
+    echo "     3. do:                         make configure"
     echo
     echo
 fi
@@ -157,7 +157,7 @@ fi
 ###############################  SMIME CHECKS    #########################
 echo
 if [ ! -f ./config/smime/key.pem -a ! -f ./config/smime/cert.pem ]; then
-    echo "[WARN] No S/MIME certificate found. If you want to use S/MIME Later:"
+    echo "[WARN] No S/MIME certificate found."
     echo "     1. Please save your cert at:  $PWD/config/smime/cert.pem" 
     echo "     2. Please save your key  at:  $PWD/config/smime/key.pem"
     echo "     3. do:                        make config-server"

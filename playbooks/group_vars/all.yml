@@ -10,4 +10,4 @@ SMIME_CONFIG_PATH: /srv/misp-smime
 PGP_CONFIG_PATH: /srv/misp-pgp
 PGP_PRIVATE_FILENAME: private.key
 PGP_PUBLIC_FILENAME: public.key
-PGP_HOMEDIR: /srv/misp-pgp
+PGP_HOMEDIR: "{{ PGP_CONFIG_PATH }}"

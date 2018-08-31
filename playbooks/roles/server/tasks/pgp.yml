@@ -8,47 +8,25 @@
     path: "{{MAIN_REPO_CONFIG}}/pgp/{{PGP_PRIVATE_FILENAME}}"
   register: private_file
 
-################
-# IMPORT PGP Keys
-################
+- name: PGP | Copy public and private key
+  tags: pgp
+  copy:
+    src: "{{MAIN_REPO_CONFIG}}/pgp/{{ item }}"
+    dest: "PGP_CONFIG_PATH/{{ item }}"
+    force: yes
+    owner: root
+    group: root
+    mode: 0440
+  with_items:
+    - "{{PGP_PUBLIC_FILENAME}}"
+    - "{{PGP_PRIVATE_FILENAME}}"
+  when: (public_file.stat.exists == True) and (private_file.stat.exists == True)
+  run_once: true
+ 
 - name: PGP | If exists import private and public key
-  shell: gpg --import --homedir "{{PGP_HOMEDIR}}" "{{ item }}"
+  shell: pushd "{{PGP_HOMEDIR}}"; gpg --import --homedir "{{PGP_HOMEDIR}}" "{{ item }}"
   with_items:
   - "{{PGP_PUBLIC_FILENAME}}"
   - "{{PGP_PRIVATE_FILENAME}}"
   when: (public_file.stat.exists == True) and (private_file.stat.exists == True)  
 
-###############
-# CREATE NEW PGP KEY PAIR
-###############
-
-- name: PGP | Copy template gen_pgp.sh script
-  template:
-    src: template/{{ item }}.j2
-    dest: "/{{ item }}"
-    owner: root
-    group: root
-    mode: 0740
-  with_items:
-    - gen_pgp.sh
-  when: (public_file.stat.exists == False) and (private_file.stat.exists == False) 
-
-- name: PGP | Generate a new Private and Public Key - This can take a long time, so take a break and enjoy a cup of tea or coffee.
-  tags: pgp
-  shell: cd "{{PGP_HOMEDIR}}" && /gen_pgp.sh    
-  when: (public_file.stat.exists == False) and (private_file.stat.exists == False)  
-
-# - name: PGP | Delete gen_pgp.sh script
-#   tags: pgp
-#   file:
-#     state: absent
-#     path: /gen_pgp.sh  
-#   when: (public_file.stat.exists == False) and (private_file.stat.exists == False)  
-
-- name: PGP | Copy created public and private key back to outer MISP-dockerized GIT folder
-  tags: pgp
-  shell: "cp {{PGP_HOMEDIR}}/{{ item }} {{MAIN_REPO_CONFIG}}/pgp/"
-  with_items:
-  - "{{PGP_PUBLIC_FILENAME}}"
-  - "{{PGP_PRIVATE_FILENAME}}"
-  when: (public_file.stat.exists == False) and (private_file.stat.exists == False)

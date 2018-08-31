@@ -295,32 +295,19 @@ function query_redis_settings(){
 }
 
 function query_pgp_settings(){
-  read -r -p "Should we try to create a pgp key into the docker container? [Y/n] " -ei "y" response
+  read -r -p "Would you start with PGP? [y/N] " -ei "n" response
   case $response in
   [yY][eE][sS]|[yY])
-    ENTROPY=$(cat /proc/sys/kernel/random/entropy_avail)
-    if [[ $ENTROPY -gt 1000 ]]
-    then
-        echo "We try to create a pgp key in the volume. It will be saved to: $PWD/config/pgp/"
-        touch $ENABLE_FILE_PGP
-    else
-        echo "Sorry but we can't create your pgp key in the volume. Your entropy ($ENTROPY >= 1000) is to low. Please create your PGP key outside of this environment."
-        echo "     To replace the PGP public and private file later: "
-        echo "     1. save public key into:      $PWD/config/pgp/public.key"
-        echo "     2. save private key into:  $PWD/config/pgp/private.key"
-        echo "     3. do:                         make config-server"
-        echo
-        sleep 3
-        echo
-    fi
+    touch $ENABLE_FILE_PGP
     USE_PGP="yes"
     ;;
   *)
-    [ -e $ENABLE_FILE_PGP ] && rm $ENABLE_FILE_PGP
+    [ -e $ENABLE_FILE_PGP ] && rm -f $ENABLE_FILE_PGP
     USE_PGP="no"
     ;;
   esac
-
+    
+}
 }
 
 function query_smime_settings(){
