@@ -306,8 +306,6 @@ function query_pgp_settings(){
     USE_PGP="no"
     ;;
   esac
-    
-}
 }
 
 function query_smime_settings(){
