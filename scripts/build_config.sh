@@ -30,7 +30,7 @@ function check_if_vars_exists() {
   echo -n "check if all vars exists..."
   # Default Variables for the config:
   # Hostname
-  [ -z "${HOSTNAME}" ] && HOSTNAME="`hostname -f`" && QUERY_HOSTNAME="yes"
+  [ -z "$myHOSTNAME" ] && myHOSTNAME="`hostname -f`" && QUERY_myHOSTNAME="yes"
   # Network
   [ -z "$DOCKER_NETWORK" ] && DOCKER_NETWORK="192.168.47.0/28" && QUERY_NETWORK="yes" 
   [ -z "$BRIDGE_NAME" ] && BRIDGE_NAME="mispbr0" && QUERY_NETWORK="yes"
@@ -50,7 +50,7 @@ function check_if_vars_exists() {
     # HTTP
   [ -z "$HTTP_PORT" ] && HTTP_PORT="80" && QUERY_HTTP="yes"
   [ -z "$HTTPS_PORT" ] && HTTPS_PORT="443" && QUERY_HTTP="yes"
-  [ -z "$HTTP_SERVERADMIN" ] && HTTP_SERVERADMIN="admin@${HOSTNAME}" && QUERY_HTTP="yes"
+  [ -z "$HTTP_SERVERADMIN" ] && HTTP_SERVERADMIN="admin@${myHOSTNAME}" && QUERY_HTTP="yes"
   [ -z "$ALLOW_ALL_IPs" ] && ALLOW_ALL_IPs="yes" && QUERY_HTTP="yes"
   [ -z "$client_max_body_size" ] && client_max_body_size="50M" && QUERY_HTTP="yes"
   [ -z "$HTTP_ALLOWED_IP" ] && HTTP_ALLOWED_IP="all" && QUERY_HTTP="yes"
@@ -153,7 +153,7 @@ function query_timezone(){
 
 function query_hostname(){
   # read Hostname for MISP Instance
-  read -p "Hostname (FQDN - example.org is not a valid FQDN) [DEFAULT: $HOSTNAME]: " -ei $HOSTNAME HOSTNAME
+  read -p "Hostname (FQDN - example.org is not a valid FQDN) [DEFAULT: $myHOSTNAME]: " -ei $myHOSTNAME myHOSTNAME
 }
 
 function query_network_settings(){
@@ -376,7 +376,7 @@ if [ "$AUTOMATE_BUILD" = "true" ]
     MISP_MODULES_CONTAINER_TAG="$MISP_MODULES_CONTAINER_TAG-dev"
   else
     # Hostname
-    [ "$QUERY_HOSTNAME" == "yes" ] && query_hostname
+    [ "$QUERY_myHOSTNAME" == "yes" ] && query_hostname
     # Network
     [ "$QUERY_NETWORK" == "yes" ] && query_network_settings
     # DB
@@ -408,7 +408,7 @@ cat << EOF > $DOCKER_COMPOSE_CONF
 # ------------------------------
 # Hostname Environment Variables
 # ------------------------------
-HOSTNAME=${HOSTNAME}
+myHOSTNAME=${myHOSTNAME}
 # ------------------------------
 # Docker Registry Environment Variables
 # ------------------------------
@@ -486,7 +486,7 @@ MYSQL_PASSWORD: ${MYSQL_PASSWORD}
 # ------------------------------
 # misp-server configuration
 # ------------------------------
-MISP_FQDN: ${HOSTNAME}
+MISP_FQDN: ${myHOSTNAME}
 MISP_HTTPS_PORT: ${HTTPS_PORT}
 MISP_TAG: ${MISP_TAG}
 MISP_prefix: ${MISP_prefix}
@@ -526,7 +526,7 @@ cat << EOF > $CONFIG_FILE
 # ------------------------------
 # Hostname
 # ------------------------------
-HOSTNAME="${HOSTNAME}"
+myHOSTNAME="${myHOSTNAME}"
 # ------------------------------
 # Network Configuration
 # ------------------------------
@@ -582,7 +582,7 @@ REDIS_PORT=
 # ------------------------------
 # misp-server env configuration
 # ------------------------------
-MISP_FQDN="${HOSTNAME}"
+MISP_FQDN="${myHOSTNAME}"
 MISP_HTTPS_PORT="${HTTPS_PORT}"
 MISP_TAG="${MISP_TAG}"
 MISP_prefix="${MISP_prefix}"
