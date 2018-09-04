@@ -1,7 +1,7 @@
 #!/bin/bash
 #description     :This script build the configuration for the MISP Container and their content.
 #==============================================================================
-set -e
+set -ex
 #set -xv # for debugging only
 
 # check if this is an automate build not ask any questions
@@ -30,7 +30,7 @@ function check_if_vars_exists() {
   echo -n "check if all vars exists..."
   # Default Variables for the config:
   # Hostname
-  [ -z "$HOSTNAME" ] && HOSTNAME="`hostname -f`" && QUERY_HOSTNAME="yes"
+  [ -z "${HOSTNAME}" ] && HOSTNAME="`hostname -f`" && QUERY_HOSTNAME="yes"
   # Network
   [ -z "$DOCKER_NETWORK" ] && DOCKER_NETWORK="192.168.47.0/28" && QUERY_NETWORK="yes" 
   [ -z "$BRIDGE_NAME" ] && BRIDGE_NAME="mispbr0" && QUERY_NETWORK="yes"
@@ -67,11 +67,11 @@ function check_if_vars_exists() {
   [ -z "$QUESTION_DEBUG_PEERS" ] && QUESTION_DEBUG_PEERS="no" && QUERY_POSTFIX="yes"
   # Redis
   [ -z "$REDIS_FQDN" ] && REDIS_FQDN="misp-server"  && QUERY_REDIS="yes"
-  [ -z "${REDIS_PORT+x}" ] && REDIS_PORT=""             && QUERY_REDIS="yes"
-  [ -z "${REDIS_PW+x}" ]   && REDIS_PW=""               && QUERY_REDIS="yes"
+  [ -z "${REDIS_PORT}" ] && REDIS_PORT=""             && QUERY_REDIS="yes"
+  [ -z "${REDIS_PW}" ]   && REDIS_PW=""               && QUERY_REDIS="yes"
   # SMIME / PGP
-  [ -z ${USE_PGP+x} ] && QUERY_PGP="yes"
-  [ -z ${USE_SMIME+x} ] && QUERY_SMIME="yes"
+  [ -z ${USE_PGP} ] && QUERY_PGP="yes"
+  [ -z ${USE_SMIME} ] && QUERY_SMIME="yes"
   echo "...done"
 }
 # Function for the Container Versions
