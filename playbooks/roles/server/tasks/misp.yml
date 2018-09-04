@@ -41,7 +41,7 @@
     owner: www-data
     group: www-data
 
-- name: Configure MISP | Set Email in config.php
+- name: Configure MISP | Set Admin Email in config.php
   replace:
     name: "{{MISP_PATH}}/Config/config.php"
     regexp: "admin@misp.example.com"
