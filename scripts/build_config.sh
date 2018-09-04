@@ -1,7 +1,7 @@
 #!/bin/bash
 #description     :This script build the configuration for the MISP Container and their content.
 #==============================================================================
-set -ex
+set -e
 #set -xv # for debugging only
 
 # check if this is an automate build not ask any questions
@@ -30,7 +30,7 @@ function check_if_vars_exists() {
   echo -n "check if all vars exists..."
   # Default Variables for the config:
   # Hostname
-  [ -z "$myHOSTNAME" ] && myHOSTNAME="`hostname -f`" && QUERY_myHOSTNAME="yes"
+  [ -z "${myHOSTNAME+x}" ] && myHOSTNAME="`hostname -f`" && QUERY_myHOSTNAME="yes"
   # Network
   [ -z "$DOCKER_NETWORK" ] && DOCKER_NETWORK="192.168.47.0/28" && QUERY_NETWORK="yes" 
   [ -z "$BRIDGE_NAME" ] && BRIDGE_NAME="mispbr0" && QUERY_NETWORK="yes"
