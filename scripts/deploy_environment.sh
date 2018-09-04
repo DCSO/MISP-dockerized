@@ -25,6 +25,7 @@ if [ -z "which docker-compose" ]
                 exit 1
         fi
         echo '...Starting Docker...'
+        sudo docker-compose -f $docker_compose_file pull
         sudo docker-compose -f $docker_compose_file up -d
         popd
 fi
