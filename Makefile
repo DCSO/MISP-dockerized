@@ -12,12 +12,15 @@ help:
 	       make requirements	 	| check if server fullfill all requirements\n \
 	       make build-config	 	| build configuration\n \
 	       make deploy 			| deploy docker container\n \
+		make upgrade 			| upgrade MISP-dockerized\n \
+		make update 			| update MISP-dockerized same as make install\n \
 	       make delete 			| delete all docker container, volumes and images for MISP\n \
 	       make delete-unused 		| delete all unused docker container, volumes and images \n \
 	       make security	 		| check docker security via misp-robot\n \
 	Control Docker Instances\n\
 		make start-all			| start all docker container\n \
 		make stop-all			| stop all docker container \n \
+		make restart-all		| restart all docker container \n \
 	Configure: \n \
 	       make change-ssl			| change ssl cert\n \
 	       make configure 			| configure docker container via misp-robot\n \
