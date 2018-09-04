@@ -152,8 +152,6 @@ function query_timezone(){
 }
 
 function query_hostname(){
-  # set default values
-  [ -z "$HOSTNAME" ] && HOSTNAME="`hostname -f`"
   # read Hostname for MISP Instance
   read -p "Hostname (FQDN - example.org is not a valid FQDN) [DEFAULT: $HOSTNAME]: " -ei $HOSTNAME HOSTNAME
 }
