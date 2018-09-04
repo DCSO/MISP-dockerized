@@ -8,19 +8,25 @@
 help:
 	@echo "Please use one of the following options:\n \
 	General: \n \
-	       make start			| Initial Command for: requirements, build-config, deploy\n \
+	       make install			| Initial Command for: requirements, build-config, deploy\n \
 	       make requirements	 	| check if server fullfill all requirements\n \
 	       make build-config	 	| build configuration\n \
 	       make deploy 			| deploy docker container\n \
 	       make delete 			| delete all docker container, volumes and images for MISP\n \
 	       make delete-unused 		| delete all unused docker container, volumes and images \n \
 	       make security	 		| check docker security via misp-robot\n \
+	Control Docker Instances\n\
+		make start-all			| start all docker container\n \
+		make stop-all			| stop all docker container \n \
 	Configure: \n \
-	       make change-ssl		| change ssl cert								\
-	       make configure 		| configure docker container via misp-robot\n \
-	       make config-db 		| configure misp-db via misp-robot\n \
+	       make change-ssl			| change ssl cert\n \
+	       make configure 			| configure docker container via misp-robot\n \
+	       make config-db 			| configure misp-db via misp-robot\n \
 	       make config-server		| configure misp-server via misp-robot\n \
 	       make config-proxy 		| configure misp-proxy via misp-robot\n \
+	Maintenance: \n \
+	    	make enable-maintenance		| enable maintenance mode \n \
+	    	make disable-maintenance	| disable maintenance mode \n \
 	Backup: \n \
 	       make backup-all 		| backup all misp volumes via misp-robot\n \
 	       make backup-server		| backup misp-server volumes via misp-robot\n \
@@ -29,11 +35,7 @@ help:
 	       make backup-proxy		| backup misp-proxy volumes via misp-robot\n \
 	       make backup-robot		| backup misp-robot volumes via misp-robot\n \
 	       make restore			| restore volumes via misp-robot\n \
-	\nFor testing or manul docker container only:\n \
-	       make build-all	 		| build all misp container\n \
-	       make build-server	 	| build misp-server\n \
-	       make build-proxy 		| build misp-proxy\n \
-	       make build-robot 		| build misp-robot\n \
+	Help: \n \
 	       make help	 		| show help\n"
 
 # Start
