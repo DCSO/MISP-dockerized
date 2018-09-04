@@ -329,6 +329,7 @@ function query_docker_registry() {
   [ "$TRAVIS" == "true" ] && response="no"
   case $response in
   [yY][eE][sS]|[yY])
+    [ -d ${MISP_dockerized_repo}/config ] || mkdir -p ${MISP_dockerized_repo}/config
     touch $ENABLE_FILE_DCSO_DOCKER_REGISTRY
     echo "We switched the container repository to secure DCSO registry."
     echo "      If you want to use the public one from hub.docker.com,"
