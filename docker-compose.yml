@@ -98,7 +98,7 @@ services:
     container_name: misp-postfix
     restart: on-failure
     environment:
-      HOSTNAME: ${HOSTNAME}
+      HOSTNAME: ${myHOSTNAME}
       DOMAIN: ${DOMAIN}
       SENDER_ADDRESS: ${SENDER_ADDRESS}
       RELAYHOST: ${RELAYHOST}
