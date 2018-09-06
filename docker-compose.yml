@@ -213,7 +213,7 @@ services:
       NO_PROXY: ${NO_PROXY}
     volumes:
       # NGINX Configuration
-      - misp-vol-proxy-conf:/etc/nginx/conf.d:ro
+      #- misp-vol-proxy-conf:/etc/nginx/conf.d:ro
       # SSL 
       - misp-vol-ssl:/etc/nginx/ssl:ro
     networks:
@@ -260,12 +260,12 @@ services:
     # Docker.sock File
     - /var/run/docker.sock:/var/run/docker.sock:ro
     # Github Repository
-    - myHOST_PATH:/srv/MISP-dockerized  
-    - myHOST_PATH:/srv/misp-dockerized
+    - /home/max/repos/MISP-dockerized:/srv/MISP-dockerized  
+    - /home/max/repos/MISP-dockerized:/srv/misp-dockerized
     # Ansible scripts
-    - myHOST_PATH/playbooks:/etc/ansible/playbooks/robot-playbook:ro
+    - /home/max/repos/MISP-dockerized/playbooks:/etc/ansible/playbooks/robot-playbook:ro
     # Bash scripts
-    - myHOST_PATH/scripts:/srv/scripts:ro
+    - /home/max/repos/MISP-dockerized/scripts:/srv/scripts:ro
     # Volume with Certificates
     - misp-vol-ssl:/srv/misp-ssl
     # Volume with PGP Key
