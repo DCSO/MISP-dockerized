@@ -1,40 +1,33 @@
 ##### MISP configs #####
 - import_tasks: misp.yml
+  tags: misp
 
 ##### Configure SSL #####
 - include: tasks/ssl.yml
+  tags: ssl
 
 ##### PGP configs #####
+- name: PGP | check if PGP should enabled
+  stat: 
+    path: "{{MAIN_REPO_CONFIG}}/pgp/pgp.enable"
+  register: pgp_enabled
+
 - import_tasks: pgp.yml
+  tags: pgp
+  when: pgp_enabled.stat.exists == True
 
 ##### S/MIME configs #####
 - import_tasks: smime.yml
+  tags: smime
 
-
-
-# - name: Apache2 | Activate SSL config
-#   copy:
-#     src: "{{SERVER_CONFIG_PATH}}/misp.ssl.conf"
-#     dest: "{{SERVER_CONFIG_PATH}}/sites-enabled/misp.ssl.conf"
-#     force: yes
-#     owner: root
-#     group: root
-#     mode: 0640
-
-- name: Apache2 | Disable standard MISP config
+##### enable https config and disable http config ####
+- name: Apache2 | Disable HTTP MISP config
   shell: "mv {{ SERVER_CONFIG_PATH }}/misp.conf {{ SERVER_CONFIG_PATH }}/misp"
   ignore_errors: True
 
-- name: Apache2 | Create & activate SSL configuration
-  template:
-    src: template/{{ item }}.j2
-    dest: "{{ SERVER_CONFIG_PATH }}/{{ item }}"
-    owner: root
-    group: root
-    mode: 0640
-  with_items:
-    - misp.ssl.conf
-
+- name: Apache2 | Enable HTTPS MISP config
+  shell: "mv {{ SERVER_CONFIG_PATH }}/misp.ssl {{ SERVER_CONFIG_PATH }}/misp.ssl.conf"
+  ignore_errors: True
 
 ##### restart Docker Container #####
 - name: Apache2 | Restart Apache2 docker container

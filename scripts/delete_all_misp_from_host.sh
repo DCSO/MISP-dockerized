@@ -10,7 +10,7 @@ if [ "$USER_GO" == "y" ]; then
     echo '### remove all volumes ###'
     docker volume rm $(docker volume ls -qf name=misp*)
     echo '### remove MISP images ###'
-    docker image rm $(docker image ls --format '{{.Repository}}:{{.ID}}' | grep misp | sed 's/^[^:]*://g')
+    #docker image rm $(docker image ls --format '{{.Repository}}:{{.ID}}' | grep misp | sed 's/^[^:]*://g')
     echo '### remove MISP Network'
     docker network rm $(docker network ls --format '{{.Name}}:{{.ID}}' | grep misp | sed 's/^[^:]*://g')
 fi

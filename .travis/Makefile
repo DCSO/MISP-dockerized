@@ -3,8 +3,8 @@
 #
 .PHONY:  push test test-travis tag pull-all pull-latest
 
-CONTAINER := robot server proxy postfix
-REPOURL := dcso/misp-dockerized
+CONTAINER := robot server proxy postfix misp-modules
+REPOURL := dcso
 
 
 test-travis:
@@ -12,16 +12,17 @@ test-travis:
 
 pull-all:
 	# pull all images and tags
-	$(foreach c, $(CONTAINER), docker pull -a $(REPOURL)-$(c);)
+	$(foreach c, $(CONTAINER), docker pull -a $(REPOURL)/misp-dockerized-$(c);)
 
 pull-latest:
-	$(foreach c, $(CONTAINER), docker pull $(REPOURL)-$(c):latest-dev;)
+	$(foreach c, $(CONTAINER), docker pull $(REPOURL)/misp-dockerized-$(c):latest-dev;)
 
 tag:
-	./tagging.sh $(REPOURL)-server $(server_tag);
-	./tagging.sh $(REPOURL)-proxy $(proxy_tag);
-	./tagging.sh $(REPOURL)-robot $(robot_tag);
-	./tagging.sh $(REPOURL)-postfix $(postfix_tag);
+	./tagging.sh $(REPOURL)/misp-dockerized-server $(server_tag);
+	./tagging.sh $(REPOURL)/misp-dockerized-proxy $(proxy_tag);
+	./tagging.sh $(REPOURL)/misp-dockerized-robot $(robot_tag);
+	./tagging.sh $(REPOURL)/misp-dockerized-postfix $(postfix_tag);
+	./tagging.sh $(REPOURL)/misp-dockerized-misp-modules $(modules_tag);
 	@echo "###########################################"
 	docker images
 	@echo "###########################################"
@@ -32,8 +33,9 @@ test:
 	true
 
 push:
-	./push.sh $(REPOURL)-server $(server_tag);
-	./push.sh $(REPOURL)-proxy $(proxy_tag);
-	./push.sh $(REPOURL)-robot $(robot_tag);
-	./push.sh $(REPOURL)-postfix $(postfix_tag);
+	./push.sh $(REPOURL)/misp-dockerized-server $(server_tag);
+	./push.sh $(REPOURL)/misp-dockerized-proxy $(proxy_tag);
+	./push.sh $(REPOURL)/misp-dockerized-robot $(robot_tag);
+	./push.sh $(REPOURL)/misp-dockerized-postfix $(postfix_tag);
+	./push.sh $(REPOURL)/misp-dockerized-misp-modules $(modules_tag);
 

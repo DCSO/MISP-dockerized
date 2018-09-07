@@ -46,7 +46,7 @@
   openssl_csr:
     path: "{{SSL_CONFIG_PATH}}/{{SSL_CSR_FILENAME}}"
     privatekey_path: "{{SSL_CONFIG_PATH}}/{{SSL_KEY_FILENAME}}"
-    common_name: "{{MISP_hostname}}"
+    common_name: "{{MISP_FQDN}}"
     force: false
     state: present
   run_once: true
@@ -59,7 +59,7 @@
     privatekey_path: "{{SSL_CONFIG_PATH}}/{{SSL_KEY_FILENAME}}"
     csr_path: "{{SSL_CONFIG_PATH}}/{{SSL_CSR_FILENAME}}"
     provider: selfsigned
-    subject: "/CN={{MISP_hostname}}"
+    subject: "/CN={{MISP_FQDN}}"
     force: false
     state: present
   run_once: true
