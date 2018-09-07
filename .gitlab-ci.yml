@@ -26,7 +26,6 @@ before_script:
   - docker login -u "$INTERNAL_REGISTRY_USER" -p "$INTERNAL_REGISTRY_PW" "$INTERNAL_REGISTRY_HOST"
   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
   - chmod +x docker-compose
-  - sudo mv -f docker-compose /usr/local/bin
   # download latest images from registry
   - $makefile pull-latest REPOURL=${REPOURL}
 
@@ -38,7 +37,7 @@ Short_Test_without_Push:
   - unstable
   script:
   - make build-config
-  - /usr/local/bin/docker-compose pull
+  - ./docker-compose pull
   - echo "############################################# START with make install "#############################################"
   # start deploy script
   - make install
@@ -50,7 +49,7 @@ Long_Test_without_Push:
   script:
   # download latest images from registry
   - $makefile pull-latest REPOURL=${REPOURL}
-  - docker-compose pull
+  - ./docker-compose pull
   # start deploy script
   - make install
   # test if MISP is ready
