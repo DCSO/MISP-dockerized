@@ -59,9 +59,7 @@ services:
     ### MISP Modules ###
   misp-modules:
     image: ${DOCKER_REGISTRY}/misp-dockerized-misp-modules:${MISP_MODULES_CONTAINER_TAG}
-    container_name: misp-modules
-    depends_on:
-      - "misp-server"
+    container_name: misp-moduless
     restart: unless-stopped
     environment:
       REDIS_FQDN: ${REDIS_FQDN}
@@ -138,7 +136,9 @@ services:
     image: ${DOCKER_REGISTRY}/misp-dockerized-server:${MISP_CONTAINER_TAG}
     container_name: misp-server
     depends_on:
+      - "misp-server"
       - "misp-postfix"
+      - "misp-proxy"
     restart: unless-stopped
     # tty: true
     # stdin_open: true
@@ -201,8 +201,6 @@ services:
   misp-proxy:
     image: ${DOCKER_REGISTRY}/misp-dockerized-proxy:${PROXY_CONTAINER_TAG}
     container_name: misp-proxy
-    depends_on:
-      - "misp-server"
     restart: unless-stopped
     ports:
       - "${HTTP_PORT}:80"
@@ -245,9 +243,6 @@ services:
   misp-robot:
     image: ${DOCKER_REGISTRY}/misp-dockerized-robot:${ROBOT_CONTAINER_TAG}
     container_name: misp-robot
-    depends_on:
-      - "misp-server"
-      - "misp-proxy"
     tty: true
     stdin_open: true
     healthcheck:
