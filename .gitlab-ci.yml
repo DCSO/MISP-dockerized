@@ -85,4 +85,4 @@ Upload_2_Repository:
   - $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} REPOURL=${REPOURL};
   # If we need separate Images fro DB and Redsi
   #- ./travis/push.sh $(REPOURL)/misp-dockerized-db $(db_tag);
-	#- ./travis/push.sh $(REPOURL)/misp-dockerized-redis $(redis_tag);
+  #- ./travis/push.sh $(REPOURL)/misp-dockerized-redis $(redis_tag);
