@@ -136,7 +136,7 @@ services:
     image: ${DOCKER_REGISTRY}/misp-dockerized-server:${MISP_CONTAINER_TAG}
     container_name: misp-server
     depends_on:
-      - "misp-server"
+      - "misp-modules"
       - "misp-postfix"
       - "misp-proxy"
     restart: unless-stopped
