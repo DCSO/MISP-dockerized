@@ -19,7 +19,7 @@ variables:
   DOCKER_COMPOSE_VERSION: 1.22.0
 
 before_script:
-  - apk add --no-cache make bash sudo git curl
+  - apk add --no-cache make bash sudo git curl python py2-pip
   - export makefile="make -C .travis/"
   - export CI="true"
   - export REPOURL="dockerhub.dcso.de"
@@ -37,6 +37,7 @@ Short_Test_without_Push:
   - unstable
   script:
   - make build-config
+  - docker-compose -v
   - docker-compose pull
   - echo "############################################# START with make install "#############################################"
   # start deploy script
