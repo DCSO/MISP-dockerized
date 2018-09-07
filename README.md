@@ -31,7 +31,7 @@ MISP dockerized
 | 2.4.92  | deprecated |                               |
 | 2.4.93  | current    |                               |
 | 2.4.94  | current    |                               |
-| 2.4.95  | broken     | MISP Pull is not working.     |
+| 2.4.95  | broken     | MISP Pull is not working. Perhaps the Issue is fixed please see: https://github.com/MISP/MISP/issues/3613#issuecomment-419459107    |
 
 Integrated MISP Modules since 2.4.92:
 - pyzmq
