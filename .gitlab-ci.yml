@@ -48,9 +48,10 @@ Long_Test_without_Push:
   only:
   - unstable
   script:
-  # download latest images from registry
-  - $makefile pull-latest REPOURL=${REPOURL}
-  - ./docker-compose pull
+  - make build-config
+  - docker-compose -v
+  - docker-compose pull
+  - echo "#############################################START with make install############################################"
   # start deploy script
   - make install
   # test if MISP is ready
@@ -61,9 +62,10 @@ Upload_2_Repository:
   only: 
   - master
   script:
-  # download latest images from registry
-  - $makefile pull-latest REPOURL=${REPOURL}
+  - make build-config
+  - docker-compose -v
   - docker-compose pull
+  - echo "#############################################START with make install############################################"
   # start deploy script
   - make install
   # test if MISP is ready
