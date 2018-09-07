@@ -616,7 +616,7 @@ echo -n "Start post tasks..."
 sed -i 's/com.docker.network.bridge.name:.*/com.docker.network.bridge.name: "'${BRIDGE_NAME}'"/g' $DOCKER_COMPOSE_FILE
 sed -i 's,subnet:.*,subnet: "'${DOCKER_NETWORK}'",g' $DOCKER_COMPOSE_FILE
 # change docker-compose hostpath
-sed -i "s,myHOST_PATH,$(CURDIR),g" "./docker-compose.yml"
+sed -i "s,myHOST_PATH,$(PWD),g" "./docker-compose.yml"
 echo "...done"
 ###########################################
 

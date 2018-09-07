@@ -39,7 +39,7 @@ Short_Test_without_Push:
   - make build-config
   - docker-compose -v
   - docker-compose pull
-  - echo "############################################# START with make install ############################################"
+  - echo "#############################################START with make install############################################"
   # start deploy script
   - make install
 
