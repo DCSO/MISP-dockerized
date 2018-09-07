@@ -40,7 +40,7 @@ Integrated MISP Modules since 2.4.92:
 - lief
 - maec
 
-See https://github.com/DCSO/MISP-dockerized-server for more details like available and supported tags
+See https://github.com/DCSO/MISP-dockerized-server for more details like available and supported tags.
 
 ### Docker Container Information
 
