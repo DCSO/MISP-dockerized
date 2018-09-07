@@ -77,7 +77,12 @@ Upload_2_Repository:
   - export postfix_tag=$(cat .env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   - export postfix_tag=$(cat .env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   - export modules_tag=$(cat .env |grep MISP_MODULES_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export db_tag=$(cat .env |grep DB_CONTAINER_TAG|cut -d = -f 2|sed 's,....$,,')
+  - export redis_tag=$(cat .env |grep REDIS_CONTAINER_TAG|cut -d = -f 2|sed 's,....$,,')
   # retag all existing tags dev 2 public repo
   - $makefile tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag}
   # Push Images to registry
   - $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} REPOURL=${REPOURL};
+  # If we need separate Images fro DB and Redsi
+  #- ./travis/push.sh $(REPOURL)/misp-dockerized-db $(db_tag);
+	#- ./travis/push.sh $(REPOURL)/misp-dockerized-redis $(redis_tag);
