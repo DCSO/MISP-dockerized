@@ -24,8 +24,8 @@ before_script:
   - export CI="true"
   - export REPOURL="dockerhub.dcso.de"
   - docker login -u "$INTERNAL_REGISTRY_USER" -p "$INTERNAL_REGISTRY_PW" "$INTERNAL_REGISTRY_HOST"
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
+  # https://stackoverflow.com/questions/42295457/using-docker-compose-in-a-gitlab-ci-pipeline
+  - pip install --no-cache-dir docker-compose
   # download latest images from registry
   - $makefile pull-latest REPOURL=${REPOURL}
 
@@ -37,7 +37,7 @@ Short_Test_without_Push:
   - unstable
   script:
   - make build-config
-  - ./docker-compose pull
+  - docker-compose pull
   - echo "############################################# START with make install "#############################################"
   # start deploy script
   - make install
