@@ -19,7 +19,7 @@ variables:
   DOCKER_COMPOSE_VERSION: 1.22.0
 
 before_script:
-  - apk add --no-cache make bash sudo git curl python py2-pip
+  - apk add --no-cache make bash sudo git curl python py2-pip coreutils grep
   - export makefile="make -C .travis/"
   - export CI="true"
   - export REPOURL="dockerhub.dcso.de"
