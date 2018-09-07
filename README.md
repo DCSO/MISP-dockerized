@@ -140,7 +140,7 @@ For the Installation of MISP dockerized you need at least:
 
 ### The 4 Step Installation Guide
 #### 1. Clone Repository
-After cloning the repository change the branch to the required, for example:
+
 ```
 $> git clone https://github.com/DCSO/MISP-dockerized.git
 ```
