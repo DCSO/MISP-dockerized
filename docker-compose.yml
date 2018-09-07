@@ -72,9 +72,9 @@ services:
           - misp-modules
     # ### LOG DRIVER ###
     # # for more Information: https://docs.docker.com/compose/compose-file/#logging + https://docs.docker.com/config/containers/logging/syslog/
-    logging:
-       driver: syslog
-       options:
+    #logging:
+    #   driver: syslog
+    #   options:
     #     #syslog-address: "tcp://192.168.0.42:123"
     #     #syslog-address: "unix:///dev/log"
     #     #syslog-address: "unix:///tmp/syslog.sock"
@@ -84,7 +84,7 @@ services:
     #     #syslog-tls-key: "/etc/ca-certificates/custom/key.pem"
     #     #syslog-tls-skip-verify: "true"
     #     # For Tags: https://docs.docker.com/config/containers/logging/log_tags/
-         tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+    #     tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
     #     #syslog-format: "rfc5424micro"
     #     #labels: "misp-dockerized"
     #     #env: "os,customer"
@@ -111,25 +111,25 @@ services:
       misp-backend:
         aliases:
           - misp-postfix
-    ### LOG DRIVER ###
-    # for more Information: https://docs.docker.com/compose/compose-file/#logging + https://docs.docker.com/config/containers/logging/syslog/
-    logging:
-      driver: syslog
-      options:
-        #syslog-address: "tcp://192.168.0.42:123"
-        #syslog-address: "unix:///dev/log"
-        #syslog-address: "unix:///tmp/syslog.sock"
-        # For Facility: https://tools.ietf.org/html/rfc5424#section-6.2.1
-        #syslog-facility: "local7"
-        #syslog-tls-cert: "/etc/ca-certificates/custom/cert.pem"
-        #syslog-tls-key: "/etc/ca-certificates/custom/key.pem"
-        #syslog-tls-skip-verify: "true"
-        # For Tags: https://docs.docker.com/config/containers/logging/log_tags/
-        tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
-        #syslog-format: "rfc5424micro"
-        #labels: "misp-dockerized"
-        #env: "os,customer"
-        #env-regex: "^(os\|customer)"
+    # ### LOG DRIVER ###
+    # # for more Information: https://docs.docker.com/compose/compose-file/#logging + https://docs.docker.com/config/containers/logging/syslog/
+    #logging:
+    #   driver: syslog
+    #   options:
+    #     #syslog-address: "tcp://192.168.0.42:123"
+    #     #syslog-address: "unix:///dev/log"
+    #     #syslog-address: "unix:///tmp/syslog.sock"
+    #     # For Facility: https://tools.ietf.org/html/rfc5424#section-6.2.1
+    #     #syslog-facility: "local7"
+    #     #syslog-tls-cert: "/etc/ca-certificates/custom/cert.pem"
+    #     #syslog-tls-key: "/etc/ca-certificates/custom/key.pem"
+    #     #syslog-tls-skip-verify: "true"
+    #     # For Tags: https://docs.docker.com/config/containers/logging/log_tags/
+    #     tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+    #     #syslog-format: "rfc5424micro"
+    #     #labels: "misp-dockerized"
+    #     #env: "os,customer"
+    #     #env-regex: "^(os\|customer)"
 
   ### MISP Apache Server ###    
   misp-server:
@@ -177,25 +177,26 @@ services:
       misp-backend:
         aliases:
         - misp-server
-    ### LOG DRIVER ###
-    # for more Information: https://docs.docker.com/compose/compose-file/#logging + https://docs.docker.com/config/containers/logging/syslog/
-    logging:
-      driver: syslog
-      options:
-        #syslog-address: "tcp://192.168.0.42:123"
-        #syslog-address: "unix:///dev/log"
-        #syslog-address: "unix:///tmp/syslog.sock"
-        # For Facility: https://tools.ietf.org/html/rfc5424#section-6.2.1
-        #syslog-facility: "local7"
-        #syslog-tls-cert: "/etc/ca-certificates/custom/cert.pem"
-        #syslog-tls-key: "/etc/ca-certificates/custom/key.pem"
-        #syslog-tls-skip-verify: "true"
-        # For Tags: https://docs.docker.com/config/containers/logging/log_tags/
-        tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
-        #syslog-format: "rfc5424micro"
-        #labels: "misp-dockerized"
-        #env: "os,customer"
-        #env-regex: "^(os\|customer)"
+    # ### LOG DRIVER ###
+    # # for more Information: https://docs.docker.com/compose/compose-file/#logging + https://docs.docker.com/config/containers/logging/syslog/
+    #logging:
+    #   driver: syslog
+    #   options:
+    #     #syslog-address: "tcp://192.168.0.42:123"
+    #     #syslog-address: "unix:///dev/log"
+    #     #syslog-address: "unix:///tmp/syslog.sock"
+    #     # For Facility: https://tools.ietf.org/html/rfc5424#section-6.2.1
+    #     #syslog-facility: "local7"
+    #     #syslog-tls-cert: "/etc/ca-certificates/custom/cert.pem"
+    #     #syslog-tls-key: "/etc/ca-certificates/custom/key.pem"
+    #     #syslog-tls-skip-verify: "true"
+    #     # For Tags: https://docs.docker.com/config/containers/logging/log_tags/
+    #     tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+    #     #syslog-format: "rfc5424micro"
+    #     #labels: "misp-dockerized"
+    #     #env: "os,customer"
+    #     #env-regex: "^(os\|customer)"
+
 
   ### Reverse Proxy ###
   misp-proxy:
@@ -218,25 +219,25 @@ services:
       misp-backend:
         aliases:
           - misp-nginx
-    ### LOG DRIVER ###
-    # for more Information: https://docs.docker.com/compose/compose-file/#logging + https://docs.docker.com/config/containers/logging/syslog/
-    logging:
-      driver: syslog
-      options:
-        #syslog-address: "tcp://192.168.0.42:123"
-        #syslog-address: "unix:///dev/log"
-        #syslog-address: "unix:///tmp/syslog.sock"
-        # For Facility: https://tools.ietf.org/html/rfc5424#section-6.2.1
-        #syslog-facility: "local7"
-        #syslog-tls-cert: "/etc/ca-certificates/custom/cert.pem"
-        #syslog-tls-key: "/etc/ca-certificates/custom/key.pem"
-        #syslog-tls-skip-verify: "true"
-        # For Tags: https://docs.docker.com/config/containers/logging/log_tags/
-        tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
-        #syslog-format: "rfc5424micro"
-        #labels: "misp-dockerized"
-        #env: "os,customer"
-        #env-regex: "^(os\|customer)"
+    # ### LOG DRIVER ###
+    # # for more Information: https://docs.docker.com/compose/compose-file/#logging + https://docs.docker.com/config/containers/logging/syslog/
+    #logging:
+    #   driver: syslog
+    #   options:
+    #     #syslog-address: "tcp://192.168.0.42:123"
+    #     #syslog-address: "unix:///dev/log"
+    #     #syslog-address: "unix:///tmp/syslog.sock"
+    #     # For Facility: https://tools.ietf.org/html/rfc5424#section-6.2.1
+    #     #syslog-facility: "local7"
+    #     #syslog-tls-cert: "/etc/ca-certificates/custom/cert.pem"
+    #     #syslog-tls-key: "/etc/ca-certificates/custom/key.pem"
+    #     #syslog-tls-skip-verify: "true"
+    #     # For Tags: https://docs.docker.com/config/containers/logging/log_tags/
+    #     tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+    #     #syslog-format: "rfc5424micro"
+    #     #labels: "misp-dockerized"
+    #     #env: "os,customer"
+    #     #env-regex: "^(os\|customer)"
 
 
   ### Robot ###
@@ -283,25 +284,25 @@ services:
       misp-backend:
         aliases:
           - misp-robot
-        ### LOG DRIVER ###
-    # for more Information: https://docs.docker.com/compose/compose-file/#logging + https://docs.docker.com/config/containers/logging/syslog/
-    logging:
-      driver: syslog
-      options:
-        #syslog-address: "tcp://192.168.0.42:123"
-        #syslog-address: "unix:///dev/log"
-        #syslog-address: "unix:///tmp/syslog.sock"
-        # For Facility: https://tools.ietf.org/html/rfc5424#section-6.2.1
-        #syslog-facility: "local7"
-        #syslog-tls-cert: "/etc/ca-certificates/custom/cert.pem"
-        #syslog-tls-key: "/etc/ca-certificates/custom/key.pem"
-        #syslog-tls-skip-verify: "true"
-        # For Tags: https://docs.docker.com/config/containers/logging/log_tags/
-        tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
-        #syslog-format: "rfc5424micro"
-        #labels: "misp-dockerized"
-        #env: "os,customer"
-        #env-regex: "^(os\|customer)"
+    # ### LOG DRIVER ###
+    # # for more Information: https://docs.docker.com/compose/compose-file/#logging + https://docs.docker.com/config/containers/logging/syslog/
+    #logging:
+    #   driver: syslog
+    #   options:
+    #     #syslog-address: "tcp://192.168.0.42:123"
+    #     #syslog-address: "unix:///dev/log"
+    #     #syslog-address: "unix:///tmp/syslog.sock"
+    #     # For Facility: https://tools.ietf.org/html/rfc5424#section-6.2.1
+    #     #syslog-facility: "local7"
+    #     #syslog-tls-cert: "/etc/ca-certificates/custom/cert.pem"
+    #     #syslog-tls-key: "/etc/ca-certificates/custom/key.pem"
+    #     #syslog-tls-skip-verify: "true"
+    #     # For Tags: https://docs.docker.com/config/containers/logging/log_tags/
+    #     tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+    #     #syslog-format: "rfc5424micro"
+    #     #labels: "misp-dockerized"
+    #     #env: "os,customer"
+    #     #env-regex: "^(os\|customer)"
 
 
 
