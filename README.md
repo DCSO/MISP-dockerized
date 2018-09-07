@@ -89,7 +89,7 @@ See https://github.com/DCSO/MISP-dockerized-server for more details like availab
 [34]: https://microbadger.com/images/dcso/misp-dockerized-misp-modules
 
 
-# Firewall Prerequsites
+# Firewall Requirements
 The following connections must be available for installation:
 
 | URL                                     | Direction | Protocol | Destination Port | Notes                                                                    |
@@ -130,7 +130,7 @@ We are working on a Kubernetes support, but it will take some time.
 
 ## Single Docker Instance
 
-### Software Prerequsites
+### Software Requirements
 For the Installation of MISP dockerized you need at least:
 
 | Component | minimum Version                  |
@@ -154,7 +154,7 @@ or
 
 when opening it in an editor like `vim` or `nano`  
 
-If all prerequsites are fulfilled, you can deploy them as follows:
+If all requirements are fulfilled, you can deploy them as follows:
 * Copy the Certificate **Key** File to `./config/ssl/key.pem` 
 * Copy the Certificate **Chain** file to `./config/ssl/cert.pem`
 * (**OPTIONAL**) During installation Diffie-Hellman Params will be freshly build, but if you still want to create them yourself, use the following command <sup>[1](#weakdh)</sup> or copy your existing one to `./config/ssl/dhparams.pem`
@@ -166,7 +166,7 @@ $> make install
 ```
 
 ##### 3.1. [OPTIONAL] look if all required components are installed
-**MISP dockerized** comes with a requirements helper script that checks if all components are installed and all prerquistion are met, e.G. is the user part of the docker group and has the appropriate permission on the github repository folder.    
+**MISP dockerized** comes with a requirements helper script that checks if all components are installed and all requirements are met, e.G. is the user part of the docker group and has the appropriate permission on the github repository folder.    
 ```
 $> make requirements
 ```
@@ -176,7 +176,7 @@ If you want to do it manual: **MISP dockerized** comes with a build script that 
 ```
 $> make build-config
 ```
-The build script downloads our DCSO/misp-robot and starts him with the internal build script. Therefore you can't find the script directly in the github repository.
+The build script downloads our misp-robot and starts him with the internal build script. Therefore you can't find the script directly in the github repository.
 
 ##### 3.3 [OPTIONAL] Manual deploy environment
 To start the deployment process, simply enter:
@@ -277,7 +277,7 @@ Container variants: `misp-robot` `misp-server` `misp-proxy` (for the ubuntu vers
 
 For the misp-proxy if you have alpine version:
 ```
-docker exec -it dcso/misp-proxy sh
+docker exec -it misp-proxy sh
 ```
 
 ### Usefull Commands
