@@ -9,24 +9,38 @@ MISP dockerized
 **THIS PROJECT IS IN BETA PHASE**
 
 ### Project Information
-<table>
-<tr>
-  <td>Travis Master</td>
-  <td><a href="https://travis-ci.org/DCSO/MISP-dockerized"><img src="https://travis-ci.org/DCSO/MISP-dockerized.svg?branch=master" /></a></td>
-</tr>
-</table>
+
+| | |
+|-|-|
+| Travis Master | [![][101]][102] |
+| Travis Unstable | [![][101]][102] |
+
+[101]: https://travis-ci.org/DCSO/MISP-dockerized.svg?branch=master
+[102]: https://travis-ci.org/DCSO/MISP-dockerized
+[103]: https://travis-ci.org/DCSO/MISP-dockerized.svg?branch=unstable
+
+
 
 ### Available MISP-Versions
-| Version | Status     | Notes |
-| ------- | ---------- | ----- |
-| 2.4.88  | deprecated |       |
-| 2.4.89  | deprecated |       |
-| 2.4.90  | deprecated |       |
-| 2.4.91  | deprecated |       |
-| 2.4.92  | deprecated |       |
-| 2.4.93  | current    |       |
-| 2.4.94  | current    |       |
-| 2.4.95  | current    |       |
+| Version | Status     | Notes                         |
+| ------- | ---------- | ----------------------------- |
+| 2.4.88  | deprecated |                               |
+| 2.4.89  | deprecated |                               |
+| 2.4.90  | deprecated |                               |
+| 2.4.91  | deprecated |                               |
+| 2.4.92  | deprecated |                               |
+| 2.4.93  | current    |                               |
+| 2.4.94  | current    |                               |
+| 2.4.95  | broken     | MISP Pull is not working.     |
+
+Integrated MISP Modules since 2.4.92:
+- pyzmq
+- pymisp
+- ssdeep
+- pydeep
+- python-magic
+- lief
+- maec
 
 See https://github.com/DCSO/MISP-dockerized-server for more details like available and supported tags
 
@@ -71,19 +85,19 @@ See https://github.com/DCSO/MISP-dockerized-server for more details like availab
 # Firewall Prerequsites
 For the Installation the followed Connections need to be available:
 
-| URL                                     | Direction | Protocol | Destination Port | Notes                                                                       |
-| --------------------------------------- | --------- | -------- | ---------------- | --------------------------------------------------------------------------- |
-| https://github.com/DCSO/MISP-dockerized | outgoing  | TCP      | 443              | DCSO MISP-dockerized Main Repository.                                      |
-| https://dockerhub.dcso.de/v2/*          | outgoing  | TCP      | 443              | DCSO Docker Registry, if you want to pull the Images from this Registry.    |
-| https://misp.dcso.de/*                  | outgoing  | TCP      | 443              | DCSO MISP Instance, only required for DCSO Customers.                       |
+| URL                                     | Direction | Protocol | Destination Port | Notes                                                                    |
+| --------------------------------------- | --------- | -------- | ---------------- | ------------------------------------------------------------------------ |
+| https://github.com/DCSO/MISP-dockerized | outgoing  | TCP      | 443              | DCSO MISP-dockerized Main Repository.                                    |
+| https://dockerhub.dcso.de/v2/*          | outgoing  | TCP      | 443              | DCSO Docker Registry, if you want to pull the Images from this Registry. |
+| https://misp.dcso.de/*                  | outgoing  | TCP      | 443              | DCSO MISP Instance, only required for DCSO Customers.                    |
 
 
 If you want to use the `hub.docker.com` public Docker Registry, you require the following additionall repositories:
 
-| URL                                     | Direction | Protocol | Destination Port | Notes                                                                       |
-| --------------------------------------- | --------- | -------- | ---------------- | --------------------------------------------------------------------------- |
-| https://*.docker.io                     | outgoing  | TCP      | 443              | Public Docker Registry, if you want to pull the Images from hub.docker.com. |
-| https://*.docker.com                    | outgoing  | TCP      | 443              | Public Docker Registry, if you want to pull the Images from hub.docker.com. |
+| URL                  | Direction | Protocol | Destination Port | Notes                                                                       |
+| -------------------- | --------- | -------- | ---------------- | --------------------------------------------------------------------------- |
+| https://*.docker.io  | outgoing  | TCP      | 443              | Public Docker Registry, if you want to pull the Images from hub.docker.com. |
+| https://*.docker.com | outgoing  | TCP      | 443              | Public Docker Registry, if you want to pull the Images from hub.docker.com. |
 
 
 
@@ -95,9 +109,9 @@ If you want to build your Docker Container self, you reqire the following reposi
 | https://github.com/DCSO/MISP-dockerized-postfix      | outgoing  | TCP      | 443              | DCSO MISP-dockerized Postfix Repository.      |
 | https://github.com/DCSO/MISP-dockerized-proxy        | outgoing  | TCP      | 443              | DCSO MISP-dockerized Proxy Repository.        |
 | https://github.com/DCSO/MISP-dockerized-misp-modules | outgoing  | TCP      | 443              | DCSO MISP-dockerized MISP-Modules Repository. |
-| https://github.com/CybOXProject/python-cybox         | outgoing  | TCP      | 443              | Github Repository for Python-Cybox.       |
-| https://github.com/STIXProject/python-stix           | outgoing  | TCP      | 443              | Github Repository for Python-Stix.       |
-| https://github.com/CybOXProject/mixbox               | outgoing  | TCP      | 443              | Github Repository for Mixbox.       |
+| https://github.com/CybOXProject/python-cybox         | outgoing  | TCP      | 443              | Github Repository for Python-Cybox.           |
+| https://github.com/STIXProject/python-stix           | outgoing  | TCP      | 443              | Github Repository for Python-Stix.            |
+| https://github.com/CybOXProject/mixbox               | outgoing  | TCP      | 443              | Github Repository for Mixbox.                 |
 `* The list is not complete. `
 
 
