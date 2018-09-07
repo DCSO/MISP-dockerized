@@ -52,6 +52,7 @@ See https://github.com/DCSO/MISP-dockerized-server for more details like availab
 | misp-dockerized-server  | [![][8]][9]   | [![][13]][14] | [![][11]][14]        | [![][12]][14]         |
 | misp-dockerized-robot   | [![][15]][16] | [![][20]][21] | [![][18]][21]        | [![][19]][21]         |
 | misp-dockerized-postfix | [![][22]][23] | [![][27]][28] | [![][25]][28]        | [![][26]][28]         |
+| misp-dockerized-misp-modules | [![][29]][30] | [![][33]][34] | [![][31]][34]        | [![][32]][34]         |
 
 
 [1]: https://travis-ci.org/DCSO/MISP-dockerized-proxy.svg?branch=master
@@ -82,6 +83,14 @@ See https://github.com/DCSO/MISP-dockerized-server for more details like availab
 [27]: https://images.microbadger.com/badges/commit/dcso/misp-dockerized-postfix.svg
 [28]: https://microbadger.com/images/dcso/misp-dockerized-postfix
 
+[29]: https://travis-ci.org/DCSO/MISP-dockerized-misp-modules.svg?branch=master
+[30]: https://travis-ci.org/DCSO/MISP-dockerized-misp-modules
+[31]: https://images.microbadger.com/badges/image/dcso/misp-dockerized-misp-modules.svg
+[32]: https://images.microbadger.com/badges/version/dcso/misp-dockerized-misp-modules.svg
+[33]: https://images.microbadger.com/badges/commit/dcso/misp-dockerized-misp-modules.svg
+[34]: https://microbadger.com/images/dcso/misp-dockerized-misp-modules
+
+
 # Firewall Prerequsites
 For the Installation the followed Connections need to be available:
 
@@ -107,6 +116,7 @@ If you want to build your Docker Container self, you reqire the following reposi
 | ---------------------------------------------------- | --------- | -------- | ---------------- | --------------------------------------------- |
 | https://github.com/DCSO/MISP-dockerized-server       | outgoing  | TCP      | 443              | DCSO MISP-dockerized Server Repository.       |
 | https://github.com/DCSO/MISP-dockerized-postfix      | outgoing  | TCP      | 443              | DCSO MISP-dockerized Postfix Repository.      |
+| https://github.com/DCSO/MISP-dockerized-robot        | outgoing  | TCP      | 443              | DCSO MISP-dockerized Robot Repository.        |
 | https://github.com/DCSO/MISP-dockerized-proxy        | outgoing  | TCP      | 443              | DCSO MISP-dockerized Proxy Repository.        |
 | https://github.com/DCSO/MISP-dockerized-misp-modules | outgoing  | TCP      | 443              | DCSO MISP-dockerized MISP-Modules Repository. |
 | https://github.com/CybOXProject/python-cybox         | outgoing  | TCP      | 443              | Github Repository for Python-Cybox.           |
