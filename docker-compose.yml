@@ -59,7 +59,7 @@ services:
     ### MISP Modules ###
   misp-modules:
     image: ${DOCKER_REGISTRY}/misp-dockerized-misp-modules:${MISP_MODULES_CONTAINER_TAG}
-    container_name: misp-moduless
+    container_name: misp-modules
     restart: unless-stopped
     environment:
       REDIS_FQDN: ${REDIS_FQDN}
