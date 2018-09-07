@@ -19,8 +19,6 @@ MISP dockerized
 [102]: https://travis-ci.org/DCSO/MISP-dockerized
 [103]: https://travis-ci.org/DCSO/MISP-dockerized.svg?branch=unstable
 
-
-
 ### Available MISP-Versions
 | Version | Status     | Notes                         |
 | ------- | ---------- | ----------------------------- |
@@ -30,8 +28,8 @@ MISP dockerized
 | 2.4.91  | deprecated |                               |
 | 2.4.92  | deprecated |                               |
 | 2.4.93  | current    |                               |
-| 2.4.94  | current    |                               |
-| 2.4.95  | broken     | MISP Pull is not working. Perhaps the Issue is fixed please see: https://github.com/MISP/MISP/issues/3613#issuecomment-419459107    |
+| 2.4.94  | current    |  Default Version              |
+| 2.4.95  | available but not recommended | MISP Pull mechanism is currently not working. The ticket to that issue can be found here: https://github.com/MISP/MISP/issues/3613#issuecomment-419459107  |
 
 Integrated MISP Modules since 2.4.92:
 - pyzmq
@@ -92,7 +90,7 @@ See https://github.com/DCSO/MISP-dockerized-server for more details like availab
 
 
 # Firewall Prerequsites
-For the Installation the followed Connections need to be available:
+The following connections must be available for installation:
 
 | URL                                     | Direction | Protocol | Destination Port | Notes                                                                    |
 | --------------------------------------- | --------- | -------- | ---------------- | ------------------------------------------------------------------------ |
@@ -101,7 +99,7 @@ For the Installation the followed Connections need to be available:
 | https://misp.dcso.de/*                  | outgoing  | TCP      | 443              | DCSO MISP Instance, only required for DCSO Customers.                    |
 
 
-If you want to use the `hub.docker.com` public Docker Registry, you require the following additionall repositories:
+If you want to use the `hub.docker.com` public Docker Registry, the following additionall repositories are required:
 
 | URL                  | Direction | Protocol | Destination Port | Notes                                                                       |
 | -------------------- | --------- | -------- | ---------------- | --------------------------------------------------------------------------- |
@@ -110,7 +108,7 @@ If you want to use the `hub.docker.com` public Docker Registry, you require the 
 
 
 
-If you want to build your Docker Container self, you reqire the following repositories:
+If you want to build your Docker Container by yourself, the following additionall repositories are required:
 
 | URL                                                  | Direction | Protocol | Destination Port | Notes                                         |
 | ---------------------------------------------------- | --------- | -------- | ---------------- | --------------------------------------------- |
@@ -128,7 +126,7 @@ If you want to build your Docker Container self, you reqire the following reposi
 # Installation
 
 ## Kubernetes / Openshift Variant
-We are working on a Kubernetes solution, but it takes time.
+We are working on a Kubernetes support, but it will take some time.
 
 ## Single Docker Instance
 
@@ -154,7 +152,7 @@ Please make sure that the **certificate** and **key** are in PEM-Format - recogn
 or  
 "-----BEGIN RSA PRIVATE KEY-----"  
 
-when opening it in an editor like 'vim' or 'nano'  
+when opening it in an editor like `vim` or `nano`  
 
 If all prerequsites are fulfilled, you can deploy them as follows:
 * Copy the Certificate **Key** File to `./config/ssl/key.pem` 
@@ -164,12 +162,11 @@ If all prerequsites are fulfilled, you can deploy them as follows:
 #### 3. Start Docker Environment
 To start the deployment and build the configuration files and configure the whole environment, simply enter:
 ```
-$> make start
+$> make install
 ```
-We decided, that build config and deploy environment can be done in one step.
 
 ##### 3.1. [OPTIONAL] look if all required components are installed
-**MISP dockerized** comes with a requirements script that checks if all components are installed, is the user part of the docker group and has the user the right permission on the github repository folder. Simply start:   
+**MISP dockerized** comes with a requirements helper script that checks if all components are installed and all prerquistion are met, e.G. is the user part of the docker group and has the appropriate permission on the github repository folder.    
 ```
 $> make requirements
 ```
@@ -179,7 +176,7 @@ If you want to do it manual: **MISP dockerized** comes with a build script that 
 ```
 $> make build-config
 ```
-The build script download our DCSO/misp-robot and start him with the build script. Therefore you can't find the script directly in the github repository.
+The build script downloads our DCSO/misp-robot and starts him with the internal build script. Therefore you can't find the script directly in the github repository.
 
 ##### 3.3 [OPTIONAL] Manual deploy environment
 To start the deployment process, simply enter:
@@ -192,7 +189,7 @@ After deployment, you now have a simple basic MISP installation without any furt
 ```
 $> make configure
 ```
-After these step, you now should have a configured running MISP Instance!
+After these step, you now should have a configured and running MISP Instance!
 
 #### 4. Login in your new MISP Environment
 
@@ -226,13 +223,12 @@ $ systemctl enable docker.service
 ### Delete the Docker Instance
 To delete everything e.g. to start from scratch you can use this:
 ```
-&> make delete
+$> make delete
 ```
 This delete the MISP images, network, containers and volumes.
 
 **Warning**
-`make delete` delete all volumes, leading to a loss of all your data. Make sure you have saved everything before you run it.
-
+`make delete` deletes **all** volumes, leading to a loss of all your data. Make sure you have saved everything before you run it.
 
 ### Cannot download Docker images behind a proxy
 
@@ -264,8 +260,6 @@ Restart Docker:
 ```bash
 $> sudo systemctl restart docker
 ```
-
-
 
 ### Logging
 If was possible, all logfiles are forwarded to docker log mechanism. Therefore you can do:
