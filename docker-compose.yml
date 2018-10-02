@@ -171,8 +171,8 @@ services:
     # MISP Configurations:
     - misp-vol-server-MISP-app-Config:/var/www/MISP/app/Config
     - misp-vol-server-MISP-cakeresque-config:/var/www/MISP/app/Plugin/CakeResque/Config
-    - misp-vol-server-MISP-tmp:/var/www/MISP/tmp
-    - misp-vol-server-MISP-attachments:/var/www/MISP/attachments
+    - misp-vol-server-MISP-tmp:/var/www/MISP/app/tmp
+    - misp-vol-server-MISP-attachments:/var/www/MISP/app/files
     networks:
       misp-backend:
         aliases:
@@ -273,7 +273,7 @@ services:
     - misp-vol-server-MISP-app-Config:/srv/misp-server/MISP/Config
     - misp-vol-server-MISP-cakeresque-config:/srv/misp-server/MISP/CakeResque/Config
     - misp-vol-server-MISP-tmp:/srv/misp-server/MISP/tmp
-    - misp-vol-server-MISP-attachments:/srv/misp-server/MISP/attachments
+    - misp-vol-server-MISP-attachments:/srv/misp-server/MISP/files
     # misp-proxy
     - misp-vol-proxy-conf:/srv/misp-proxy/conf.d
     # misp-redis

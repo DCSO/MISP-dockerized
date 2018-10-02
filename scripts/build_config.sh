@@ -22,7 +22,7 @@ ENABLE_FILE_PGP="${MISP_dockerized_repo}/config/pgp/pgp.enable"
 function import_config(){
   echo -n "check and import existing configuration..."
   [ -f $CONFIG_FILE ] && source $CONFIG_FILE
-  [ -f $DOCKER_COMPOSE_CONF ] && source $DOCKER_COMPOSE_CONF
+  [ ! -f $CONFIG_FILE ] && [ -f $DOCKER_COMPOSE_CONF ] && source $DOCKER_COMPOSE_CONF
   echo "done"
 }
 # Function to set default values
