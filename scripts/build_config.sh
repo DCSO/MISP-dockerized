@@ -322,7 +322,7 @@ function query_smime_settings(){
 }
 
 function query_docker_registry() {
-  if [ ! -f $ENABLE_FILE_DCSO_DOCKER_REGISTRY ]
+  if [ -f $ENABLE_FILE_DCSO_DOCKER_REGISTRY ]
   then
     ############## FILE exists ##############
     echo
