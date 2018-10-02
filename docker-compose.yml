@@ -253,6 +253,7 @@ services:
       # HTTPS_PROXY: ${HTTPS_PROXY}
       # NO_PROXY: ${NO_PROXY}
     volumes:
+    ######  GLOBAL VOLUMES  ######
     # Docker.sock File
     - /var/run/docker.sock:/var/run/docker.sock:ro
     # Github Repository
@@ -268,17 +269,17 @@ services:
     - misp-vol-pgp:/srv/misp-pgp
     # Volume with S/MIME Certificate and Key
     - misp-vol-smime:/srv/misp-smime
-    # mips-server
+    ###### mips-server ######
     - misp-vol-server-apache2-config-sites-enabled:/srv/misp-server/apache2/sites-enabled
     - misp-vol-server-MISP-app-Config:/srv/misp-server/MISP/Config
     - misp-vol-server-MISP-cakeresque-config:/srv/misp-server/MISP/CakeResque/Config
-    - misp-vol-server-MISP-tmp:/srv/misp-server/MISP/tmp
-    - misp-vol-server-MISP-attachments:/srv/misp-server/MISP/files
-    # misp-proxy
+    - misp-vol-server-MISP-tmp:/srv/misp-server/MISP/app/tmp
+    - misp-vol-server-MISP-attachments:/srv/misp-server/MISP/app/files
+    ###### misp-proxy ######
     - misp-vol-proxy-conf:/srv/misp-proxy/conf.d
-    # misp-redis
+    ###### misp-redis ######
     - misp-vol-redis-data:/srv/misp-redis
-    # misp-db
+    ###### misp-db ######
     - misp-vol-db-data:/srv/misp-db
     networks:
       misp-backend:
