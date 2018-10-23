@@ -59,11 +59,13 @@ install: requirements build-config deploy configure
 requirements:
 	@echo " ###########	Checking Requirements	###########"
 	@scripts/requirements.sh
+	@sleep 2
 
 # Build Configuration
 build-config:
 	@echo " ###########	Build Configuration	###########"
 	@scripts/build_config.sh
+	@sleep 2
 
 # Start Docker environment
 deploy: 
