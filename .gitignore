@@ -1,4 +1,4 @@
-config/
-backup/
+config
+backup
 .env
 current
