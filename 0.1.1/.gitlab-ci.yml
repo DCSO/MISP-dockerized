@@ -1,0 +1,23 @@
+env_test_only 0.1.1:
+  variables:
+    CURRENT_VERSION: 0.1.1
+  extends: env_test_only
+  only:
+    changes:
+      - 0.1.1/*
+
+long_test 0.1.1:
+  variables:
+    CURRENT_VERSION: 0.1.1
+  extends: long_test
+  only:
+    changes:
+      - 0.1.1/*
+
+push_productive_images 0.1.1:
+  variables:
+    CURRENT_VERSION: 0.1.1
+  extends: push_productive_images
+  only:
+    changes:
+      - 0.1.1/*
