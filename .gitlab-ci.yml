@@ -18,7 +18,7 @@ variables:
   # INTERNAL_REGISTRY_PW
   CURRENT_VERSION: "0.3.4"
   DOCKER_COMPOSE_VERSION: "1.22.0"
-  FOLDER: "current/"
+  FOLDER: "./current/"
   MAKE_OPTION: "-C $FOLDER"
   makefile_main: "make -C $FOLDER"
   DOCKER_COMPOSE_OPTION: "-f $FOLDERdocker-compose"
@@ -49,10 +49,10 @@ before_script:
   # https://stackoverflow.com/questions/42295457/using-docker-compose-in-a-gitlab-ci-pipeline
   - pip install --no-cache-dir docker-compose
   - docker-compose -v
-  # download latest images from registry
-  - $makefile_travis pull-latest REPOURL=${REPOURL}
   # switch to current VERSION
   - ln -s $CURRENT_VERSION/ current
+  # download latest images from registry
+  - $makefile_travis pull-latest REPOURL=${REPOURL}
 
 
 # On all other pull requests and branches exclude dev and master: Build Environment, but do nothing more. No tests. Tests with our Test Framework are only done in the dev branch.
