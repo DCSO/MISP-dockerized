@@ -16,15 +16,31 @@ variables:
   # INTERNAL_REGISTRY_HOST
   # INTERNAL_REGISTRY_USER
   # INTERNAL_REGISTRY_PW
-  CURRENT_VERSION: 0.3.4
-  DOCKER_COMPOSE_VERSION: 1.22.0
-  FOLDER: current/
-  MAKE_OPTION: -C $FOLDER
-  makefile_main: make -C $FOLDER
-  DOCKER_COMPOSE_OPTION: -f $FOLDERdocker-compose
-  makefile_travis: make -C .travis/
-  CI: true
-  REPOURL: dockerhub.dcso.de
+  CURRENT_VERSION: "0.3.4"
+  DOCKER_COMPOSE_VERSION: "1.22.0"
+  FOLDER: "current/"
+  MAKE_OPTION: "-C $FOLDER"
+  makefile_main: "make -C $FOLDER"
+  DOCKER_COMPOSE_OPTION: "-f $FOLDERdocker-compose"
+  makefile_travis: "make -C .travis/"
+  CI: "true"
+  REPOURL: "dockerhub.dcso.de"
+
+
+# Include other YML Files for Jobs
+# Source: https://docs.gitlab.com/ee/ci/yaml/README.html#include
+include:
+  # - '0.1.0/.gitlab-ci'
+  # - '0.1.1/.gitlab-ci'
+  # - '0.1.2/.gitlab-ci'
+  # - '0.2.0/.gitlab-ci'
+  # - '0.3.0/.gitlab-ci'
+  # - '0.3.1/.gitlab-ci'
+  # - '0.3.2/.gitlab-ci'
+  - '0.3.3/.gitlab-ci'
+  #- '0.3.4/.gitlab-ci'
+  #- '1.0.0/.gitlab-ci'
+  
 
 
 before_script:
@@ -32,56 +48,45 @@ before_script:
   - docker login -u "$INTERNAL_REGISTRY_USER" -p "$INTERNAL_REGISTRY_PW" "$INTERNAL_REGISTRY_HOST"
   # https://stackoverflow.com/questions/42295457/using-docker-compose-in-a-gitlab-ci-pipeline
   - pip install --no-cache-dir docker-compose
+  - docker-compose -v
   # download latest images from registry
   - $makefile_travis pull-latest REPOURL=${REPOURL}
   # switch to current VERSION
   - ln -s $CURRENT_VERSION/ current
 
 
-
 # On all other pull requests and branches exclude dev and master: Build Environment, but do nothing more. No tests. Tests with our Test Framework are only done in the dev branch.
-Short_Test_without_Push:
+env_test_only:
   stage: build
   except:
   - master
   - dev
   script:
   - $makefile_main $MAKE_OPTION build-config
-  - docker-compose $DOCKER_COMPOSE_OPTION -v
   - docker-compose $DOCKER_COMPOSE_OPTION pull
-  - echo "#############################################START with make install############################################"
-  # start deploy script
   - $makefile_main $MAKE_OPTION install
 
 
-
 # On dev Branch: Build Environment and Test it with our own Test Framework
-Long_Test_without_Push:
+long_test:
   stage: build
   only:
   - dev
   script:
   - $makefile_main $MAKE_OPTION build-config
-  - docker-compose $DOCKER_COMPOSE_OPTION -v
   - docker-compose $DOCKER_COMPOSE_OPTION pull
-  - echo "#############################################START with make install############################################"
-  # start deploy script
   - $makefile_main $MAKE_OPTION install
-  # test if MISP is ready
   - $makefile_travis test
 
 
-
 # On MASTER Branch: Build Environment + retag Images to remove "-dev" tag
- Upload_2_Repository:
+push_productive_images:
   stage: deploy
   only: 
   - master
   script:
   - $$makefile_main $MAKE_OPTION build-config
-  - docker-compose $DOCKER_COMPOSE_OPTION -v
   - docker-compose $DOCKER_COMPOSE_OPTION pull
-  - echo "#############################################START with make install############################################"
   # start deploy script
   - $$makefile_main $MAKE_OPTION install
   # test if MISP is ready
