@@ -20,8 +20,6 @@ variables:
   DOCKER_COMPOSE_VERSION: "1.22.0"
   FOLDER: "./current"
   ENV_OPTION: "$FOLDER/"
-  MYdocker_compose: "docker-compose -f docker-compose.yml"
-  MYmake_main: "make -C $FOLDER"
   MYmake_travis: "make -C $FOLDER/.travis/"
   CI: "true"
   REPOURL: "dockerhub.dcso.de"
@@ -62,9 +60,10 @@ env_test_only:
   - master
   - dev
   script:
-  - $MYmake_main build-config
-  - cd $FOLDER; $MYdocker_compose pull
-  - $MYmake_main install
+  - cd $FOLDER; 
+  - make build-config
+  - docker-compose pull
+  - make install
 
 
 # On dev Branch: Build Environment and Test it with our own Test Framework
@@ -73,9 +72,10 @@ long_test:
   only:
   - dev
   script:
-  - $MYmake_main build-config
-  - $MYdocker_compose pull
-  - $MYmake_main install
+  - cd $FOLDER;
+  - make build-config
+  - docker-compose pull
+  - make install
   - $MYmake_travis test
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
   # artifacts:
@@ -89,10 +89,11 @@ push_productive_images:
   only: 
   - master
   script:
-  - $MYmake_main build-config
-  - $MYdocker_compose pull
+  - cd $FOLDER;
+  - make build-config
+  - docker-compose pull
   # start deploy script
-  - $MYmake_main install
+  - make install
   # test if MISP is ready
   - $MYmake_travis test
   # prepare retagging
