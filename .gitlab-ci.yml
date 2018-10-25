@@ -63,7 +63,7 @@ env_test_only:
   - dev
   script:
   - $MYmake_main build-config
-  - $MYdocker_compose pull
+  - cd $FOLDER; $MYdocker_compose pull
   - $MYmake_main install
 
 
