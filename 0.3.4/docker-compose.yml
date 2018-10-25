@@ -58,7 +58,7 @@ services:
   
     ### MISP Modules ###
   misp-modules:
-    image: ${DOCKER_REGISTRY}/misp-dockerized-misp-modules:${MISP_MODULES_CONTAINER_TAG}
+    image: ${DOCKER_REGISTRY}/misp-dockerized-misp-modules:1.0.1-debian
     container_name: misp-modules
     restart: unless-stopped
     environment:
@@ -92,7 +92,7 @@ services:
 
   ### Postfix ###
   misp-postfix:
-    image: ${DOCKER_REGISTRY}/misp-dockerized-postfix:${POSTFIX_CONTAINER_TAG}
+    image: ${DOCKER_REGISTRY}/misp-dockerized-postfix:1.0.1-alpine
     container_name: misp-postfix
     restart: unless-stopped
     environment:
@@ -133,7 +133,7 @@ services:
 
   ### MISP Apache Server ###    
   misp-server:
-    image: ${DOCKER_REGISTRY}/misp-dockerized-server:${MISP_CONTAINER_TAG}
+    image: ${DOCKER_REGISTRY}/misp-dockerized-server:2.4.94-ubuntu
     container_name: misp-server
     depends_on:
       - "misp-modules"
@@ -200,7 +200,7 @@ services:
 
   ### Reverse Proxy ###
   misp-proxy:
-    image: ${DOCKER_REGISTRY}/misp-dockerized-proxy:${PROXY_CONTAINER_TAG}
+    image: ${DOCKER_REGISTRY}/misp-dockerized-proxy:1.0.2-alpine
     container_name: misp-proxy
     restart: unless-stopped
     ports:
@@ -242,7 +242,7 @@ services:
 
   ### Robot ###
   misp-robot:
-    image: ${DOCKER_REGISTRY}/misp-dockerized-robot:${ROBOT_CONTAINER_TAG}
+    image: ${DOCKER_REGISTRY}/misp-dockerized-robot:1.0.4-debian
     container_name: misp-robot
     tty: true
     stdin_open: true
