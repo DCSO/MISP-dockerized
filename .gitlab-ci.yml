@@ -20,7 +20,7 @@ variables:
   DOCKER_COMPOSE_VERSION: "1.22.0"
   FOLDER: "./current"
   ENV_OPTION: "$FOLDER/"
-  MYdocker_compose: "docker-compose -f $FOLDER/docker-compose.yml"
+  MYdocker_compose: "docker-compose -f docker-compose.yml"
   MYmake_main: "make -C $FOLDER"
   MYmake_travis: "make -C $FOLDER/.travis/"
   CI: "true"
