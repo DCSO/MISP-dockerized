@@ -61,8 +61,6 @@ env_test_only:
   - dev
   script:
   - cd $FOLDER; 
-  - make build-config
-  - docker-compose pull
   - make install
 
 
@@ -73,8 +71,6 @@ long_test:
   - dev
   script:
   - cd $FOLDER;
-  - make build-config
-  - docker-compose pull
   - make install
   - $MYmake_travis test
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
