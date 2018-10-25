@@ -1,0 +1,2 @@
+server_name misp.example.com;
+client_max_body_size 50M;

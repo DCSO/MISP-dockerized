@@ -1,0 +1,13 @@
+# HTTP / HTTPS Config for maintenance
+server {
+	listen 80;
+	listen 443 ssl http2;
+	include conf.d/vars_common;
+
+	# Logfiles
+	access_log      /var/log/nginx/misp-server/maintenance_access.log;
+	error_log       /var/log/nginx/misp-server/maintenance_error.log;
+
+	root /var/www/html;	
+	index index.html;
+}

@@ -1,0 +1,32 @@
+- name: PGP | check if PGP public file  exists
+  stat: 
+    path: "{{MAIN_REPO_CONFIG}}/pgp/{{PGP_PUBLIC_FILENAME}}"
+  register: public_file
+
+- name: PGP | check if PGP private file exists
+  stat: 
+    path: "{{MAIN_REPO_CONFIG}}/pgp/{{PGP_PRIVATE_FILENAME}}"
+  register: private_file
+
+- name: PGP | Copy public and private key
+  tags: pgp
+  copy:
+    src: "{{MAIN_REPO_CONFIG}}/pgp/{{ item }}"
+    dest: "PGP_CONFIG_PATH/{{ item }}"
+    force: yes
+    owner: root
+    group: root
+    mode: 0440
+  with_items:
+    - "{{PGP_PUBLIC_FILENAME}}"
+    - "{{PGP_PRIVATE_FILENAME}}"
+  when: (public_file.stat.exists == True) and (private_file.stat.exists == True)
+  run_once: true
+ 
+- name: PGP | If exists import private and public key
+  shell: pushd "{{PGP_HOMEDIR}}"; gpg --import --homedir "{{PGP_HOMEDIR}}" "{{ item }}"
+  with_items:
+  - "{{PGP_PUBLIC_FILENAME}}"
+  - "{{PGP_PRIVATE_FILENAME}}"
+  when: (public_file.stat.exists == True) and (private_file.stat.exists == True)  
+

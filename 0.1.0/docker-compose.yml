@@ -1,0 +1,138 @@
+version: '3.1'
+
+
+networks: 
+  misp-backend:
+    driver: bridge
+
+services:
+  ### MISP Database ###
+  # LINK: https://hub.docker.com/_/mariadb/
+  misp-db:
+    image: mariadb:${DB_VERSION-10.3.5}
+    container_name: misp-db
+    restart: always    
+    volumes:
+      - misp-vol-db-data:/var/lib/mysql/"
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -u $MYSQL_USER -p$MYSQL_PASSWORD -h misp-db --execute 'show databases;'"]
+      interval: 1m
+      timeout: 15s
+      retries: 5
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD-Start123!}
+      MYSQL_DATABASE: ${MYSQL_DATABASE-misp}
+      MYSQL_USER: ${MYSQL_USER-misp}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD-Start123!}
+      #${MYSQL_ALLOW_EMPTY_PASSWORD}
+    networks:
+      misp-backend:
+        aliases:
+          - misp-db 
+
+  ### MISP Redis Server ###
+  # LINK: https://docs.docker.com/samples/library/redis/
+  # LINK: https://github.com/docker-library/docs/tree/master/redis
+  misp-redis:
+    image: redis:${REDIS_VERSION-3.2.11}
+    restart: on-failure
+    container_name: misp-redis
+    command: ["redis-server", "--appendonly", "yes"] #For Data persistence
+    healthcheck:
+      test: ["CMD-SHELL", "[ $$(redis-cli -h misp-redis ping) == PONG ] && exit 1"]
+      interval: 1m30s
+      timeout: 15s
+      retries: 3
+    volumes:
+      - misp-vol-redis-data:/data/"
+    networks:
+      misp-backend:
+        aliases:
+          - misp-redis
+
+  ### MISP Apache Server ###    
+  misp-server:
+    build: 
+      context: container/misp-server
+      args:
+        - MISP_TAG=v${MISP_TAG-2.4.88}
+        - python_cybox_TAG=v2.1.0.12
+        - python_stix_TAG=v1.1.1.4
+        - mixbox_TAG=v1.0.2
+        - cake_resque_TAG=4.1.2
+    image: dcso/misp-server:${MISP_TAG-2.4.88}    
+    container_name: misp-server
+    depends_on:
+      - "misp-db"
+      - "misp-redis"
+    restart: on-failure  
+    tty: true
+    stdin_open: true
+    #ports:
+      #- "80:80" # DEBUG only
+      #- "443:443" # DEBUG only
+    volumes:
+      - misp-vol-server-data:/var/www/
+      - misp-vol-server-config:/etc/apache2/
+      - misp-vol-server-logs:/var/log/apache2/
+    networks:
+      misp-backend:
+        aliases:
+          - misp-server
+
+  ### Reverse Proxy ###
+  # https://hub.docker.com/_/nginx/
+  misp-proxy:
+    image: dcso/misp-proxy:${MISP_TAG-2.4.88}
+    build: 
+      context: container/misp-proxy
+    container_name: misp-proxy
+    depends_on:
+      - "misp-server"
+    restart: on-failure
+    ports:
+      - "${HTTP_PORT-80}:80"
+      - "${HTTPS_PORT-443}:443"    
+    volumes:
+      - misp-vol-proxy-data:/etc/nginx/conf.d/
+      - misp-vol-proxy-logs:/var/log/nginx/misp-server/
+    networks:
+      misp-backend:
+        aliases:
+          - misp-nginx
+
+  misp-robot:
+    image: dcso/misp-robot:${MISP_TAG-2.4.88}
+    build: container/misp-robot
+    container_name: misp-robot
+    depends_on:
+      - "misp-db"
+      - "misp-redis"
+      - "misp-server"
+      - "misp-proxy"
+    tty: true
+    stdin_open: true
+    healthcheck:
+      disable: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro # Make sure its always read only!
+      - misp-vol-server-data:/srv/misp-server/
+      - misp-vol-proxy-data:/srv/misp-proxy/
+      - misp-vol-server-config:/srv/apache-config/
+      - ./config/misp.conf.yml:/srv/misp-config/misp.conf.yml:ro # Configuration file for MISP
+      - ./config/ssl:/srv/misp-config/ssl:ro # Directory for TLS certificates and key
+    networks:
+      misp-backend:
+        aliases:
+          - misp-robot
+
+
+volumes:
+  misp-vol-server-logs:
+  misp-vol-server-data:
+  misp-vol-server-config:
+  misp-vol-db-data:
+  misp-vol-redis-data:
+  misp-vol-proxy-data:
+  misp-vol-proxy-logs:
+  
