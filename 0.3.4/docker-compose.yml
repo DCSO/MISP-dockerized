@@ -257,12 +257,12 @@ services:
     # Docker.sock File
     - /var/run/docker.sock:/var/run/docker.sock:ro
     # Github Repository
-    - myHOST_PATH:/srv/MISP-dockerized  
-    - myHOST_PATH:/srv/misp-dockerized
+    - /home/max/repos/MISP-dockerized/current:/srv/MISP-dockerized  
+    - /home/max/repos/MISP-dockerized/current:/srv/misp-dockerized
     # Ansible scripts
-    - myHOST_PATH/playbooks:/etc/ansible/playbooks/robot-playbook:ro
+    - /home/max/repos/MISP-dockerized/current/playbooks:/etc/ansible/playbooks/robot-playbook:ro
     # Bash scripts
-    - myHOST_PATH/scripts:/srv/scripts:ro
+    - /home/max/repos/MISP-dockerized/current/scripts:/srv/scripts:ro
     # Volume with Certificates
     - misp-vol-ssl:/srv/misp-ssl
     # Volume with PGP Key
