@@ -388,6 +388,7 @@ if [ "$AUTOMATE_BUILD" = "true" ]
     [ -z $(echo $ROBOT_CONTAINER_TAG|grep dev) ] && ROBOT_CONTAINER_TAG="$ROBOT_CONTAINER_TAG-dev"
     [ -z $(echo $MISP_MODULES_CONTAINER_TAG|grep dev) ] && MISP_MODULES_CONTAINER_TAG="$MISP_MODULES_CONTAINER_TAG-dev"
   else
+    echo "manual build..."
     # Hostname
     [ "$QUERY_myHOSTNAME" == "yes" ] && query_hostname
     # Network
