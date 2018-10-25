@@ -21,13 +21,13 @@
   tags: smime
 
 ##### enable https config and disable http config ####
-- name: Apache2 | Disable HTTP MISP config
-  shell: "mv {{ SERVER_CONFIG_PATH }}/misp.conf {{ SERVER_CONFIG_PATH }}/misp"
-  ignore_errors: True
+# - name: Apache2 | Disable HTTP MISP config
+#   shell: "mv {{ SERVER_CONFIG_PATH }}/misp.conf {{ SERVER_CONFIG_PATH }}/misp"
+#   ignore_errors: True
 
-- name: Apache2 | Enable HTTPS MISP config
-  shell: "mv {{ SERVER_CONFIG_PATH }}/misp.ssl {{ SERVER_CONFIG_PATH }}/misp.ssl.conf"
-  ignore_errors: True
+# - name: Apache2 | Enable HTTPS MISP config
+#   shell: "mv {{ SERVER_CONFIG_PATH }}/misp.ssl {{ SERVER_CONFIG_PATH }}/misp.ssl.conf"
+#   ignore_errors: True
 
 ##### restart Docker Container #####
 - name: Apache2 | Restart Apache2 docker container
