@@ -22,7 +22,7 @@ variables:
   MAKE_OPTION: "-C $FOLDER"
   makefile_main: "make -C $FOLDER"
   DOCKER_COMPOSE_OPTION: "-f $FOLDERdocker-compose"
-  makefile_travis: "make -C .travis/"
+  makefile_travis: "make -C $FOLDER.travis/"
   CI: "true"
   REPOURL: "dockerhub.dcso.de"
 

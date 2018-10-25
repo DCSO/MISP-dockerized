@@ -2,9 +2,9 @@ env_test_only 0.3.3:
   variables:
     CURRENT_VERSION: 0.3.3
   extends: env_test_only
-  only:
-    changes:
-      - 0.3.3/*
+  # only:
+  #   changes:
+  #     - 0.3.3/*
 
 long_test 0.3.3:
   variables:
