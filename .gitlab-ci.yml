@@ -37,7 +37,7 @@ include:
   # - '0.3.0/.gitlab-ci.yml'
   # - '0.3.1/.gitlab-ci.yml'
   - '0.3.2/.gitlab-ci.yml'
-  - '0.3.3/.gitlab-ci'
+  - '0.3.3/.gitlab-ci.yml'
   #- '0.3.4/.gitlab-ci.yml'
   #- '1.0.0/.gitlab-ci.yml'
   
