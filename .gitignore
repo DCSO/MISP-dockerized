@@ -2,3 +2,7 @@ config
 backup
 .env
 current
+
+# for older:
+secrets
+volumes
