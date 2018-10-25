@@ -16,73 +16,89 @@ variables:
   # INTERNAL_REGISTRY_HOST
   # INTERNAL_REGISTRY_USER
   # INTERNAL_REGISTRY_PW
+  CURRENT_VERSION: 0.3.4
   DOCKER_COMPOSE_VERSION: 1.22.0
+  FOLDER: current/
+  MAKE_OPTION: -C $FOLDER
+  makefile_main: make -C $FOLDER
+  DOCKER_COMPOSE_OPTION: -f $FOLDERdocker-compose
+  makefile_travis: make -C .travis/
+  CI: true
+  REPOURL: dockerhub.dcso.de
+
 
 before_script:
   - apk add --no-cache make bash sudo git curl python py2-pip coreutils grep
-  - export makefile="make -C .travis/"
-  - export CI="true"
-  - export REPOURL="dockerhub.dcso.de"
   - docker login -u "$INTERNAL_REGISTRY_USER" -p "$INTERNAL_REGISTRY_PW" "$INTERNAL_REGISTRY_HOST"
   # https://stackoverflow.com/questions/42295457/using-docker-compose-in-a-gitlab-ci-pipeline
   - pip install --no-cache-dir docker-compose
   # download latest images from registry
-  - $makefile pull-latest REPOURL=${REPOURL}
+  - $makefile_travis pull-latest REPOURL=${REPOURL}
+  # switch to current VERSION
+  - ln -s $CURRENT_VERSION/ current
 
 
+
+# On all other pull requests and branches exclude dev and master: Build Environment, but do nothing more. No tests. Tests with our Test Framework are only done in the dev branch.
 Short_Test_without_Push:
   stage: build
   except:
   - master
-  - unstable
+  - dev
   script:
-  - make build-config
-  - docker-compose -v
-  - docker-compose pull
+  - $makefile_main $MAKE_OPTION build-config
+  - docker-compose $DOCKER_COMPOSE_OPTION -v
+  - docker-compose $DOCKER_COMPOSE_OPTION pull
   - echo "#############################################START with make install############################################"
   # start deploy script
-  - make install
+  - $makefile_main $MAKE_OPTION install
 
+
+
+# On dev Branch: Build Environment and Test it with our own Test Framework
 Long_Test_without_Push:
   stage: build
   only:
-  - unstable
+  - dev
   script:
-  - make build-config
-  - docker-compose -v
-  - docker-compose pull
+  - $makefile_main $MAKE_OPTION build-config
+  - docker-compose $DOCKER_COMPOSE_OPTION -v
+  - docker-compose $DOCKER_COMPOSE_OPTION pull
   - echo "#############################################START with make install############################################"
   # start deploy script
-  - make install
+  - $makefile_main $MAKE_OPTION install
   # test if MISP is ready
-  - $makefile test
+  - $makefile_travis test
 
-Upload_2_Repository:
-  stage: build
+
+
+# On MASTER Branch: Build Environment + retag Images to remove "-dev" tag
+ Upload_2_Repository:
+  stage: deploy
   only: 
   - master
   script:
-  - make build-config
-  - docker-compose -v
-  - docker-compose pull
+  - $$makefile_main $MAKE_OPTION build-config
+  - docker-compose $DOCKER_COMPOSE_OPTION -v
+  - docker-compose $DOCKER_COMPOSE_OPTION pull
   - echo "#############################################START with make install############################################"
   # start deploy script
-  - make install
+  - $$makefile_main $MAKE_OPTION install
   # test if MISP is ready
-  - $makefile test
+  - $makefile_travis test
   # prepare retagging
-  - export server_tag=$(cat .env |grep MISP_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export proxy_tag=$(cat .env |grep PROXY_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export robot_tag=$(cat .env |grep ROBOT_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export postfix_tag=$(cat .env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export postfix_tag=$(cat .env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export modules_tag=$(cat .env |grep MISP_MODULES_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export db_tag=$(cat .env |grep DB_CONTAINER_TAG|cut -d = -f 2|sed 's,....$,,')
-  - export redis_tag=$(cat .env |grep REDIS_CONTAINER_TAG|cut -d = -f 2|sed 's,....$,,')
+  - export server_tag=$(cat $FOLDER.env |grep MISP_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export proxy_tag=$(cat $FOLDER.env |grep PROXY_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export robot_tag=$(cat $FOLDER.env |grep ROBOT_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export postfix_tag=$(cat $FOLDER.env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export postfix_tag=$(cat $FOLDER.env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export modules_tag=$(cat $FOLDER.env |grep MISP_MODULES_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export db_tag=$(cat $FOLDER.env |grep DB_CONTAINER_TAG|cut -d = -f 2|sed 's,....$,,')
+  - export redis_tag=$(cat $FOLDER.env |grep REDIS_CONTAINER_TAG|cut -d = -f 2|sed 's,....$,,')
   # retag all existing tags dev 2 public repo
-  - $makefile tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} REPOURL=${REPOURL};
+  - $makefile_travis tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} REPOURL=${REPOURL};
   # Push Images to registry
-  - $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} REPOURL=${REPOURL};
+  - $makefile_travis push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} REPOURL=${REPOURL};
   # If we need separate Images fro DB and Redsi
   #- ./travis/push.sh $(REPOURL)/misp-dockerized-db $(db_tag);
   #- ./travis/push.sh $(REPOURL)/misp-dockerized-redis $(redis_tag);
