@@ -60,8 +60,9 @@ env_test_only:
   - master
   - dev
   script:
-  - cd $FOLDER;
-  - docker-compose pull 
+  - cd $FOLDER;           # change directory 
+  - make build-config     # we need a .env file therefore we need to build the config before we pull the images.
+  - docker-compose pull   # pull images, because docker login is only valid for the host not for the misp-robot
   - make install
 
 
@@ -71,8 +72,9 @@ long_test:
   only:
   - dev
   script:
-  - cd $FOLDER;
-  - docker-compose pull
+  - cd $FOLDER;           # change directory 
+  - make build-config     # we need a .env file therefore we need to build the config before we pull the images.
+  - docker-compose pull   # pull images, because docker login is only valid for the host not for the misp-robot
   - make install
   - $MYmake_travis test
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
