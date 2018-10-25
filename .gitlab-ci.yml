@@ -18,11 +18,11 @@ variables:
   # INTERNAL_REGISTRY_PW
   CURRENT_VERSION: "0.3.4"
   DOCKER_COMPOSE_VERSION: "1.22.0"
-  FOLDER: "./current/"
-  MAKE_OPTION: "-C $FOLDER"
-  makefile_main: "make -C $FOLDER"
-  DOCKER_COMPOSE_OPTION: "-f $FOLDERdocker-compose"
-  makefile_travis: "make -C $FOLDER.travis/"
+  FOLDER: "./current"
+  ENV_OPTION: "$FOLDER/"
+  MYdocker_compose: "-f $FOLDER/docker-compose.yml"
+  MYmake_main: "make -C $FOLDER"
+  MYmake_travis: "make -C $FOLDER/.travis/"
   CI: "true"
   REPOURL: "dockerhub.dcso.de"
 
@@ -52,7 +52,7 @@ before_script:
   # switch to current VERSION
   - ln -s $CURRENT_VERSION/ current
   # download latest images from registry
-  - $makefile_travis pull-latest REPOURL=${REPOURL}
+  - $MYmake_travis pull-latest REPOURL=${REPOURL}
 
 
 # On all other pull requests and branches exclude dev and master: Build Environment, but do nothing more. No tests. Tests with our Test Framework are only done in the dev branch.
@@ -62,9 +62,9 @@ env_test_only:
   - master
   - dev
   script:
-  - $makefile_main $MAKE_OPTION build-config
-  - docker-compose $DOCKER_COMPOSE_OPTION pull
-  - $makefile_main $MAKE_OPTION install
+  - $MYmake_main build-config
+  - $MYdocker_compose pull
+  - $MYmake_main install
 
 
 # On dev Branch: Build Environment and Test it with our own Test Framework
@@ -73,10 +73,14 @@ long_test:
   only:
   - dev
   script:
-  - $makefile_main $MAKE_OPTION build-config
-  - docker-compose $DOCKER_COMPOSE_OPTION pull
-  - $makefile_main $MAKE_OPTION install
-  - $makefile_travis test
+  - $MYmake_main build-config
+  - $MYdocker_compose pull
+  - $MYmake_main install
+  - $MYmake_travis test
+  # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
+  # artifacts:
+  #   reports:
+  #     junit: $FOLDER/.travis/test_report.xml
 
 
 # On MASTER Branch: Build Environment + retag Images to remove "-dev" tag
@@ -85,25 +89,25 @@ push_productive_images:
   only: 
   - master
   script:
-  - $$makefile_main $MAKE_OPTION build-config
-  - docker-compose $DOCKER_COMPOSE_OPTION pull
+  - $MYmake_main build-config
+  - $MYdocker_compose pull
   # start deploy script
-  - $$makefile_main $MAKE_OPTION install
+  - $MYmake_main install
   # test if MISP is ready
-  - $makefile_travis test
+  - $MYmake_travis test
   # prepare retagging
-  - export server_tag=$(cat $FOLDER.env |grep MISP_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export proxy_tag=$(cat $FOLDER.env |grep PROXY_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export robot_tag=$(cat $FOLDER.env |grep ROBOT_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export postfix_tag=$(cat $FOLDER.env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export postfix_tag=$(cat $FOLDER.env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export modules_tag=$(cat $FOLDER.env |grep MISP_MODULES_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export db_tag=$(cat $FOLDER.env |grep DB_CONTAINER_TAG|cut -d = -f 2|sed 's,....$,,')
-  - export redis_tag=$(cat $FOLDER.env |grep REDIS_CONTAINER_TAG|cut -d = -f 2|sed 's,....$,,')
+  - export server_tag=$(cat $ENV_FOLDER.env |grep MISP_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export proxy_tag=$(cat $ENV_FOLDER.env |grep PROXY_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export robot_tag=$(cat $ENV_FOLDER.env |grep ROBOT_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export postfix_tag=$(cat $ENV_FOLDER.env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export postfix_tag=$(cat $ENV_FOLDER.env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export modules_tag=$(cat $ENV_FOLDER.env |grep MISP_MODULES_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export db_tag=$(cat $ENV_FOLDER.env |grep DB_CONTAINER_TAG|cut -d = -f 2|sed 's,....$,,')
+  - export redis_tag=$(cat $ENV_FOLDER.env |grep REDIS_CONTAINER_TAG|cut -d = -f 2|sed 's,....$,,')
   # retag all existing tags dev 2 public repo
-  - $makefile_travis tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} REPOURL=${REPOURL};
+  - $MYmake_travis tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} REPOURL=${REPOURL};
   # Push Images to registry
-  - $makefile_travis push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} REPOURL=${REPOURL};
+  - $MYmake_travis push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} REPOURL=${REPOURL};
   # If we need separate Images fro DB and Redsi
   #- ./travis/push.sh $(REPOURL)/misp-dockerized-db $(db_tag);
   #- ./travis/push.sh $(REPOURL)/misp-dockerized-redis $(redis_tag);
