@@ -3,6 +3,9 @@ backup
 .env
 current
 
+# for 1.0.0 and newer:
+docker-compose.override.yml
+
 # for older:
 secrets
 volumes
