@@ -22,7 +22,7 @@ ENABLE_FILE_PGP="${MISP_dockerized_repo}/config/pgp/pgp.enable"
 function import_config(){
   echo -n "check and import existing configuration..."
   [ -f $CONFIG_FILE ] && source $CONFIG_FILE
-  [ -f $DOCKER_COMPOSE_CONF ] && source $DOCKER_COMPOSE_CONF
+  [ ! -f $CONFIG_FILE ] && [ -f $DOCKER_COMPOSE_CONF ] && source $DOCKER_COMPOSE_CONF
   echo "done"
 }
 # Function to set default values
@@ -80,11 +80,11 @@ function default_container_version() {
   # Start Global Variable Section
   ############################################
   [ -z "$DB_CONTAINER_TAG" ] && DB_CONTAINER_TAG="10.3"
-  [ -z "$REDIS_CONTAINER_TAG" ] && REDIS_CONTAINER_TAG="4.0-alpine"
+  [ -z "$REDIS_CONTAINER_TAG" ] && REDIS_CONTAINER_TAG="5-alpine"
   [ -z "$POSTFIX_CONTAINER_TAG" ] && POSTFIX_CONTAINER_TAG="1.0.1-alpine"
   [ -z "$MISP_CONTAINER_TAG" ] && MISP_CONTAINER_TAG="2.4.94-ubuntu"
   [ -z "$PROXY_CONTAINER_TAG" ] && PROXY_CONTAINER_TAG="1.0.2-alpine"
-  [ -z "$ROBOT_CONTAINER_TAG" ] && ROBOT_CONTAINER_TAG="1.0.3-ubuntu"
+  [ -z "$ROBOT_CONTAINER_TAG" ] && ROBOT_CONTAINER_TAG="1.0.4-debian"
   [ -z "$MISP_MODULES_CONTAINER_TAG" ] && MISP_MODULES_CONTAINER_TAG="1.0.1-debian"
   ###
   MISP_TAG=$(echo $MISP_CONTAINER_TAG|cut -d - -f 1)
@@ -322,30 +322,43 @@ function query_smime_settings(){
 }
 
 function query_docker_registry() {
-  [ "$AUTOMATE_BUILD" = "true" ] || read -r -p "Do you want to load the MISP containers from secure DCSO Registry? [Y/n] " -ei "y" response
-  [ "$AUTOMATE_BUILD" = "true" ] && response="yes"
-  [ "$TRAVIS" == "true" ] && response="no"
-  case $response in
-  [yY][eE][sS]|[yY])
-    [ -d ${MISP_dockerized_repo}/config ] || mkdir -p ${MISP_dockerized_repo}/config
-    touch $ENABLE_FILE_DCSO_DOCKER_REGISTRY
+  if [ -f $ENABLE_FILE_DCSO_DOCKER_REGISTRY ]
+  then
+    ############## FILE exists ##############
+    echo
     echo "We switched the container repository to secure DCSO registry."
     echo "      If you want to use the public one from hub.docker.com,"
     echo "      please delete $ENABLE_FILE_DCSO_DOCKER_REGISTRY and 'make install'"
-    [ "$AUTOMATE_BUILD" = "true" ] || read -r -p "     continue with ENTER"     
-    ;;
-  *)
-    rm -f $ENABLE_FILE_DCSO_DOCKER_REGISTRY
-    ;;
-  esac
+    echo
   
-  if [ -e "$ENABLE_FILE_DCSO_DOCKER_REGISTRY" ]
-  then
-    # On our own registry we have none group tag, but we have another URL
-    DOCKER_REGISTRY="dockerhub.dcso.de"
   else
-    # PUBLIC one from hub.docker.com we need only the organistion group. Because the URL is the default one
-    DOCKER_REGISTRY="dcso"
+    ##############  FILE not exists ##############
+    [ "$AUTOMATE_BUILD" = "true" ] || read -r -p "Do you want to load the MISP containers from secure DCSO Registry? [Y/n] " -ei "y" response
+    [ "$AUTOMATE_BUILD" = "true" ] && response="yes"
+    [ "$TRAVIS" == "true" ] && response="no"
+    case $response in
+    [yY][eE][sS]|[yY])
+      [ -d ${MISP_dockerized_repo}/config ] || mkdir -p ${MISP_dockerized_repo}/config
+      touch $ENABLE_FILE_DCSO_DOCKER_REGISTRY
+      echo "We switched the container repository to secure DCSO registry."
+      echo "      If you want to use the public one from hub.docker.com,"
+      echo "      please delete $ENABLE_FILE_DCSO_DOCKER_REGISTRY and 'make install'"
+      [ "$AUTOMATE_BUILD" = "true" ] || read -r -p "     continue with ENTER"     
+      ;;
+    *)
+      rm -f $ENABLE_FILE_DCSO_DOCKER_REGISTRY
+      ;;
+    esac
+    
+    if [ -e "$ENABLE_FILE_DCSO_DOCKER_REGISTRY" ]
+    then
+      # On our own registry we have none group tag, but we have another URL
+      DOCKER_REGISTRY="dockerhub.dcso.de"
+    else
+      # PUBLIC one from hub.docker.com we need only the organistion group. Because the URL is the default one
+      DOCKER_REGISTRY="dcso"
+    fi
+  
   fi
 }
 

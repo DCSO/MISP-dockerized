@@ -73,6 +73,6 @@
     mode: "{{ item.mode }}"
   with_items:
   - {file: "{{MISP_PATH}}", mode: "0750" }
-  - {file: "{{MISP_PATH}}/tmp", mode: "g+ws" }
-  - {file: "{{MISP_PATH}}/attachments", mode: "g+ws" }
+  - {file: "{{MISP_PATH}}/app/tmp", mode: "g+ws" }
+  - {file: "{{MISP_PATH}}/app/files", mode: "g+ws" }
 
