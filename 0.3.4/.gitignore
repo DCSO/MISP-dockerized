@@ -1,0 +1,4 @@
+config/
+backup/
+docker-bench-security/
+.env

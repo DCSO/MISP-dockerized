@@ -58,7 +58,7 @@ services:
   
     ### MISP Modules ###
   misp-modules:
-    image: ${DOCKER_REGISTRY}/misp-dockerized-misp-modules:1.0.1-debian
+    image: ${DOCKER_REGISTRY}/misp-dockerized-misp-modules:${MISP_MODULES_CONTAINER_TAG}
     container_name: misp-modules
     restart: unless-stopped
     environment:
@@ -92,7 +92,7 @@ services:
 
   ### Postfix ###
   misp-postfix:
-    image: ${DOCKER_REGISTRY}/misp-dockerized-postfix:1.0.1-alpine
+    image: ${DOCKER_REGISTRY}/misp-dockerized-postfix:${POSTFIX_CONTAINER_TAG}
     container_name: misp-postfix
     restart: unless-stopped
     environment:
@@ -133,7 +133,7 @@ services:
 
   ### MISP Apache Server ###    
   misp-server:
-    image: ${DOCKER_REGISTRY}/misp-dockerized-server:2.4.94-ubuntu
+    image: ${DOCKER_REGISTRY}/misp-dockerized-server:${MISP_CONTAINER_TAG}
     container_name: misp-server
     depends_on:
       - "misp-modules"
@@ -200,7 +200,7 @@ services:
 
   ### Reverse Proxy ###
   misp-proxy:
-    image: ${DOCKER_REGISTRY}/misp-dockerized-proxy:1.0.2-alpine
+    image: ${DOCKER_REGISTRY}/misp-dockerized-proxy:${PROXY_CONTAINER_TAG}
     container_name: misp-proxy
     restart: unless-stopped
     ports:
@@ -242,7 +242,7 @@ services:
 
   ### Robot ###
   misp-robot:
-    image: ${DOCKER_REGISTRY}/misp-dockerized-robot:1.0.4-debian
+    image: ${DOCKER_REGISTRY}/misp-dockerized-robot:${ROBOT_CONTAINER_TAG}
     container_name: misp-robot
     tty: true
     stdin_open: true
@@ -257,12 +257,12 @@ services:
     # Docker.sock File
     - /var/run/docker.sock:/var/run/docker.sock:ro
     # Github Repository
-    - /home/max/repos/MISP-dockerized/current:/srv/MISP-dockerized  
-    - /home/max/repos/MISP-dockerized/current:/srv/misp-dockerized
+    - /home/max/repos/MISP-dockerized/0.3.4:/srv/MISP-dockerized  
+    - /home/max/repos/MISP-dockerized/0.3.4:/srv/misp-dockerized
     # Ansible scripts
-    - /home/max/repos/MISP-dockerized/current/playbooks:/etc/ansible/playbooks/robot-playbook:ro
+    - /home/max/repos/MISP-dockerized/0.3.4/playbooks:/etc/ansible/playbooks/robot-playbook:ro
     # Bash scripts
-    - /home/max/repos/MISP-dockerized/current/scripts:/srv/scripts:ro
+    - /home/max/repos/MISP-dockerized/0.3.4/scripts:/srv/scripts:ro
     # Volume with Certificates
     - misp-vol-ssl:/srv/misp-ssl
     # Volume with PGP Key

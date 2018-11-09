@@ -28,12 +28,12 @@ variables:
 # Include other YML Files for Jobs
 # Source: https://docs.gitlab.com/ee/ci/yaml/README.html#include
 include:
-  # - '0.1.0/.gitlab-ci.yml'
-  # - '0.1.1/.gitlab-ci.yml'
-  # - '0.1.2/.gitlab-ci.yml'
-  # - '0.2.0/.gitlab-ci.yml'
-  # - '0.3.0/.gitlab-ci.yml'
-  # - '0.3.1/.gitlab-ci.yml'
+  - '0.1.0/.gitlab-ci.yml'
+  - '0.1.1/.gitlab-ci.yml'
+  - '0.1.2/.gitlab-ci.yml'
+  - '0.2.0/.gitlab-ci.yml'
+  - '0.3.0/.gitlab-ci.yml'
+  - '0.3.1/.gitlab-ci.yml'
   - '0.3.2/.gitlab-ci.yml'
   - '0.3.3/.gitlab-ci.yml'
   #- '0.3.4/.gitlab-ci.yml'
