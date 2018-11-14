@@ -62,7 +62,6 @@ services:
     container_name: misp-server
     depends_on:
       - "misp-modules"
-      - "misp-postfix"
       - "misp-proxy"
     restart: unless-stopped
     # tty: true
