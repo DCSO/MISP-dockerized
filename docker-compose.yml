@@ -13,50 +13,13 @@ networks:
       - subnet: "192.168.47.0/28"
 
 services:
-  # ### MISP Database ###
-  # # LINK: https://hub.docker.com/_/mariadb/
-  # misp-db:
-  #   image: mariadb:10.3.5
-  #   container_name: misp-db
-  #   restart: unless-stopped
-  #   volumes:
-  #   #- misp-vol-db-data:/var/lib/mysql/"
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "mysql -u $MYSQL_USER -p$MYSQL_PASSWORD -h misp-db --execute 'show databases;'"]
-  #     interval: 1m
-  #     timeout: 15s
-  #     retries: 5
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-  #     MYSQL_DATABASE: ${MYSQL_DATABASE}
-  #     MYSQL_USER: ${MYSQL_USER}
-  #     MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-  #   networks:
-  #     misp-backend:
-  #       aliases:
-  #       - misp-db 
+  ### MISP Database ###
+  # DB is currently embedded in MISP-server
 
-  # ### MISP Redis Server ###
-  # # LINK: https://docs.docker.com/samples/library/redis/
-  # # LINK: https://github.com/docker-library/docs/tree/master/redis
-  # misp-redis:
-  #   image: redis:3.2.11
-  #   restart: unless-stopped
-  #   container_name: misp-redis
-  #   command: ["redis-server", "--appendonly", "yes"] #For Data persistence
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "[ $$(redis-cli -h misp-redis ping) == PONG ] && exit 1"]
-  #     interval: 1m30s
-  #     timeout: 15s
-  #     retries: 3
-  #   volumes:
-  #   - misp-vol-redis-data:/data/
-  #   networks:
-  #     misp-backend:
-  #       aliases:
-  #       - misp-redis
+  ### MISP Redis Server ###
+  # REDIS is currently embedded in MISP-server
   
-    ### MISP Modules ###
+  ### MISP Modules ###
   misp-modules:
     image: ${DOCKER_REGISTRY}/misp-dockerized-misp-modules:${MISP_MODULES_CONTAINER_TAG}
     container_name: misp-modules
@@ -91,45 +54,7 @@ services:
     #     #env-regex: "^(os\|customer)"
 
   ### Postfix ###
-  misp-postfix:
-    image: ${DOCKER_REGISTRY}/misp-dockerized-postfix:${POSTFIX_CONTAINER_TAG}
-    container_name: misp-postfix
-    restart: unless-stopped
-    environment:
-      HOSTNAME: ${myHOSTNAME}
-      DOMAIN: ${DOMAIN}
-      SENDER_ADDRESS: ${SENDER_ADDRESS}
-      RELAYHOST: ${RELAYHOST}
-      RELAY_USER: ${RELAY_USER}
-      RELAY_PASSWORD: ${RELAY_PASSWORD}
-      DOCKER_NETWORK: ${DOCKER_NETWORK}
-      DEBUG_PEER: ${DEBUG_PEER}
-      HTTP_PROXY: ${HTTP_PROXY}
-      HTTPS_PROXY: ${HTTPS_PROXY}
-      NO_PROXY: ${NO_PROXY}
-    networks:
-      misp-backend:
-        aliases:
-          - misp-postfix
-    # ### LOG DRIVER ###
-    # # for more Information: https://docs.docker.com/compose/compose-file/#logging + https://docs.docker.com/config/containers/logging/syslog/
-    #logging:
-    #   driver: syslog
-    #   options:
-    #     #syslog-address: "tcp://192.168.0.42:123"
-    #     #syslog-address: "unix:///dev/log"
-    #     #syslog-address: "unix:///tmp/syslog.sock"
-    #     # For Facility: https://tools.ietf.org/html/rfc5424#section-6.2.1
-    #     #syslog-facility: "local7"
-    #     #syslog-tls-cert: "/etc/ca-certificates/custom/cert.pem"
-    #     #syslog-tls-key: "/etc/ca-certificates/custom/key.pem"
-    #     #syslog-tls-skip-verify: "true"
-    #     # For Tags: https://docs.docker.com/config/containers/logging/log_tags/
-    #     tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
-    #     #syslog-format: "rfc5424micro"
-    #     #labels: "misp-dockerized"
-    #     #env: "os,customer"
-    #     #env-regex: "^(os\|customer)"
+  # POSTFIX is currently embedded in MISP-server
 
   ### MISP Apache Server ###    
   misp-server:
@@ -137,7 +62,6 @@ services:
     container_name: misp-server
     depends_on:
       - "misp-modules"
-      - "misp-postfix"
       - "misp-proxy"
     restart: unless-stopped
     # tty: true
