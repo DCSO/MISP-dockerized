@@ -83,9 +83,9 @@ services:
     # DB
     - misp-vol-db-data:/var/lib/mysql/
     # Apache2 Configuration
-    - misp-vol-server-apache2-config-sites-enabled:/etc/apache2/sites-enabled:ro
+    - misp-vol-server-apache2-config-sites-enabled:/etc/apache2/sites-enabled
     # NGINX SSL 
-    - misp-vol-ssl:/etc/apache2/ssl:ro
+    - misp-vol-ssl:/etc/apache2/ssl
     # Volume with PGP Key
     - misp-vol-pgp:/var/www/MISP/.gnupg
     # Volume with S/MIME Certificate and Key
