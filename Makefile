@@ -74,6 +74,7 @@ deploy:
 	@docker run --name misp-robot-init --rm \
 		-v $(CURDIR):/srv/MISP-dockerized \
     	-v $(CURDIR)/scripts:/srv/scripts:ro \
+		-v ~/.docker:/root/.docker:ro \
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
 		$(shell cat $(CURDIR)/.env|grep DOCKER_REGISTRY|cut -d = -f 2)/misp-dockerized-robot:$(shell cat $(CURDIR)/.env|grep ROBOT_CONTAINER_TAG|cut -d = -f 2) bash -c "scripts/deploy_environment.sh /srv/MISP-dockerized/"
 
