@@ -99,9 +99,9 @@ services:
     # NGINX SSL 
     - misp-vol-ssl:/etc/apache2/ssl
     # Volume with PGP Key
-    - misp-vol-pgp:/var/www/.gnupg
+    - misp-vol-pgp:/var/www/MISP/.gnupg
     # Volume with S/MIME Certificate and Key
-    - misp-vol-smime:/var/www/.smime
+    - misp-vol-smime:/var/www/MISP/.smime
     # Redis Volume
     - misp-vol-redis-data:/redis_data_dir
     # MISP Configurations:
