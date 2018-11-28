@@ -17,10 +17,12 @@ env:
   - VERSION=0.3.4
 
 before_install:
-  - travis_retry .travis/main.sh
+  # create current directory
+  - ./FOR_NEW_INSTALL.sh $VERSION
+  # update docker etc.
+  - travis_retry ./$VERSION/.travis/main.sh
   # pull all images 
   - travis_retry $makefile_travis pull-latest
-  - ./install.sh $VERSION
 
 script:
   # Install and configure MISP
