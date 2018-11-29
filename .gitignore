@@ -1,4 +1,8 @@
-config/
-backup/
-docker-bench-security/
+config
+backup
 .env
+current
+
+# for older:
+secrets
+volumes
