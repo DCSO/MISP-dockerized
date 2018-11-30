@@ -1,13 +1,41 @@
 #/bin/bash
 
+set -e
+
+# check requirements
+./requirements.sh
+echo "### REQUIREMENTS CHECK FINISHED ###"
 
 # Create an array with all folder
     FOLDER=( */)
     FOLDER=( "${FOLDER[@]%/}" )
 
-
+# set current version to ""
 CURRENT_VERSION=""
 
+# check if user has currently a installed version
+    function check_version_legacy (){
+        # This function checks the current version on misp-server version from docker ps
+        # https://forums.docker.com/t/docker-ps-a-command-to-publish-only-container-names/8483/2
+        CURRENT_CONTAINER=$(docker ps --format '{{.Image}}'|grep server|cut -d : -f 2|cut -d - -f 1)
+        [ "$CURRENT_CONTAINER" == "2.4.94" ] && CURRENT_VERSION="0.3.4" && return
+        [ "$CURRENT_CONTAINER" == "2.4.92" ] && CURRENT_VERSION="0.2.0" && return
+        [ "$CURRENT_CONTAINER" == "2.4.88" ] && CURRENT_VERSION="0.1.2" && return
+        echo
+        echo "Sorry the script can't detect your version."
+    }
+    function check_version(){
+        # This function checks the current link to which version it goes
+        # https://www.linuxquestions.org/questions/linux-software-2/how-to-find-symlink-target-name-in-script-364971/
+        CURRENT_VERSION=$(ls -l current | awk '{print $11}')
+    }
+    # if current symlink exists
+    [ -L ./current ] && check_version
+    # if current symlink not exists
+    [ -L ./current ] && check_version_legacy
+
+
+# check if this execution is automatic from gitlab-ci or travis-ci
 if [ "$CI" != true ]
 then
     ###
@@ -16,6 +44,7 @@ then
 
     # Ask User which Version he want to install:
     # We made a recalculation the result is the element 0 in the array FOLDER[0] is shown as Element 1. If the user type in the version this recalculation is reverted.
+    echo
     echo "Which Version do you want to install:"
     for (( i=1; i<=${#FOLDER[@]}; i++ ))
     do
@@ -23,7 +52,8 @@ then
         [ "${FOLDER[$i-1]}" == "config" ] && continue
         [ "${FOLDER[$i-1]}" == "current" ] && continue
         [ "${FOLDER[$i-1]}" == ".travis" ] && continue
-        echo "[ ${i} ] - ${FOLDER[$i-1]}"
+         [ "${FOLDER[$i-1]}" == "$CURRENT_VERSION" ] || echo "[ ${i} ] - ${FOLDER[$i-1]}"
+        [ "${FOLDER[$i-1]}" == "$CURRENT_VERSION" ] && echo "[ ${i} ] - ${FOLDER[$i-1]} (currently installed)"
     done
     echo
 
@@ -42,7 +72,7 @@ else
 
     # Parameter 1:
     param_VERSION="$1"
-    [ "$CI" == true ] && [ -z "$param_VERSION" ] && echo "No version parameter given. Please call: '$0 0.3.4'. Exit." && exit
+    [ "$CI" == true ] && [ -z "$param_VERSION" ] && echo "No version parameter given. Please call: '$0 1.0.0'. Exit." && exit
 
     # If the user is a CI Pipeline:
     [ "$CI" == true ] && CURRENT_VERSION="$param_VERSION"

@@ -47,7 +47,7 @@ help:
 	       make help	 		| show help\n"
 
 # Start
-install: requirements build-config deploy configure
+install: requirements build-config pull deploy
 	@echo
 	@echo " ###########	MISP environment is ready	###########"
 	@echo "Please go to: $(shell cat .env|grep HOSTNAME|cut -d = -f 2)"
@@ -78,24 +78,21 @@ pull:
 	docker run -ti --name misp-robot-init --rm \
 		-v $(CURDIR):/srv/MISP-dockerized \
     	-v $(CURDIR)/scripts:/srv/scripts:ro \
+		-v ~/.docker:/root/.docker:ro \
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
 		$(shell cat $(CURDIR)/config/config.env|grep DOCKER_REGISTRY|cut -d = -f 2)/misp-dockerized-robot:$(shell cat $(CURDIR)/config/config.env|grep ROBOT_CONTAINER_TAG|cut -d = -f 2) bash -c "docker-compose -f /srv/MISP-dockerized/docker-compose.yml -f /srv/MISP-dockerized/docker-compose.override.yml pull "
 deploy: 
 	@echo " ###########	Deploy Environment	###########"
-	@sed -i "s,myHOST_PATH,$(CURDIR),g" "./docker-compose.yml"
 	@docker run -ti --name misp-robot-init --rm \
 		-v $(CURDIR):/srv/MISP-dockerized \
     	-v $(CURDIR)/scripts:/srv/scripts:ro \
+		-v ~/.docker:/root/.docker:ro \
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
 		$(shell cat $(CURDIR)/config/config.env|grep DOCKER_REGISTRY|cut -d = -f 2)/misp-dockerized-robot:$(shell cat $(CURDIR)/config/config.env|grep ROBOT_CONTAINER_TAG|cut -d = -f 2) bash -c "docker-compose -f /srv/MISP-dockerized/docker-compose.yml -f /srv/MISP-dockerized/docker-compose.override.yml up -d "
 
 # delete all misp container, volumes and images
 delete:
 	scripts/delete_all_misp_from_host.sh
-
-# delete all unused docker images on the host
-delete-unused:
-	docker system prune
 
 # stop all misp docker container
 stop-all:
@@ -121,7 +118,7 @@ upgrade:
 	@UPGRADE.sh
 
 # Update current MISP to all new functions in this Version without a new version
-update: pull install
+update: install
 
 
 
@@ -140,26 +137,30 @@ log-f:
 # configure
 configure:
 	@echo " ###########	Configure Environment	###########	"
-
-config-server:
+	make config-ssl
+	make config-smime
+	make config-pgp
+config-ssl:
+	docker cp $(CURDIR)/config/ssl/. misp-server:/etc/apache/ssl
 	docker restart misp-server
-config-db:
-	docker restart misp-server
-config-proxy:
-	docker restart misp-server
+	docker restart misp-proxy
 config-smime:
-	docker restart misp-server
+	#$(DOCKER_EXEC) misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t smime /etc/ansible/playbooks/robot-playbook/site.yml"
+	docker cp $(CURDIR)/config/smime/. misp-server:/var/www/MISP/.smime
 config-pgp:
-	docker restart misp-server
+	#$(DOCKER_EXEC) misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t pgp /etc/ansible/playbooks/robot-playbook/site.yml"
+	docker cp $(CURDIR)/config/pgp/. misp-server:/var/www/MISP/.pgp
 
 # maintainence
 enable-maintenance:
-	$(DOCKER_EXEC) misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t enable /etc/ansible/playbooks/robot-playbook/maintenance.yml"
+	$(DOCKER_EXEC) misp-proxy /entrypoint_nginx.sh enable-maintenance
+	docker restart misp-proxy
 disable-maintenance:
-	$(DOCKER_EXEC) misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t disable /etc/ansible/playbooks/robot-playbook/maintenance.yml"
+	$(DOCKER_EXEC) misp-proxy /entrypoint_nginx.sh disable-maintenance
+	docker restart misp-proxy
 
 # reconfigure ssl
-change-ssl: config-server config-proxy
+change-ssl: config-ssl
 
 # backup all services
 backup-all:
@@ -188,3 +189,4 @@ restore-proxy:
 	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh restore proxy"
 restore-robot:
 	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh restore robot"
+

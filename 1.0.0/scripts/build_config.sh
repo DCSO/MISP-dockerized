@@ -7,11 +7,15 @@ set -e
 # check if this is an automate build not ask any questions
 [ "$CI" = true ] && AUTOMATE_BUILD=true
 
+# full path <version>/scripts
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
-MISP_dockerized_repo="$SCRIPTPATH/.."
+# full path in <version>
+MISP_dockerized_repo=$(echo ${SCRIPTPATH%/*})
+# full path in the git repository
+MISP_dockerized_repo=$(echo ${MISP_dockerized_repo%/*})
 CONFIG_FILE="${MISP_dockerized_repo}/config/config.env"
-DOCKER_COMPOSE_CONF="${MISP_dockerized_repo}/docker-compose.override.yml"
-DOCKER_COMPOSE_FILE="${MISP_dockerized_repo}/docker-compose.yml"
+DOCKER_COMPOSE_CONF="${MISP_dockerized_repo}/current/docker-compose.override.yml"
+DOCKER_COMPOSE_FILE="${MISP_dockerized_repo}/current/docker-compose.yml"
 BACKUP_PATH="${MISP_dockerized_repo}/backup"
 ENABLE_FILE_DCSO_DOCKER_REGISTRY="${MISP_dockerized_repo}/config/use_secure_DCSO_Docker_Registry.enable"
 ENABLE_FILE_SMIME="${MISP_dockerized_repo}/config/smime/smime.enable"
@@ -82,9 +86,9 @@ function default_container_version() {
   # Start Global Variable Section
   ############################################
   [ -z "$MISP_CONTAINER_TAG" ] && MISP_CONTAINER_TAG="2.4.97-debian"
-  [ -z "$PROXY_CONTAINER_TAG" ] && PROXY_CONTAINER_TAG="1.2-alpine"
-  [ -z "$ROBOT_CONTAINER_TAG" ] && ROBOT_CONTAINER_TAG="2.0-debian"
-  [ -z "$MISP_MODULES_CONTAINER_TAG" ] && MISP_MODULES_CONTAINER_TAG="1.1-debian"
+  [ -z "$PROXY_CONTAINER_TAG" ] && PROXY_CONTAINER_TAG="1"
+  [ -z "$ROBOT_CONTAINER_TAG" ] && ROBOT_CONTAINER_TAG="2"
+  [ -z "$MISP_MODULES_CONTAINER_TAG" ] && MISP_MODULES_CONTAINER_TAG="1"
   ###
   MISP_TAG=$(echo $MISP_CONTAINER_TAG|cut -d - -f 1)
   ######################  END GLOBAL  ###########
@@ -477,12 +481,12 @@ networks:
       - subnet: "${DOCKER_NETWORK}"
 
 services:
-  misp-db:
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+  # misp-db:
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+  #     MYSQL_DATABASE: ${MYSQL_DATABASE}
+  #     MYSQL_USER: ${MYSQL_USER}
+  #     MYSQL_PASSWORD: ${MYSQL_PASSWORD}
 
   misp-modules:
     image: ${DOCKER_REGISTRY}/misp-dockerized-misp-modules:${MISP_MODULES_CONTAINER_TAG}
@@ -499,14 +503,26 @@ services:
     #   - "8080:80" # DEBUG only
     #   - "8443:443" # DEBUG only
     environment:
+      # DB
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      # PROXY
       HTTP_PROXY: ${HTTP_PROXY}
       HTTPS_PROXY: ${HTTPS_PROXY}
       NO_PROXY: ${NO_PROXY}
+      # POSTFIX
       SENDER_ADDRESS: ${SENDER_ADDRESS}
+      HOSTNAME: ${myHOSTNAME}
+      DOMAIN: ${DOMAIN}
+      HTTP_SERVERADMIN: ${HTTP_SERVERADMIN}
+      RELAYHOST: ${RELAYHOST}
+      RELAY_USER: ${RELAY_USER}
+      RELAY_PASSWORD: ${RELAY_PASSWORD}
+      DOCKER_NETWORK: ${DOCKER_NETWORK}
+      DEBUG_PEER: ${DEBUG_PEER}
+      # PHP
       PHP_MEMORY: ${PHP_MEMORY}
     ${LOG_SETTINGS}
 
@@ -514,6 +530,8 @@ services:
   misp-proxy:
     image: ${DOCKER_REGISTRY}/misp-dockerized-proxy:${PROXY_CONTAINER_TAG}
     environment:
+      HOSTNAME: ${myHOSTNAME}
+      HTTP_SERVERADMIN: ${HTTP_SERVERADMIN}
       HTTP_PROXY: ${HTTP_PROXY}
       HTTPS_PROXY: ${HTTPS_PROXY}
       NO_PROXY: ${NO_PROXY}
@@ -527,7 +545,8 @@ services:
       NO_PROXY: ${NO_PROXY}
     volumes:
     # Github Repository
-    - ${MISP_dockerized_repo}/current:/srv/MISP-dockerized  
+    - ${MISP_dockerized_repo}:/srv/MISP-dockerized
+    #- ${MISP_dockerized_repo}/current/playbooks:/etc/ansible/playbooks/robot-playbook:ro
     ${LOG_SETTINGS}
 
 EOF
@@ -562,7 +581,7 @@ DOCKER_REGISTRY=${DOCKER_REGISTRY}
 #POSTFIX_CONTAINER_TAG=${POSTFIX_CONTAINER_TAG}
 #MISP_CONTAINER_TAG=${MISP_CONTAINER_TAG}
 #PROXY_CONTAINER_TAG=${PROXY_CONTAINER_TAG}
-#ROBOT_CONTAINER_TAG=${ROBOT_CONTAINER_TAG}
+ROBOT_CONTAINER_TAG=${ROBOT_CONTAINER_TAG}
 #MISP_MODULES_CONTAINER_TAG=${MISP_MODULES_CONTAINER_TAG}
 # ------------------------------
 # Proxy Configuration

@@ -15,7 +15,7 @@ fi
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 COMPOSE_FILE=${SCRIPT_DIR}/../docker-compose.yml
 #source ${SCRIPT_DIR}/../.env
-source /srv/misp-dockerized/.env
+source /srv/MISP-dockerized/config/config.env
 
 
 
@@ -54,7 +54,7 @@ function backup() {
       ;;#&
       #config|all)
       #  echo "Backup config files at ${DOCKER_BACKUPDIR}/misp-${DATE}"
-      #  tar -cvpzf ${DOCKER_BACKUPDIR}/backup_config.tar.gz /srv/misp-dockerized/config
+      #  tar -cvpzf ${DOCKER_BACKUPDIR}/backup_config.tar.gz /srv/MISP-dockerized/config
       #;;
     esac
     shift
