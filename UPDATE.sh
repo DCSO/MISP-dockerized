@@ -7,7 +7,7 @@
     [ "$CURRENT_CONTAINER" == "" ] && echo "Sorry, no Upgrade is possible. The reason is there is no running misp-server. I exit now." && docker ps && exit
 
 # check if user has an installed version
-[ ! -L ./current ] && echo "Sorry, no Update is possible. The reason is no 'current' directory exists. I exit now" && exit
+[ ! -L ./current ] && echo "Sorry, no Update is possible. The reason is no 'current' directory exists. I exit now." && exit
 
 
 ###### UPDATE

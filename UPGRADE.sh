@@ -33,7 +33,7 @@ then
         EARLIER_1_0_0=no
         echo "no 'current' directory exists an direct upgrade is not possible."
         read -p "Do you upgrade from an version earlier than 1.0.0? [DEFAULT: $EARLIER_1_0_0]: " -ei $EARLIER_1_0_0  EARLIER_1_0_0
-        [ $EARLIER_1_0_0 == "no"] && echo "There is a bug, please open a ticket on https://github.com/DCSO/MISP-dockerized/issues and report the Error. Now i will exit." && exit
+        [ "$EARLIER_1_0_0" == "no" ] && echo "There is a bug, please open a ticket on https://github.com/DCSO/MISP-dockerized/issues and report the Error. Now i will exit." && exit
     fi
 
     # [2] make a backup
@@ -42,13 +42,13 @@ then
     
     # [3] choose a new version
     touch UPGRADE_STEP_1
-    FOR_NEW_INSTALL.sh
+    ./FOR_NEW_INSTALL.sh
 
 # if the UPGRADE_STEP_1 file not exists go to else
 else
 
     # check if directory exists
-    [ ! -d current ] && echo "There is a bug, please open a ticket on https://github.com/DCSO/MISP-dockerized/issues and report the Error. Now i will exit." && exit
+    [ ! -d current ] && echo "There is a bug, please open a ticket on https://github.com/DCSO/MISP-dockerized/issues and report the Error. Now I will exit." && exit
     
     # Restore Data
     OPTION=""
