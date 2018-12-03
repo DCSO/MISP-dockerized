@@ -48,7 +48,7 @@ before_script:
   - pip install --no-cache-dir docker-compose
   - docker-compose -v
   # switch to current VERSION
-  - ln -s $CURRENT_VERSION/ current
+  # - ln -s $CURRENT_VERSION/ current
   # download latest images from registry
   - $MYmake_travis pull-latest REPOURL=${REPOURL}
 
@@ -63,7 +63,8 @@ env_test_only:
   #- cd $FOLDER;           # change directory 
   #- make build-config     # we need a .env file therefore we need to build the config before we pull the images.
   #- docker-compose pull   # pull images, because docker login is only valid for the host not for the misp-robot
-  - make -C $FOLDER install
+  - ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
+  #- make -C $FOLDER install
 
 
 # On dev Branch: Build Environment and Test it with our own Test Framework
