@@ -62,7 +62,7 @@ include:
   #- cd $FOLDER;           # change directory 
   #- make build-config     # we need a .env file therefore we need to build the config before we pull the images.
   #- docker-compose pull   # pull images, because docker login is only valid for the host not for the misp-robot
-  - bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
+  - /bin/bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
   - $MYmake_travis pull-latest REPOURL=${REPOURL}
   - make -C $FOLDER install
 
@@ -73,7 +73,7 @@ include:
   only:
   - dev
   script:
-  - bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
+  - /bin/bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
   - $MYmake_travis pull-latest REPOURL=${REPOURL}
   - make -C $FOLDER install
   - $MYmake_travis test
@@ -89,7 +89,7 @@ include:
   only: 
   - master
   script:
-  - bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
+  - /bin/bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
   - $MYmake_travis pull-latest REPOURL=${REPOURL}
   - make -C $FOLDER install
   # prepare retagging
