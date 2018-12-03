@@ -59,8 +59,11 @@ before_script:
   - master
   - dev
   script:
+  # Choose the Environment Version
   - bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
+  # Pull all latest tagged container
   - make -C $FOLDER/.travis/ pull-latest REPOURL=${REPOURL}
+  # Deploy Environment
   - make -C $FOLDER install
 
 
@@ -70,8 +73,9 @@ before_script:
   only:
   - dev
   script:
+  # Choose the Environment Version
   - bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
-  # Pull all Container
+  # Pull all latest tagged container
   - make -C $FOLDER/.travis/ pull-latest REPOURL=${REPOURL}
   # Deploy Environment
   - make -C $FOLDER install
