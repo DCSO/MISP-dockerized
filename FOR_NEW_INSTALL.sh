@@ -101,8 +101,9 @@ fi
         [ -L $PWD/current/config ] && echo "[OK] delete symlink 'current/config'" && rm $PWD/current/config
         echo "[OK] create symlink 'current/config' " && ln -s "../config" ./current/
 
-        echo "start installation..."
-        sleep 1
-        make -C current install
+
+        [ "$CI" == true ] || echo "start installation..."
+        [ "$CI" == true ] || sleep 1
+        [ "$CI" == true ] || make -C current install
 
     fi
