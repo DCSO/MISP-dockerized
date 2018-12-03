@@ -73,9 +73,8 @@ include:
   only:
   - dev
   script:
-  - cd $FOLDER;           # change directory 
-  - make build-config     # we need a .env file therefore we need to build the config before we pull the images.
-  - docker-compose pull   # pull images, because docker login is only valid for the host not for the misp-robot
+  - ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
+  - $MYmake_travis pull-latest REPOURL=${REPOURL}
   - make -C $FOLDER install
   - $MYmake_travis test
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
@@ -90,13 +89,9 @@ include:
   only: 
   - master
   script:
-  - cd $FOLDER;
-  - make build-config
-  - docker-compose pull
-  # start deploy script
-  - make install
-  # test if MISP is ready
-  - $MYmake_travis test
+  - ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
+  - $MYmake_travis pull-latest REPOURL=${REPOURL}
+  - make -C $FOLDER pull
   # prepare retagging
   - export server_tag=$(cat $ENV_FOLDER.env |grep MISP_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   - export proxy_tag=$(cat $ENV_FOLDER.env |grep PROXY_CONTAINER|cut -d = -f 2|sed 's,....$,,')
