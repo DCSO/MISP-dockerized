@@ -77,7 +77,7 @@ function check_if_vars_exists() {
   [ -z "${USE_SMIME}" ] && QUERY_SMIME="yes"
   # LOG_SETTINGS
   [ -z "${USE_SYSLOG}" ] && QUERY_LOG_SETTINGS="yes"
-  [ ! "${USE_SYSLOG}" == "no" ]  && [ -z "${SYSLOG_REMOTE_HOST}" ] && QUERY_LOG_SETTINGS="yes"
+  [ ! "${USE_SYSLOG}" == "no" ]  && [ -z "${SYSLOG_REMOTE_HOST}" ] && SYSLOG_REMOTE_HOST="127.0.0.1" && QUERY_LOG_SETTINGS="yes"
   echo "...done"
 }
 # Function for the Container Versions
@@ -264,7 +264,7 @@ function query_misp_settings(){
   # read -p "Which MISP Encoding should we use [default: utf8]: " -ei $MISP_encoding  MISP_encoding
   read -p "If you do a fresh Installation, you should have a Salt. Is this SALT ok [DEFAULT: generated]: " -ei $MISP_SALT  MISP_SALT
   read -p "Do you require the analyse column at List Events page? [DEFAULT: no]: " -ei $ADD_ANALYZE_COLUMN  ADD_ANALYZE_COLUMN
-
+  read -p "Which sender mailadress should MISP use [DEFAULT: $SENDER_ADDRESS]: " -ei "$SENDER_ADDRESS" SENDER_ADDRESS
 }
 
 # Questions for Postfix Mailer
@@ -386,24 +386,23 @@ function query_log_settings(){
          #syslog-address: "unix:///tmp/syslog.sock"
     [ ! $SYSLOG_REMOTE_HOST == "no" ] && SYSLOG_REMOTE_LINE="syslog-address: tcp://$SYSLOG_REMOTE_HOST"
 
-    LOG_SETTINGS='
-    ### LOG DRIVER ###
-     # for more Information: https://docs.docker.com/compose/compose-file/#logging + https://docs.docker.com/config/containers/logging/syslog/
+    LOG_SETTINGS='### LOG DRIVER ###
+    # for more Information: https://docs.docker.com/compose/compose-file/#logging + https://docs.docker.com/config/containers/logging/syslog/
     logging:
-       driver: syslog
-       options:
-         $SYSLOG_REMOTE_LINE
-         # For Facility: https://tools.ietf.org/html/rfc5424#section-6.2.1
-         #syslog-facility: "local7"
-         #syslog-tls-cert: "/etc/ca-certificates/custom/cert.pem"
-         #syslog-tls-key: "/etc/ca-certificates/custom/key.pem"
-         #syslog-tls-skip-verify: "true"
-         # For Tags: https://docs.docker.com/config/containers/logging/log_tags/
-         tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
-         #syslog-format: "rfc5424micro"
-         #labels: "misp-dockerized"
-         #env: "os,customer"
-         #env-regex: "^(os\|customer)"
+      driver: syslog
+      options:
+        '$SYSLOG_REMOTE_LINE'
+        # For Facility: https://tools.ietf.org/html/rfc5424#section-6.2.1
+        #syslog-facility: "local7"
+        #syslog-tls-cert: "/etc/ca-certificates/custom/cert.pem"
+        #syslog-tls-key: "/etc/ca-certificates/custom/key.pem"
+        #syslog-tls-skip-verify: "true"
+        # For Tags: https://docs.docker.com/config/containers/logging/log_tags/
+        tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        #syslog-format: "rfc5424micro"
+        #labels: "misp-dockerized"
+        #env: "os,customer"
+        #env-regex: "^(os\|customer)"
     '
 
     USE_SYSLOG="yes"
