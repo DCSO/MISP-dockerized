@@ -1,23 +1,17 @@
 env_test_only 0.1.2:
   variables:
     CURRENT_VERSION: 0.1.2
-  extends: env_test_only
-  only:
-    changes:
-      - 0.1.2/*
+  extends: .env_test_only
+  # only:
+  #   changes:
+  #     - 0.1.2/*
 
 long_test 0.1.2:
   variables:
     CURRENT_VERSION: 0.1.2
-  extends: long_test
-  only:
-    changes:
-      - 0.1.2/*
+  extends: .long_test
 
 push_productive_images 0.1.2:
   variables:
     CURRENT_VERSION: 0.1.2
-  extends: push_productive_images
-  only:
-    changes:
-      - 0.1.2/*
+  extends: .push_productive_images

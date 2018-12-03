@@ -41,7 +41,7 @@ include:
   
 
 
-before_script:
+.before_script:
   - apk add --no-cache make bash sudo git curl python py2-pip coreutils grep
   - docker login -u "$INTERNAL_REGISTRY_USER" -p "$INTERNAL_REGISTRY_PW" "$INTERNAL_REGISTRY_HOST"
   # https://stackoverflow.com/questions/42295457/using-docker-compose-in-a-gitlab-ci-pipeline
@@ -50,11 +50,10 @@ before_script:
   # switch to current VERSION
   # - ln -s $CURRENT_VERSION/ current
   # download latest images from registry
-  - $MYmake_travis pull-latest REPOURL=${REPOURL}
 
 
 # On all other pull requests and branches exclude dev and master: Build Environment, but do nothing more. No tests. Tests with our Test Framework are only done in the dev branch.
-env_test_only:
+.env_test_only:
   stage: build
   except:
   - master
@@ -64,11 +63,12 @@ env_test_only:
   #- make build-config     # we need a .env file therefore we need to build the config before we pull the images.
   #- docker-compose pull   # pull images, because docker login is only valid for the host not for the misp-robot
   - ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
-  #- make -C $FOLDER install
+  - $MYmake_travis pull-latest REPOURL=${REPOURL}
+  - make -C $FOLDER install
 
 
 # On dev Branch: Build Environment and Test it with our own Test Framework
-long_test:
+.long_test:
   stage: build
   only:
   - dev
@@ -85,7 +85,7 @@ long_test:
 
 
 # On MASTER Branch: Build Environment + retag Images to remove "-dev" tag
-push_productive_images:
+.push_productive_images:
   stage: deploy
   only: 
   - master
