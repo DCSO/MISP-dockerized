@@ -1,9 +1,11 @@
 #/bin/bash
-
 set -e
 
+# full path <version>/scripts
+SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
+
 # check requirements
-./requirements.sh
+$SCRIPTPATH/requirements.sh
 echo "### REQUIREMENTS CHECK FINISHED ###"
 
 # Create an array with all folder
