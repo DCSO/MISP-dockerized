@@ -16,7 +16,7 @@ variables:
   # INTERNAL_REGISTRY_HOST
   # INTERNAL_REGISTRY_USER
   # INTERNAL_REGISTRY_PW
-  CURRENT_VERSION: "0.3.4"
+  CURRENT_VERSION: "1.0.0"
   DOCKER_COMPOSE_VERSION: "1.22.0"
   FOLDER: "./current"
   ENV_OPTION: "$FOLDER/"
@@ -59,11 +59,8 @@ before_script:
   - master
   - dev
   script:
-  #- cd $FOLDER;           # change directory 
-  #- make build-config     # we need a .env file therefore we need to build the config before we pull the images.
-  #- docker-compose pull   # pull images, because docker login is only valid for the host not for the misp-robot
   - bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
-  - $MYmake_travis pull-latest REPOURL=${REPOURL}
+  - make -C $FOLDER/.travis/ pull-latest REPOURL=${REPOURL}
   - make -C $FOLDER install
 
 
@@ -74,9 +71,12 @@ before_script:
   - dev
   script:
   - bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
-  - $MYmake_travis pull-latest REPOURL=${REPOURL}
+  # Pull all Container
+  - make -C $FOLDER/.travis/ pull-latest REPOURL=${REPOURL}
+  # Deploy Environment
   - make -C $FOLDER install
-  - $MYmake_travis test
+  # Testing
+  - make -C $FOLDER/.travis/ test
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
   # artifacts:
   #   reports:
