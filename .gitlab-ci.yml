@@ -41,7 +41,7 @@ include:
   
 
 
-.before_script:
+before_script:
   - apk add --no-cache make bash sudo git curl python py2-pip coreutils grep
   - docker login -u "$INTERNAL_REGISTRY_USER" -p "$INTERNAL_REGISTRY_PW" "$INTERNAL_REGISTRY_HOST"
   # https://stackoverflow.com/questions/42295457/using-docker-compose-in-a-gitlab-ci-pipeline
@@ -62,7 +62,7 @@ include:
   #- cd $FOLDER;           # change directory 
   #- make build-config     # we need a .env file therefore we need to build the config before we pull the images.
   #- docker-compose pull   # pull images, because docker login is only valid for the host not for the misp-robot
-  - /bin/bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
+  - ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
   - $MYmake_travis pull-latest REPOURL=${REPOURL}
   - make -C $FOLDER install
 
@@ -73,7 +73,7 @@ include:
   only:
   - dev
   script:
-  - /bin/bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
+  - ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
   - $MYmake_travis pull-latest REPOURL=${REPOURL}
   - make -C $FOLDER install
   - $MYmake_travis test
@@ -89,7 +89,7 @@ include:
   only: 
   - master
   script:
-  - /bin/bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
+  - ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
   - $MYmake_travis pull-latest REPOURL=${REPOURL}
   - make -C $FOLDER install
   # prepare retagging
