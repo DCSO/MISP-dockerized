@@ -46,6 +46,11 @@ before_script:
   # https://stackoverflow.com/questions/42295457/using-docker-compose-in-a-gitlab-ci-pipeline
   - pip3 install --no-cache-dir docker-compose
   - docker-compose -v
+  - echo "$INTERNAL_REGISTRY_PW"| docker login -u "$INTERNAL_REGISTRY_USER" "$INTERNAL_REGISTRY_HOST" --password-stdin
+  # Choose the Environment Version
+  - bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
+  # Pull all latest tagged container
+  - make -C $FOLDER/.travis/ pull-latest REPOURL=${REPOURL}
 
 # On all other pull requests and branches exclude dev and master: Build Environment, but do nothing more. No tests. Tests with our Test Framework are only done in the dev branch.
 .env_test_only:
@@ -54,11 +59,6 @@ before_script:
   - master
   - dev
   script:
-  - echo "$INTERNAL_REGISTRY_PW"| docker login -u "$INTERNAL_REGISTRY_USER" "$INTERNAL_REGISTRY_HOST" --password-stdin
-  # Choose the Environment Version
-  - bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
-  # Pull all latest tagged container
-  - make -C $FOLDER/.travis/ pull-latest REPOURL=${REPOURL}
   # Deploy Environment
   - make -C $FOLDER install
 
@@ -68,12 +68,8 @@ before_script:
   stage: build
   only:
   - dev
+  allow_failure: true
   script:
-  - echo "$INTERNAL_REGISTRY_PW"| docker login -u "$INTERNAL_REGISTRY_USER" "$INTERNAL_REGISTRY_HOST" --password-stdin
-  # Choose the Environment Version
-  - bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
-  # Pull all latest tagged container
-  - make -C $FOLDER/.travis/ pull-latest REPOURL=${REPOURL}
   - make -C $FOLDER build-config
   - cd $FOLDER; docker-compose pull; cd ..
   # Deploy Environment
@@ -92,16 +88,12 @@ before_script:
   only: 
   - master
   script:
-  - echo "$INTERNAL_REGISTRY_PW"| docker login -u "$INTERNAL_REGISTRY_USER" "$INTERNAL_REGISTRY_HOST" --password-stdin
-  - bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
-  - $MYmake_travis pull-latest REPOURL=${REPOURL}
   - make -C $FOLDER install
   # prepare retagging
   - export server_tag=$(cat $ENV_FOLDER.env |grep MISP_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   - export proxy_tag=$(cat $ENV_FOLDER.env |grep PROXY_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   - export robot_tag=$(cat $ENV_FOLDER.env |grep ROBOT_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export postfix_tag=$(cat $ENV_FOLDER.env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export postfix_tag=$(cat $ENV_FOLDER.env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  #- export postfix_tag=$(cat $ENV_FOLDER.env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   - export modules_tag=$(cat $ENV_FOLDER.env |grep MISP_MODULES_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   - export db_tag=$(cat $ENV_FOLDER.env |grep DB_CONTAINER_TAG|cut -d = -f 2|sed 's,....$,,')
   - export redis_tag=$(cat $ENV_FOLDER.env |grep REDIS_CONTAINER_TAG|cut -d = -f 2|sed 's,....$,,')
