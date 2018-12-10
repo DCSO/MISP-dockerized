@@ -14,7 +14,10 @@ env:
   - DOCKER_COMPOSE_OPTION="-f $FOLDERdocker-compose"
   - makefile_travis="make -C $FOLDER.travis/"
   matrix:
+  - VERSION=0.1.2
+  - VERSION=0.2.0
   - VERSION=0.3.4
+  - VERSION=1.0.0
 
 before_install:
   # create current directory
