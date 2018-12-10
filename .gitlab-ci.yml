@@ -60,8 +60,11 @@ before_script:
   - dev
   script:
   # Deploy Environment
-  - make -C $FOLDER install
-
+  - make -C $FOLDER build-config
+  - cd $FOLDER; docker-compose pull; cd ..
+  # Deploy Environment
+  - make -C $FOLDER deploy
+  - docker ps -a
 
 # On dev Branch: Build Environment and Test it with our own Test Framework
 .long_test:
@@ -74,6 +77,7 @@ before_script:
   - cd $FOLDER; docker-compose pull; cd ..
   # Deploy Environment
   - make -C $FOLDER deploy
+  - docker ps -a
   # Testing
   - make -C $FOLDER/.travis/ test
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
@@ -88,7 +92,11 @@ before_script:
   only: 
   - master
   script:
-  - make -C $FOLDER install
+  - make -C $FOLDER build-config
+  - cd $FOLDER; docker-compose pull; cd ..
+  # Deploy Environment
+  - make -C $FOLDER deploy
+  - docker ps -a
   # prepare retagging
   - export server_tag=$(cat $ENV_FOLDER.env |grep MISP_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   - export proxy_tag=$(cat $ENV_FOLDER.env |grep PROXY_CONTAINER|cut -d = -f 2|sed 's,....$,,')
