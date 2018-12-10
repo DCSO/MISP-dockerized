@@ -43,10 +43,10 @@ include:
 
 
 before_script:
-  - apk add --no-cache make bash sudo git curl python py2-pip coreutils grep
-  - docker login -u "$INTERNAL_REGISTRY_USER" -p "$INTERNAL_REGISTRY_PW" "$INTERNAL_REGISTRY_HOST"
+  - apk add --no-cache make bash sudo git curl python py2-pip coreutils grep python3
+  - echo "$INTERNAL_REGISTRY_PW"| docker login -u "$INTERNAL_REGISTRY_USER" "$INTERNAL_REGISTRY_HOST" --password-stdin
   # https://stackoverflow.com/questions/42295457/using-docker-compose-in-a-gitlab-ci-pipeline
-  - pip install --no-cache-dir docker-compose
+  - pip3 install --no-cache-dir docker-compose
   - docker-compose -v
   # switch to current VERSION
   # - ln -s $CURRENT_VERSION/ current
