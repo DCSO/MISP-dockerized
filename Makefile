@@ -1,13 +1,13 @@
 
 
 upgrade:
-	./UPGRADE.sh
+	bash ./UPGRADE.sh
 
 update:
-	./UPDATE
+	bash ./UPDATE
 
 install:
-	./FOR_NEW_INSTALL.sh
+	bash ./FOR_NEW_INSTALL.sh
 
 new: install
 
