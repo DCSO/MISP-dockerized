@@ -21,3 +21,27 @@ push_productive_images 1.0.0:
   # only:
   #   changes:
   #     - 1.0.0/*
+
+scan proxy:
+  variables:
+    CI_CONTAINER_NAME: misp-dockerized-proxy
+    #CI_APPLICATION_TAG: 
+  extends: .scan
+
+scan robot:
+  variables:
+    CI_CONTAINER_NAME: misp-dockerized-robot
+    #CI_APPLICATION_TAG: 
+  extends: .scan
+
+scan server:
+  variables:
+    CI_CONTAINER_NAME: misp-dockerized-server
+    #CI_APPLICATION_TAG: 
+  extends: .scan
+
+scan modules:
+  variables:
+    CI_CONTAINER_NAME: misp-dockerized-misp-modules
+    #CI_APPLICATION_TAG: 
+  extends: .scan

@@ -29,8 +29,9 @@ tag:
 
 
 test:
-	#echo "$(curl -S -k https://localhost/users/login)"|grep Login
-	true
+	@echo "################		Start Tests		###########################"
+	@./test.sh	
+	@cat ./reports/results.xml
 
 push:
 	./push.sh $(REPOURL)/misp-dockerized-server $(server_tag);

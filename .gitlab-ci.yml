@@ -5,6 +5,7 @@ services:
 
 stages:
 - build
+- scan
 - deploy
 
 variables:
@@ -82,9 +83,9 @@ before_script:
   # Testing
   - make -C $FOLDER/.travis/ test
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
-  # artifacts:
-  #   reports:
-  #     junit: $FOLDER/.travis/test_report.xml
+  artifacts:
+    reports:
+      junit: $FOLDER/.travis/reports/*.xml
 
 
 # On MASTER Branch: Build Environment + retag Images to remove "-dev" tag
@@ -116,19 +117,24 @@ before_script:
 
 
 # deactivated:
+# https://docs.gitlab.com/ee/ci/examples/container_scanning.html
+# https://docs.gitlab.com/ee/ci/yaml/README.html#artifactsreportscontainer_scanning
+# https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html
+# https://docs.gitlab.com/ee/ci/yaml/#artifactsreportscontainer_scanning-ultimate
+
 .container_scanning:
   stage: scan
-  image: docker:stable
+  #image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
     ## Define two new variables based on GitLab's CI/CD predefined variables
     ## https://docs.gitlab.com/ee/ci/variables/#predefined-variables-environment-variables
-    CI_CONTAINER_NAME: misp-dockerized-postfix
+    CI_CONTAINER_NAME: misp-dockerized-server
     CI_APPLICATION_REPOSITORY: $INTERNAL_REGISTRY_HOST/$CI_CONTAINER_NAME
     CI_APPLICATION_TAG: latest-dev
   allow_failure: true
   #services:
-    #- docker:stable-dind
+  #  - docker:stable-dind
   script:
     - docker run -d --name db arminc/clair-db:latest
     - docker run -p 6060:6060 --link db:postgres -d --name clair --restart on-failure arminc/clair-local-scan:v2.0.1
@@ -146,7 +152,5 @@ before_script:
     - while( ! wget -T 10 -q -O /dev/null http://localhost:6060/v1/namespaces ) ; do sleep 1 ; echo -n "." ; if [ $retries -eq 10 ] ; then echo " Timeout, aborting." ; exit 1 ; fi ; retries=$(($retries+1)) ; done
     - ./clair-scanner -c http://localhost:6060 --ip $(hostname -i) -r gl-container-scanning-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
   artifacts:
-    paths: [gl-container-scanning-report.json]
-
-
-
+    reports:
+      container_scanning: gl-container-scanning-report.json
