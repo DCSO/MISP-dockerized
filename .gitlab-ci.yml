@@ -74,6 +74,8 @@ before_script:
   - bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
   # Pull all latest tagged container
   - make -C $FOLDER/.travis/ pull-latest REPOURL=${REPOURL}
+  - make -C $FOLDER build-config
+  - cd $FOLDER; docker-compose pull; cd ..
   # Deploy Environment
   - make -C $FOLDER install
   # Testing

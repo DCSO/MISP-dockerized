@@ -3,7 +3,7 @@
 #
 .PHONY:  push test test-travis tag pull-all pull-latest
 
-CONTAINER := robot server proxy postfix misp-modules
+CONTAINER := robot server proxy misp-modules
 REPOURL := dcso
 
 
@@ -21,7 +21,6 @@ tag:
 	./tagging.sh $(REPOURL)/misp-dockerized-server $(server_tag);
 	./tagging.sh $(REPOURL)/misp-dockerized-proxy $(proxy_tag);
 	./tagging.sh $(REPOURL)/misp-dockerized-robot $(robot_tag);
-	./tagging.sh $(REPOURL)/misp-dockerized-postfix $(postfix_tag);
 	./tagging.sh $(REPOURL)/misp-dockerized-misp-modules $(modules_tag);
 	@echo "###########################################"
 	docker images
@@ -37,6 +36,5 @@ push:
 	./push.sh $(REPOURL)/misp-dockerized-server $(server_tag);
 	./push.sh $(REPOURL)/misp-dockerized-proxy $(proxy_tag);
 	./push.sh $(REPOURL)/misp-dockerized-robot $(robot_tag);
-	./push.sh $(REPOURL)/misp-dockerized-postfix $(postfix_tag);
 	./push.sh $(REPOURL)/misp-dockerized-misp-modules $(modules_tag);
 

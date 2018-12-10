@@ -30,8 +30,8 @@ fi
 git clone https://github.com/DCSO/MISP-dockerized-testbench.git $GIT_FOLDER
 
 # install python requirements
-python3 -m venv venv
-source venv/bin/activate
+#python3 -m venv venv
+#source venv/bin/activate
 pip3 install --no-cache-dir -r $GIT_FOLDER/requirements.txt
 
 
