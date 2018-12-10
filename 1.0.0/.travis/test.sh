@@ -12,6 +12,7 @@ then
     [ -z $(which sudo) ] && apk add --no-cache sudo 
     echo
 elif [ -z ! $(which apt-get) ]
+then
     # apt-get is available (mostly debian or ubuntu)
     apt-get update
     [ -z $(which git) ] && apt-get -y install git 
