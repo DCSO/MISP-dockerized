@@ -3,10 +3,27 @@
 GIT_FOLDER="MISP-dockerized-testbench"
 
 # install dependencies for ALPINE!!!
-[ -z $(which git) ] && apk add --no-cache git 
-[ -z $(which bash) ] && apk add --no-cache bash
-[ -z $(which make) ] && apk add --no-cache make 
-[ -z $(which sudo) ] && apk add --no-cache sudo 
+if [ -z ! $(which apk)  ]
+then
+    # apk is avaialable (mostly alpine)
+    [ -z $(which git) ] && apk add --no-cache git 
+    [ -z $(which bash) ] && apk add --no-cache bash
+    [ -z $(which make) ] && apk add --no-cache make 
+    [ -z $(which sudo) ] && apk add --no-cache sudo 
+    echo
+elif [ -z ! $(which apt-get) ]
+    # apt-get is available (mostly debian or ubuntu)
+    apt-get update
+    [ -z $(which git) ] && apt-get -y install git 
+    [ -z $(which bash) ] && apt-get -y install bash
+    [ -z $(which make) ] && apt-get -y install make 
+    [ -z $(which python3) ] && apt-get -y install python3 
+    [ -z $(which pip3) ] && apt-get -y install python3-pip 
+    [ -z $(which sudo) ] && apt-get -y install sudo
+    apt-get -y install python3-venv 
+    apt-get autoremove; apt-get clean
+    echo
+fi
 
 # clone the repository
 git clone https://github.com/DCSO/MISP-dockerized-testbench.git $GIT_FOLDER
@@ -22,7 +39,7 @@ pip3 install --no-cache-dir -r $GIT_FOLDER/requirements.txt
 
 
 # Init MISP and create user
-[ -z $AUTH_KEY ] && export AUTH_KEY=docker exec misp-server bash -c 'sudo -E /var/www/MISP/app/Console/cake userInit -q'
+[ -z $AUTH_KEY ] && export AUTH_KEY="$(docker exec misp-server bash -c 'sudo -E /var/www/MISP/app/Console/cake userInit -q')"
 
 
 
