@@ -3,7 +3,7 @@
 GIT_FOLDER="MISP-dockerized-testbench"
 
 # install dependencies for ALPINE!!!
-if [ -z ! $(which apk)  ]
+if [ ! -z "$(which apk)"  ]
 then
     # apk is avaialable (mostly alpine)
     [ -z $(which git) ] && apk add --no-cache git 
@@ -11,7 +11,7 @@ then
     [ -z $(which make) ] && apk add --no-cache make 
     [ -z $(which sudo) ] && apk add --no-cache sudo 
     echo
-elif [ -z ! $(which apt-get) ]
+elif [ ! -z "$(which apt-get)"  ]
 then
     # apt-get is available (mostly debian or ubuntu)
     apt-get update
