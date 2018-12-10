@@ -14,15 +14,16 @@ then
 elif [ ! -z "$(which apt-get)"  ]
 then
     # apt-get is available (mostly debian or ubuntu)
-    apt-get update
-    [ -z $(which git) ] && apt-get -y install git 
-    [ -z $(which bash) ] && apt-get -y install bash
-    [ -z $(which make) ] && apt-get -y install make 
-    [ -z $(which python3) ] && apt-get -y install python3 
-    [ -z $(which pip3) ] && apt-get -y install python3-pip 
+    sudo apt-get update
     [ -z $(which sudo) ] && apt-get -y install sudo
-    apt-get -y install python3-venv 
-    apt-get autoremove; apt-get clean
+    [ -z $(which git) ] && sudo apt-get -y install git 
+    [ -z $(which bash) ] && sudo apt-get -y install bash
+    [ -z $(which make) ] && sudo apt-get -y install make 
+    [ -z $(which python3) ] && sudo apt-get -y install python3 
+    [ -z $(which pip3) ] && sudo apt-get -y install python3-pip 
+    
+    sudo apt-get -y install python3-venv 
+    sudo apt-get autoremove; sudo apt-get clean
     echo
 fi
 
