@@ -73,7 +73,7 @@ before_script:
   - make -C $FOLDER build-config
   - cd $FOLDER; docker-compose pull; cd ..
   # Deploy Environment
-  - make -C $FOLDER install
+  - make -C $FOLDER deploy
   # Testing
   - make -C $FOLDER/.travis/ test
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
@@ -141,8 +141,8 @@ before_script:
     #- retries=0
     - docker ps -a
     - echo "Waiting for clair daemon to start"
-    - while( ! wget -T 10 -q -O /dev/null http://localhost:6060/v1/namespaces ) ; do sleep 1 ; echo -n "." ; if [ $retries -eq 10 ] ; then echo " Timeout, aborting." ; exit 1 ; fi ; retries=$(($retries+1)) ; done
-    - ./clair-scanner -c http://localhost:6060 --ip $(hostname -i) -r gl-container-scanning-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
+    - bash -c 'while( ! wget -T 10 -q -O /dev/null http://localhost:6060/v1/namespaces ) ; do sleep 1 ; echo -n "." ; if [ $retries -eq 10 ] ; then echo " Timeout, aborting." ; exit 1 ; fi ; retries=$(($retries+1)) ; done'
+    - bash -c ''./clair-scanner -c http://localhost:6060 --ip $(hostname -i) -r gl-container-scanning-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true'
   artifacts:
     reports:
       container_scanning: gl-container-scanning-report.json

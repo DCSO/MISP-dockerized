@@ -6,24 +6,25 @@ GIT_FOLDER="MISP-dockerized-testbench"
 if [ ! -z "$(which apk)"  ]
 then
     # apk is avaialable (mostly alpine)
-    [ -z $(which git) ] && apk add --no-cache git 
-    [ -z $(which bash) ] && apk add --no-cache bash
-    [ -z $(which make) ] && apk add --no-cache make 
-    [ -z $(which sudo) ] && apk add --no-cache sudo 
+    [ -z $(which git) ] && echo "add git..." && apk add --no-cache git 
+    [ -z $(which bash) ] && echo "add bash..." && apk add --no-cache bash
+    [ -z $(which make) ] && echo "add make..." && apk add --no-cache make 
+    [ -z $(which sudo) ] && echo "add sudo..." && apk add --no-cache sudo 
     echo
 elif [ ! -z "$(which apt-get)"  ]
 then
     # apt-get is available (mostly debian or ubuntu)
     sudo apt-get update
-    [ -z $(which sudo) ] && apt-get -y install sudo
-    [ -z $(which git) ] && sudo apt-get -y install git 
-    [ -z $(which bash) ] && sudo apt-get -y install bash
-    [ -z $(which make) ] && sudo apt-get -y install make 
-    [ -z $(which python3) ] && sudo apt-get -y install python3 
-    [ -z $(which pip3) ] && sudo apt-get -y install python3-pip 
+    [ -z $(which sudo) ] && echo "add sudo..." && apt-get -y install sudo
+    [ -z $(which git) ] && echo "add git..." && sudo apt-get -y install git 
+    [ -z $(which bash) ] && echo "add bash..." && sudo apt-get -y install bash
+    [ -z $(which make) ] && echo "add make..." && sudo apt-get -y install make 
+    [ -z $(which python3) ] && echo "add python3..." && sudo apt-get -y install python3 
+    [ -z $(which pip3) ] && echo "add python3-pip..." && sudo apt-get -y install python3-pip 
     
-    sudo apt-get -y install python3-venv 
-    sudo apt-get autoremove; sudo apt-get clean
+    echo "add python3-venv..." && sudo apt-get -y install python3-venv 
+    echo "autoremove..." && sudo apt-get autoremove; 
+    echo "clean..." && sudo apt-get clean
     echo
 fi
 
