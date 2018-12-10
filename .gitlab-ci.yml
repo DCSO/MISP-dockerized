@@ -18,7 +18,6 @@ variables:
   # INTERNAL_REGISTRY_USER
   # INTERNAL_REGISTRY_PW
   CURRENT_VERSION: "1.0.0"
-  DOCKER_COMPOSE_VERSION: "1.22.0"
   FOLDER: "./current"
   ENV_OPTION: "$FOLDER/"
   MYmake_travis: "make -C $FOLDER/.travis/"
@@ -44,14 +43,9 @@ include:
 
 before_script:
   - apk add --no-cache make bash sudo git curl python py2-pip coreutils grep python3
-  - echo "$INTERNAL_REGISTRY_PW"| docker login -u "$INTERNAL_REGISTRY_USER" "$INTERNAL_REGISTRY_HOST" --password-stdin
   # https://stackoverflow.com/questions/42295457/using-docker-compose-in-a-gitlab-ci-pipeline
   - pip3 install --no-cache-dir docker-compose
   - docker-compose -v
-  # switch to current VERSION
-  # - ln -s $CURRENT_VERSION/ current
-  # download latest images from registry
-
 
 # On all other pull requests and branches exclude dev and master: Build Environment, but do nothing more. No tests. Tests with our Test Framework are only done in the dev branch.
 .env_test_only:
@@ -60,6 +54,7 @@ before_script:
   - master
   - dev
   script:
+  - echo "$INTERNAL_REGISTRY_PW"| docker login -u "$INTERNAL_REGISTRY_USER" "$INTERNAL_REGISTRY_HOST" --password-stdin
   # Choose the Environment Version
   - bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
   # Pull all latest tagged container
@@ -74,6 +69,7 @@ before_script:
   only:
   - dev
   script:
+  - echo "$INTERNAL_REGISTRY_PW"| docker login -u "$INTERNAL_REGISTRY_USER" "$INTERNAL_REGISTRY_HOST" --password-stdin
   # Choose the Environment Version
   - bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
   # Pull all latest tagged container
@@ -94,6 +90,7 @@ before_script:
   only: 
   - master
   script:
+  - echo "$INTERNAL_REGISTRY_PW"| docker login -u "$INTERNAL_REGISTRY_USER" "$INTERNAL_REGISTRY_HOST" --password-stdin
   - bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
   - $MYmake_travis pull-latest REPOURL=${REPOURL}
   - make -C $FOLDER install
@@ -136,6 +133,7 @@ before_script:
   #services:
   #  - docker:stable-dind
   script:
+    - echo "$INTERNAL_REGISTRY_PW"| docker login -u "$INTERNAL_REGISTRY_USER" "$INTERNAL_REGISTRY_HOST" --password-stdin
     - docker run -d --name db arminc/clair-db:latest
     - docker run -p 6060:6060 --link db:postgres -d --name clair --restart on-failure arminc/clair-local-scan:v2.0.1
     - docker ps
