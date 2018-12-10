@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 GIT_FOLDER="MISP-dockerized-testbench"
 
@@ -31,26 +32,24 @@ fi
 # clone the repository
 git clone https://github.com/DCSO/MISP-dockerized-testbench.git $GIT_FOLDER
 
+docker ps
+
 # install python requirements
 #python3 -m venv venv
 #source venv/bin/activate
-pip3 install --no-cache-dir -r $GIT_FOLDER/requirements.txt
+echo "pip3 install --no-cache-dir -r $GIT_FOLDER/requirements.txt" && pip3 install --no-cache-dir -r $GIT_FOLDER/requirements.txt
 
-
-# generate report folder
+# generate report foldergit clone htgit clone https://github.com/DCSO/MISP-dockerized-testbench.git $GIT_FOLDERtps://github.com/DCSO/MISP-dockerized-testbench.git $GIT_FOLDER
 [ -d reports ] || mkdir reports
-
 
 # Init MISP and create user
 [ -z $AUTH_KEY ] && export AUTH_KEY="$(docker exec misp-server bash -c 'sudo -E /var/www/MISP/app/Console/cake userInit -q')" && echo "new Auth_Key: $AUTH_KEY"
-
-
 
 # generate settings.json
 cat << EOF > settings.json
 {
     "verify_cert": "False",
-    "url": "https://172.17.0.1",
+    "url": "https://localhost",
     "authkey": "${AUTH_KEY}",
     "basic_user": "admin@admin.test",
     "basic_password": "admin",
@@ -59,8 +58,7 @@ cat << EOF > settings.json
 
 EOF
 
-echo "cat settings.json..."
-cat settings.json
+echo "cat settings.json..." && cat settings.json
 
 # Run Tests
-python3 $GIT_FOLDER/misp-testbench.py 
+echo "python3 $GIT_FOLDER/misp-testbench.py " && python3 $GIT_FOLDER/misp-testbench.py 
