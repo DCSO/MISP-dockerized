@@ -3,7 +3,7 @@ set -vx
 
 GIT_FOLDER="MISP-dockerized-testbench"
 myHOSTNAME=$(cat ../docker-compose.override.yml |grep HOSTNAME |cut -d : -f 2|cut -d " " -f 2|head -1)
-
+PROXY_IP=$(docker inspect misp-proxy|grep IPAddress| tail -1|cut -d '"' -f 4)
 
 
 # install dependencies for ALPINE!!!
@@ -94,7 +94,7 @@ cat settings.json
 
 
 
-echo "Add $myHOSTNAME to 127.0.0.1 in /etc/hosts" && sudo echo "127.0.0.1 $myHOSTNAME" >> /etc/hosts
+echo "Add $myHOSTNAME to $PROXY_IP in /etc/hosts" && sudo echo "$PROXY_IP $myHOSTNAME" >> /etc/hosts
 ping -w 2 $myHOSTNAME
 
 
