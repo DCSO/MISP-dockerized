@@ -83,7 +83,7 @@ before_script:
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
   artifacts:
     reports:
-      junit: $FOLDER/.travis/reports/*.xml
+      junit: ./current/.travis/MISP-dockerized-testbench/reports/*.xml
 
 
 # On MASTER Branch: Build Environment + retag Images to remove "-dev" tag
