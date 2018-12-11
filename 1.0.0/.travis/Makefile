@@ -29,7 +29,7 @@ tag:
 
 test:
 	@echo "################		Start Tests		###########################"
-	@./test.sh	
+	@bash ./test.sh	
 	@cat ./reports/results.xml
 
 push:
