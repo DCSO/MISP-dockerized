@@ -85,7 +85,7 @@ function default_container_version() {
   ############################################
   # Start Global Variable Section
   ############################################
-  [ -z "$MISP_CONTAINER_TAG" ] && MISP_CONTAINER_TAG="2.4.99-debian"
+  [ -z "$MISP_CONTAINER_TAG" ] && MISP_CONTAINER_TAG="2.4.97-debian"
   [ -z "$PROXY_CONTAINER_TAG" ] && PROXY_CONTAINER_TAG="1"
   [ -z "$ROBOT_CONTAINER_TAG" ] && ROBOT_CONTAINER_TAG="2"
   [ -z "$MISP_MODULES_CONTAINER_TAG" ] && MISP_MODULES_CONTAINER_TAG="1"
