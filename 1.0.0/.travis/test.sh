@@ -25,9 +25,12 @@ then
     [ -z $(which git) ] && echo "add git..." && sudo apt-get -y install git 
     [ -z $(which bash) ] && echo "add bash..." && sudo apt-get -y install bash
     [ -z $(which make) ] && echo "add make..." && sudo apt-get -y install make 
-    [ -z $(which python3) ] && echo "add python3..." && sudo apt-get -y install python3 
-    [ -z $(which pip3) ] && echo "add python3-pip..." && sudo apt-get -y install python3-pip 
+    #[ -z $(which python3) ] && 
+    echo "add python3..." && sudo apt-get -y install python3 
+    #[ -z $(which pip3) ] && 
+    echo "add python3-pip..." && sudo apt-get -y install python3-pip 
     [ -z $(which mysql) ] && echo "add python3..." && sudo apt-get -y install  mysql-client
+    echo "add python3-venv..." && sudo apt-get -y install python3-venv 
     
     echo "autoremove..." && sudo apt-get -y autoremove; 
     echo "clean..." && sudo apt-get -y clean
@@ -48,9 +51,12 @@ echo "pip3 install --no-cache-dir -r $GIT_FOLDER/requirements.txt" && pip3 insta
 [ -d reports ] || mkdir reports
 
 # Init MISP and create user
-sleep 60
+sleep 90
 while true
 do
+    # check status of misp-server
+    docker logs --tail 10 misp-server
+    
     # copy auth_key
     export AUTH_KEY=$(docker exec misp-server bash -c 'mysql -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE -e "SELECT authkey FROM users;" | head -2|tail -1')
     
@@ -65,6 +71,7 @@ do
     
     # check status of misp-server
     docker logs --tail 10 misp-server
+    
     
     # wait 5 seconds
     sleep 5
