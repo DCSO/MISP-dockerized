@@ -2,7 +2,7 @@
 set -vx
 
 GIT_FOLDER="MISP-dockerized-testbench"
-HOSTNAME=$(cat ../docker-compose.override.yml |grep HOSTNAME |cut -d : -f 2|cut -d " " -f 2|head -1)
+myHOSTNAME=$(cat ../docker-compose.override.yml |grep myHOSTNAME |cut -d : -f 2|cut -d " " -f 2|head -1)
 
 
 
@@ -82,7 +82,7 @@ done
 cat << EOF > settings.json
 {
     "verify_cert": "False",
-    "url": "https://${HOSTNAME}",
+    "url": "https://${myHOSTNAME}",
     "authkey": "${AUTH_KEY}",
     "basic_user": "admin@admin.test",
     "basic_password": "admin",
@@ -94,8 +94,8 @@ cat settings.json
 
 
 
-echo "Add $HOSTNAME to 127.0.0.1 in /etc/hosts" && sudo echo "127.0.0.1 $HOSTNAME" >> /etc/hosts
-
+echo "Add $myHOSTNAME to 127.0.0.1 in /etc/hosts" && sudo echo "127.0.0.1 $myHOSTNAME" >> /etc/hosts
+ping $myHOSTNAME
 
 
 

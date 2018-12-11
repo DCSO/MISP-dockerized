@@ -438,6 +438,10 @@ if [ "$AUTOMATE_BUILD" = "true" ]
     [ -z $(echo $PROXY_CONTAINER_TAG|grep dev) ] && PROXY_CONTAINER_TAG="$PROXY_CONTAINER_TAG-dev"
     [ -z $(echo $ROBOT_CONTAINER_TAG|grep dev) ] && ROBOT_CONTAINER_TAG="$ROBOT_CONTAINER_TAG-dev"
     [ -z $(echo $MISP_MODULES_CONTAINER_TAG|grep dev) ] && MISP_MODULES_CONTAINER_TAG="$MISP_MODULES_CONTAINER_TAG-dev"
+    
+    # set hostname to an fix one
+    myHOSTNAME="misp.example.com"
+
   else
     echo "manual build..."
     # Hostname
