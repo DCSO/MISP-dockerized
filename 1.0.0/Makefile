@@ -78,8 +78,8 @@ pull:
 	docker run \
 	    --name misp-robot-init \
 		--rm \
-	    --network="host" \
-	    -v $(CURDIR):/srv/MISP-dockerized \
+	    	--network="host" \
+	    	-v $(CURDIR):/srv/MISP-dockerized \
     	-v $(CURDIR)/scripts:/srv/scripts:ro \
 		-v ~/.docker:/root/.docker:ro \
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
@@ -89,8 +89,8 @@ deploy:
 	docker run \
 	    --name misp-robot-init \
 		--rm \
-	    --network="host" \
-	    -v $(CURDIR):/srv/MISP-dockerized \
+	    	--network="host" \
+	    	-v $(CURDIR):/srv/MISP-dockerized \
     	-v $(CURDIR)/scripts:/srv/scripts:ro \
 		-v ~/.docker:/root/.docker:ro \
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \

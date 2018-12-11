@@ -46,7 +46,7 @@ echo "pip3 install --no-cache-dir -r $GIT_FOLDER/requirements.txt" && pip3 insta
     docker ps -a
     sleep 60
     docker ps -a
-[ -z $AUTH_KEY ] && export AUTH_KEY="$(docker exec misp-server bash -c 'sudo -E /var/www/MISP/app/Console/cake userInit -q')" && echo "new Auth_Key: $AUTH_KEY"
+[ -z $AUTH_KEY ] && export AUTH_KEY=$(docker exec misp-server bash -c "sudo -E /var/www/MISP/app/Console/cake userInit -q") && echo "new Auth_Key: $AUTH_KEY"
 
 
 # generate settings.json
