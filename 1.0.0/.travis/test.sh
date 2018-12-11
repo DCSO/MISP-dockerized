@@ -45,7 +45,7 @@ cd  $GIT_FOLDER
 # install python requirements
 python3 -m venv venv
 source venv/bin/activate
-echo "pip3 install --no-cache-dir -r $GIT_FOLDER/requirements.txt" && pip3 install --no-cache-dir -r $GIT_FOLDER/requirements.txt
+echo "pip3 install --no-cache-dir -r requirements.txt" && pip3 install --no-cache-dir -r requirements.txt
 
 # generate report folder
 [ -d reports ] || mkdir reports
@@ -94,11 +94,10 @@ cat settings.json
 
 
 
-echo "Add $HOSTNAME to 127.0.0.1 in /etc/hosts" && echo "127.0.0.1 $HOSTNAME" >> /etc/hosts
-
+echo "Add $HOSTNAME to 127.0.0.1 in /etc/hosts" && sudo echo "127.0.0.1 $HOSTNAME" >> /etc/hosts
 
 
 
 
 # Run Tests
-echo "python3 $GIT_FOLDER/misp-testbench.py " && python3 misp-testbench.py 
+echo "python3 misp-testbench.py " && python3 misp-testbench.py 
