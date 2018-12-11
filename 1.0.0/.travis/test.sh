@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set -vx
 
 GIT_FOLDER="MISP-dockerized-testbench"
 
@@ -44,6 +44,8 @@ echo "pip3 install --no-cache-dir -r $GIT_FOLDER/requirements.txt" && pip3 insta
 
 # Init MISP and create user
 [ -z $AUTH_KEY ] && export AUTH_KEY="$(docker exec misp-server bash -c 'sudo -E /var/www/MISP/app/Console/cake userInit -q')" && echo "new Auth_Key: $AUTH_KEY"
+docker exec misp-server bash -c 'sudo -E /var/www/MISP/app/Console/cake userInit -q')
+echo "new Auth_Key: $AUTH_KEY"
 
 # generate settings.json
 cat << EOF > settings.json
