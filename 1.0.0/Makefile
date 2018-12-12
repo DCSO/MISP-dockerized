@@ -17,6 +17,7 @@ help:
 	       make delete 			| delete all docker container, volumes and images for MISP\n \
 	       make delete-unused 		| delete all unused docker container, volumes and images \n \
 	       make security	 		| check docker security via misp-robot\n \
+		   make test	 		| test if MISP-environment is ready.\n \
 	Control Docker Instances\n\
 		make start-all			| start all docker container\n \
 		make stop-all			| stop all docker container \n \
@@ -126,6 +127,13 @@ upgrade:
 # Update current MISP to all new functions in this Version without a new version
 update: install
 
+
+test:
+	@make -C .travis test
+	@echo
+	@echo "#############################################"
+	@echo "For the report output: cat $(CURDIR)/.travis/reports/*.xml"
+	@echo "#############################################"
 
 
 ####################	used in misp-robot	####################

@@ -5,6 +5,7 @@ current
 
 # for 1.0.0 and newer:
 docker-compose.override.yml
+reports
 
 # for older:
 secrets
