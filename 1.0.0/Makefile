@@ -97,10 +97,6 @@ deploy:
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
 		$(shell cat $(CURDIR)/config/config.env|grep DOCKER_REGISTRY|cut -d = -f 2)/misp-dockerized-robot:$(shell cat $(CURDIR)/config/config.env|grep ROBOT_CONTAINER_TAG|cut -d = -f 2) bash -c "docker-compose -f /srv/MISP-dockerized/docker-compose.yml -f /srv/MISP-dockerized/docker-compose.override.yml up -d "
 
-	# wait 20 seconds and then restart container for ssl change
-	@sleep 25
-	make change-ssl
-
 # delete all misp container, volumes and images
 delete:
 	scripts/delete_all_misp_from_host.sh
