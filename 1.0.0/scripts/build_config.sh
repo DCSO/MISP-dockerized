@@ -62,6 +62,7 @@ function check_if_vars_exists() {
   [ -z "$MISP_encoding" ] && MISP_encoding="utf8" && QUERY_MISP="yes"
   [ -z "$MISP_SALT" ] && MISP_SALT="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 50)" && QUERY_MISP="yes"
   [ -z "$ADD_ANALYZE_COLUMN" ] && ADD_ANALYZE_COLUMN="no" && QUERY_MISP="yes"
+  [ -z "$SENDER_ADDRESS" ] && SENDER_ADDRESS="admin@${myHOSTNAME}" && QUERY_MISP="yes"
   # Postfix
   [ -z "$DOMAIN" ] && DOMAIN="example.com" && QUERY_POSTFIX="yes"
   [ -z "$RELAY_USER" ] && RELAY_USER="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 10)" && QUERY_POSTFIX="yes"
