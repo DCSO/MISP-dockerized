@@ -6,7 +6,7 @@
   gather_facts: False
 
   vars_files:
-    - "/srv/misp-dockerized/config/misp.conf.yml"  
+    - "{{ MAIN_REPO_CONFIG }}/misp.conf.yml"  
 
   pre_tasks:
   - name: read MISP version
