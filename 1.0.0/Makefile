@@ -51,7 +51,7 @@ help:
 install: requirements build-config pull deploy
 	@echo
 	@echo " ###########	MISP environment is ready	###########"
-	@echo "Please go to: $(shell cat .env|grep HOSTNAME|cut -d = -f 2)"
+	@echo "Please go to: $(shell cat config/config.env|grep HOSTNAME|cut -d = -f 2)"
 	@echo "Login credentials:"
 	@echo "      Username: admin@admin.test"
 	@echo "      Password: admin"
