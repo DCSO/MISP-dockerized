@@ -30,7 +30,7 @@ tag:
 test:
 	@echo "################		Start Tests		###########################"
 	@echo "wait 90 seconds until infra is ready..."
-	@sleep 90
+	@sleep 120
 	-docker exec misp-robot bash /srv/scripts/test.sh
 	@if [ ! -d reports ]; then mkdir reports; fi
 	@docker cp misp-robot:/srv/MISP-dockerized-testbench/reports/. reports/
