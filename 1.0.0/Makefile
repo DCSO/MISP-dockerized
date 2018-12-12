@@ -97,6 +97,10 @@ deploy:
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
 		$(shell cat $(CURDIR)/config/config.env|grep DOCKER_REGISTRY|cut -d = -f 2)/misp-dockerized-robot:$(shell cat $(CURDIR)/config/config.env|grep ROBOT_CONTAINER_TAG|cut -d = -f 2) bash -c "docker-compose -f /srv/MISP-dockerized/docker-compose.yml -f /srv/MISP-dockerized/docker-compose.override.yml up -d "
 
+	# wait 20 seconds and then restart container for ssl change
+	@sleep 25
+	make change-ssl
+
 # delete all misp container, volumes and images
 delete:
 	scripts/delete_all_misp_from_host.sh
@@ -154,12 +158,14 @@ configure:
 	make config-ssl
 	make config-smime
 	make config-pgp
+
 config-ssl:
 	docker cp $(CURDIR)/config/ssl/. misp-proxy:/etc/nginx/ssl/
 	docker cp misp-proxy:/etc/nginx/ssl/. $(CURDIR)/config/ssl/
 	rm $(CURDIR)/config/ssl/misp-dockerized*
 	docker restart misp-server
 	docker restart misp-proxy
+
 config-smime:
 	#$(DOCKER_EXEC) misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t smime /etc/ansible/playbooks/robot-playbook/site.yml"
 	docker cp $(CURDIR)/config/smime/. misp-server:/var/www/MISP/.smime
