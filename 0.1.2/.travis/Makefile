@@ -15,6 +15,8 @@ pull-all:
 	# pull all images and tags
 	$(foreach c, $(CONTAINER), docker pull -a dcso/misp-$(c)-private;)
 
+pull-latest: pull-all
+
 clone-all:
 	# clone all repos
 	$(foreach c, $(CONTAINER), git clone https://github.com/DCSO/MISP-dockerized-$(c).git ~/$(c);)

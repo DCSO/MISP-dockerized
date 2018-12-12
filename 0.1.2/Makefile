@@ -45,6 +45,8 @@ start: requirements build-config deploy configure
 	@echo "\tPassword: admin"
 	@echo "###################################################\n"
 
+install: start
+
 ####################	used as host
 # Check requirements
 requirements:

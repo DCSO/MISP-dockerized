@@ -49,6 +49,8 @@ start: requirements build-config deploy configure
 	@echo "##########################################################"
 	@echo
 
+install: start
+
 ####################	used as host
 # Check requirements
 requirements:
