@@ -80,6 +80,7 @@ before_script:
   - docker ps -a
   # Testing
   - make -C $FOLDER/.travis/ test
+  - make -C $FOLDER delete
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
   artifacts:
     reports:
