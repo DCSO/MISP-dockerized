@@ -549,6 +549,7 @@ services:
       HTTP_PROXY: ${HTTP_PROXY}
       HTTPS_PROXY: ${HTTPS_PROXY}
       NO_PROXY: ${NO_PROXY}
+      HOSTNAME: ${myHOSTNAME}
     volumes:
     # Github Repository
     - ${MISP_dockerized_repo}:/srv/MISP-dockerized

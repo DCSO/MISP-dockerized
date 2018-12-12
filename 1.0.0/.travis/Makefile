@@ -29,8 +29,10 @@ tag:
 
 test:
 	@echo "################		Start Tests		###########################"
-	@bash ./test.sh	
-	@cat ./reports/results.xml
+	docker exec misp-roobt bash /scripts/test.sh
+	[ -d reports ] mkdir reports
+	docker cp misp-robot:/srv/MISP-dockerized-testbench/reports/. reports/
+	cat reports/*.xml
 
 push:
 	./push.sh $(REPOURL)/misp-dockerized-server $(server_tag);

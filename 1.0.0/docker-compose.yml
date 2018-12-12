@@ -118,6 +118,7 @@ services:
   misp-robot:
     image: dockerhub.dcso.de/misp-dockerized-robot:1
     container_name: misp-robot
+    restart: unless-stopped
     tty: true
     stdin_open: true
     healthcheck:
