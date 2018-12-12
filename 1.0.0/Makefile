@@ -162,7 +162,7 @@ configure:
 config-ssl:
 	docker cp $(CURDIR)/config/ssl/. misp-proxy:/etc/nginx/ssl/
 	docker cp misp-proxy:/etc/nginx/ssl/. $(CURDIR)/config/ssl/
-	rm $(CURDIR)/config/ssl/misp-dockerized*
+	-rm $(CURDIR)/config/ssl/misp-dockerized*
 	docker restart misp-server
 	docker restart misp-proxy
 
