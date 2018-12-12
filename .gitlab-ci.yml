@@ -65,6 +65,7 @@ before_script:
   # Deploy Environment
   - make -C $FOLDER deploy
   - docker ps -a
+  - make -C $FOLDER delete
 
 # On dev Branch: Build Environment and Test it with our own Test Framework
 .long_test:
@@ -98,6 +99,8 @@ before_script:
   # Deploy Environment
   - make -C $FOLDER deploy
   - docker ps -a
+  # Testing
+  - make -C $FOLDER/.travis/ test
   # prepare retagging
   - export server_tag=$(cat $ENV_FOLDER.env |grep MISP_CONTAINER|cut -d = -f 2|sed 's,....$,,')
   - export proxy_tag=$(cat $ENV_FOLDER.env |grep PROXY_CONTAINER|cut -d = -f 2|sed 's,....$,,')
@@ -113,6 +116,7 @@ before_script:
   # If we need separate Images fro DB and Redsi
   #- ./travis/push.sh $(REPOURL)/misp-dockerized-db $(db_tag);
   #- ./travis/push.sh $(REPOURL)/misp-dockerized-redis $(redis_tag);
+  - make -C $FOLDER delete
 
 
 
