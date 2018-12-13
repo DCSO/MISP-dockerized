@@ -532,7 +532,6 @@ services:
       PHP_MEMORY: ${PHP_MEMORY}
     ${LOG_SETTINGS}
 
-  ### Reverse Proxy ###
   misp-proxy:
     image: ${DOCKER_REGISTRY}/misp-dockerized-proxy:${PROXY_CONTAINER_TAG}
     environment:
