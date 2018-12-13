@@ -70,7 +70,7 @@ services:
     # Apache2 Configuration
     - misp-vol-server-apache2-config-sites-enabled:/etc/apache2/sites-enabled
     # Volume with Certificates
-    - misp-vol-ssl_server:/etc/apache2/ssl
+    - misp-vol-ssl:/etc/apache2/ssl
     # Volume with PGP Key
     - misp-vol-pgp:/var/www/MISP/.gnupg
     # Volume with S/MIME Certificate and Key
@@ -83,7 +83,7 @@ services:
     - misp-vol-server-MISP-tmp:/var/www/MISP/app/tmp
     - misp-vol-server-MISP-attachments:/var/www/MISP/app/files
     ###### misp-db ######
-    - misp-vol-db-data:/var/lib/mysql/"
+    - misp-vol-db-data:/var/lib/mysql
     networks:
       misp-backend:
         aliases:
@@ -105,7 +105,7 @@ services:
       # NGINX Configuration
       #- misp-vol-proxy-conf:/etc/nginx/conf.d
       # SSL 
-      - misp-vol-ssl_proxy:/etc/nginx/ssl
+      - misp-vol-ssl:/etc/nginx/ssl
     networks:
       misp-backend:
         aliases:
@@ -126,8 +126,7 @@ services:
     # Docker.sock File
     - /var/run/docker.sock:/var/run/docker.sock:ro
     # Volume with Certificates
-    - misp-vol-ssl_proxy:/srv/misp-ssl_proxy
-    - misp-vol-ssl_server:/srv/misp-ssl_server
+    - misp-vol-ssl:/srv/misp-ssl
     # Volume with PGP Key
     - misp-vol-pgp:/srv/misp-pgp
     # Volume with S/MIME Certificate and Key
@@ -152,13 +151,11 @@ services:
 
 ### VOLUMES ###
 volumes:
-  misp-vol-ssl_proxy:
-  misp-vol-ssl_server:
+  misp-vol-ssl:
   misp-vol-pgp:
   misp-vol-smime:
   misp-vol-db-data:
   misp-vol-redis-data:
-  misp-vol-server-logs:
   misp-vol-server-apache2-config-sites-enabled:
   misp-vol-server-MISP-app-Config:
   misp-vol-server-MISP-cakeresque-config:
