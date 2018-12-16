@@ -155,6 +155,7 @@ function query_timezone(){
 function query_hostname(){
   # read Hostname for MISP Instance
   read -p "Hostname (FQDN - example.org is not a valid FQDN) [DEFAULT: $myHOSTNAME]: " -ei $myHOSTNAME myHOSTNAME
+  MISP_FQDN="https://${myHOSTNAME}"
 }
 
 # Questions for Network
@@ -520,7 +521,8 @@ services:
       NO_PROXY: ${NO_PROXY}
       # POSTFIX
       SENDER_ADDRESS: ${SENDER_ADDRESS}
-      HOSTNAME: ${myHOSTNAME}
+      #HOSTNAME: ${myHOSTNAME}
+      MISP_FQDN: ${MISP_FQDN}
       DOMAIN: ${DOMAIN}
       HTTP_SERVERADMIN: ${HTTP_SERVERADMIN}
       RELAYHOST: ${RELAYHOST}
@@ -568,6 +570,7 @@ cat << EOF > $CONFIG_FILE
 # Hostname
 # ------------------------------
 myHOSTNAME="${myHOSTNAME}"
+MISP_FQDN="${MISP_FQDN}"
 # ------------------------------
 # Network Configuration
 # ------------------------------
