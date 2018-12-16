@@ -521,8 +521,6 @@ services:
       NO_PROXY: ${NO_PROXY}
       # POSTFIX
       SENDER_ADDRESS: ${SENDER_ADDRESS}
-      #HOSTNAME: ${myHOSTNAME}
-      MISP_FQDN: ${MISP_FQDN}
       DOMAIN: ${DOMAIN}
       HTTP_SERVERADMIN: ${HTTP_SERVERADMIN}
       RELAYHOST: ${RELAYHOST}
@@ -532,6 +530,16 @@ services:
       DEBUG_PEER: ${DEBUG_PEER}
       # PHP
       PHP_MEMORY: ${PHP_MEMORY}
+      # MISP
+      MISP_FQDN="${MISP_FQDN}"
+      MISP_HTTPS_PORT="${HTTPS_PORT}"
+      MISP_prefix="${MISP_prefix}"
+      MISP_encoding="${MISP_encoding}"
+      MISP_SALT="${MISP_SALT}"
+      ADD_ANALYZE_COLUMN="${ADD_ANALYZE_COLUMN}"
+      USE_PGP="${USE_PGP}"
+      USE_SMIME="${USE_SMIME}"
+      PHP_MEMORY="${PHP_MEMORY}"
     ${LOG_SETTINGS}
 
   misp-proxy:
@@ -620,17 +628,16 @@ client_max_body_size="${client_max_body_size}"
 ALLOW_ALL_IPs="${ALLOW_ALL_IPs}"
 HTTP_ALLOWED_IP="${HTTP_ALLOWED_IP}"
 HTTP_SERVERADMIN="${HTTP_SERVERADMIN}"
-
 # ------------------------------
 # misp-redis configuration
 # ------------------------------
-REDIS_FQDN=misp-redis
-REDIS_PW=
-REDIS_PORT=
+REDIS_FQDN=${REDIS_FQDN}
+REDIS_PW=${REDIS_PW}
+REDIS_PORT=${REDIS_PORT}
 # ------------------------------
 # misp-server env configuration
 # ------------------------------
-MISP_FQDN="${myHOSTNAME}"
+MISP_FQDN="${MISP_FQDN}"
 MISP_HTTPS_PORT="${HTTPS_PORT}"
 MISP_TAG="${MISP_TAG}"
 MISP_prefix="${MISP_prefix}"
