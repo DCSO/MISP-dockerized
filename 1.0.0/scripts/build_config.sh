@@ -531,15 +531,15 @@ services:
       # PHP
       PHP_MEMORY: ${PHP_MEMORY}
       # MISP
-      MISP_FQDN="${MISP_FQDN}"
-      MISP_HTTPS_PORT="${HTTPS_PORT}"
-      MISP_prefix="${MISP_prefix}"
-      MISP_encoding="${MISP_encoding}"
-      MISP_SALT="${MISP_SALT}"
-      ADD_ANALYZE_COLUMN="${ADD_ANALYZE_COLUMN}"
-      USE_PGP="${USE_PGP}"
-      USE_SMIME="${USE_SMIME}"
-      PHP_MEMORY="${PHP_MEMORY}"
+      MISP_FQDN: ${MISP_FQDN}
+      MISP_HTTPS_PORT: ${HTTPS_PORT}
+      MISP_prefix: ${MISP_prefix}
+      MISP_encoding: ${MISP_encoding}
+      MISP_SALT: ${MISP_SALT}
+      ADD_ANALYZE_COLUMN: "${ADD_ANALYZE_COLUMN}"
+      USE_PGP: "${USE_PGP}"
+      USE_SMIME: "${USE_SMIME}"
+      PHP_MEMORY: ${PHP_MEMORY}
     ${LOG_SETTINGS}
 
   misp-proxy:
