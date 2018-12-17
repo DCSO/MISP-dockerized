@@ -90,6 +90,11 @@ function default_container_version() {
   PROXY_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep proxy|cut -d : -f 3)"
   ROBOT_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep robot|cut -d : -f 3)"
   MISP_MODULES_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep modules|cut -d : -f 3)"
+  #[ -z $(echo $POSTFIX_CONTAINER_TAG|grep dev) ] && POSTFIX_CONTAINER_TAG="$POSTFIX_CONTAINER_TAG-dev"
+  [ -z $(echo $MISP_CONTAINER_TAG|grep dev) ] && MISP_CONTAINER_TAG="$MISP_CONTAINER_TAG-dev"
+  [ -z $(echo $PROXY_CONTAINER_TAG|grep dev) ] && PROXY_CONTAINER_TAG="$PROXY_CONTAINER_TAG-dev"
+  [ -z $(echo $ROBOT_CONTAINER_TAG|grep dev) ] && ROBOT_CONTAINER_TAG="$ROBOT_CONTAINER_TAG-dev"
+  [ -z $(echo $MISP_MODULES_CONTAINER_TAG|grep dev) ] && MISP_MODULES_CONTAINER_TAG="$MISP_MODULES_CONTAINER_TAG-dev"
   ###
   MISP_TAG=$(echo $MISP_CONTAINER_TAG|cut -d - -f 1)
   ######################  END GLOBAL  ###########
@@ -436,12 +441,6 @@ if [ "$AUTOMATE_BUILD" = "true" ]
     # ask no questions only defaults
     echo "automatic build..."
     ####
-    #[ -z $(echo $POSTFIX_CONTAINER_TAG|grep dev) ] && POSTFIX_CONTAINER_TAG="$POSTFIX_CONTAINER_TAG-dev"
-    [ -z $(echo $MISP_CONTAINER_TAG|grep dev) ] && MISP_CONTAINER_TAG="$MISP_CONTAINER_TAG-dev"
-    [ -z $(echo $PROXY_CONTAINER_TAG|grep dev) ] && PROXY_CONTAINER_TAG="$PROXY_CONTAINER_TAG-dev"
-    [ -z $(echo $ROBOT_CONTAINER_TAG|grep dev) ] && ROBOT_CONTAINER_TAG="$ROBOT_CONTAINER_TAG-dev"
-    [ -z $(echo $MISP_MODULES_CONTAINER_TAG|grep dev) ] && MISP_MODULES_CONTAINER_TAG="$MISP_MODULES_CONTAINER_TAG-dev"
-    
     # set hostname to an fix one
     myHOSTNAME="misp.example.com"
     IMAGE_MISP_MODULES="image: ${DOCKER_REGISTRY}/misp-dockerized-misp-modules:${MISP_MODULES_CONTAINER_TAG}"
@@ -473,6 +472,14 @@ if [ "$AUTOMATE_BUILD" = "true" ]
     [ "$QUERY_PGP" == "yes" ] && query_pgp_settings
     # LOG_SETTINGS
     [ "$QUERY_LOG_SETTINGS" == "yes" ] && query_log_settings
+    
+    if [ "$DEV" == true ]
+    then
+      IMAGE_MISP_MODULES="image: ${DOCKER_REGISTRY}/misp-dockerized-misp-modules:${MISP_MODULES_CONTAINER_TAG}"
+      IMAGE_MISP_SERVER="image: ${DOCKER_REGISTRY}/misp-dockerized-server:${MISP_CONTAINER_TAG}"
+      IMAGE_MISP_PROXY="image: ${DOCKER_REGISTRY}/misp-dockerized-proxy:${PROXY_CONTAINER_TAG}"
+      IMAGE_MISP_ROBOT="image: ${DOCKER_REGISTRY}/misp-dockerized-robot:${ROBOT_CONTAINER_TAG}"
+    fi
 fi
 ###################################
 # Write Configuration
