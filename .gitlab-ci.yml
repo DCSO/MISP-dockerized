@@ -23,6 +23,7 @@ variables:
   makefile_travis: "make -C $FOLDER/.travis/"
   CI: "true"
   REPOURL: "dockerhub.dcso.de"
+  REPOURL_PUBLIC: "dcso"
 
 include:
   #- '0.1.0/.gitlab-ci.yml'
@@ -104,10 +105,20 @@ before_script:
   - export modules_tag=$(cat $FOLDER/docker-compose.yml |grep image|grep modules|cut -d ':' -f 3)
   - export db_tag=$(cat $FOLDER/docker-compose.yml |grep image|grep db|cut -d ':' -f 3)
   - export redis_tag=$(cat $FOLDER/docker-compose.yml |grep image|grep redis|cut -d ':' -f 3)
+  ######## DCSO registry
+  - bash -c "chown $(whoami) ~/.docker/config.json"
+  - echo "$INTERNAL_REGISTRY_PW"| docker login -u "$INTERNAL_REGISTRY_USER" "$INTERNAL_REGISTRY_HOST" --password-stdin
   # retag all existing tags dev 2 public repo
   - $makefile_travis tag REPOURL=$REPOURL server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} db_tag=${modules_tag} redis_tag=${modules_tag}
   # Push Images to registry
   - $makefile_travis push REPOURL=$REPOURL server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag};
+  ####### hub.docker.com
+  - echo "$DOCKER_PASSWORD"| docker login -u "$DOCKER_USERNAME" --password-stdin
+  # retag all existing tags dev 2 public repo
+  - $makefile_travis tag REPOURL=$REPOURL_PUBLIC server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} db_tag=${modules_tag} redis_tag=${modules_tag}
+  # Push Images to registry
+  - $makefile_travis push REPOURL=$REPOURL_PUBLIC server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag};
+  #################
   - make -C $FOLDER delete
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
   artifacts:

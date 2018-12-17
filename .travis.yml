@@ -45,12 +45,13 @@ after_success:
   # retag all existing tags dev 2 public repo
   - $makefile_travis tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} db_tag=${modules_tag} redis_tag=${modules_tag}
   # check if branch=master and the current build is no pull request, then push it to docker hub
-  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
-      if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
-        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
-        $makefile_travis push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag};
-      fi; 
-    fi;
+  # - if [[ "$TRAVIS_BRANCH" == "master" ]]; then 
+  #     if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then 
+  #       sudo chown $(whoami) /home/travis/.docker/config.json
+  #       echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
+  #       $makefile_travis push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag};
+  #     fi; 
+  #   fi;
 
 # don't notify me when things fail
 notifications:
