@@ -51,7 +51,7 @@ services:
   
   ### MISP Modules ###
   misp-modules:
-    image: dockerhub.dcso.de/misp-dockerized-misp-modules:1
+    image: dockerhub.dcso.de/misp-dockerized-misp-modules:1.2-debian
     container_name: misp-modules
     restart: unless-stopped
     networks:
@@ -91,7 +91,7 @@ services:
 
   ### Reverse Proxy ###
   misp-proxy:
-    image: dockerhub.dcso.de/misp-dockerized-proxy:1
+    image: dockerhub.dcso.de/misp-dockerized-proxy:1.5-alpine
     container_name: misp-proxy
     restart: unless-stopped
     ports:
@@ -114,7 +114,7 @@ services:
 
   ### Robot ###
   misp-robot:
-    image: dockerhub.dcso.de/misp-dockerized-robot:2
+    image: dockerhub.dcso.de/misp-dockerized-robot:2.1-debian
     container_name: misp-robot
     restart: unless-stopped
     tty: true
