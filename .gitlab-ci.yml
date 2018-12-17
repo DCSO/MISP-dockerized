@@ -116,8 +116,10 @@ before_script:
   - make -C $FOLDER delete
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
   artifacts:
+    paths: ./current/.travis/reports/*.xml
     reports:
       junit: ./current/.travis/reports/*.xml
+
 
 
 
