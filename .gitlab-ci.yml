@@ -91,8 +91,8 @@ before_script:
 # On MASTER Branch: Build Environment + retag Images to remove "-dev" tag
 .push_productive_images:
   stage: deploy
-  # only: 
-  # - master
+  only: 
+  - master
   script:
   - make -C $FOLDER build-config
   - cd $FOLDER; docker-compose pull; cd ..
@@ -112,7 +112,7 @@ before_script:
   # retag all existing tags dev 2 public repo
   - $makefile_travis tag REPOURL=$REPOURL server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} db_tag=${modules_tag} redis_tag=${modules_tag}
   # Push Images to registry
-  - echo "$makefile_travis push REPOURL=$REPOURL server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag};"
+  - $makefile_travis push REPOURL=$REPOURL server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag};
   - make -C $FOLDER delete
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
   artifacts:
