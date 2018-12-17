@@ -106,14 +106,14 @@ delete:
 stop-all:
 	docker stop misp-server
 	docker stop misp-proxy
-	docker stop misp-postfix
+	docker stop misp-modules
 	docker stop misp-robot
 
 # start all misp docker container
 start-all:
 	docker start misp-server
 	docker start misp-proxy
-	docker start misp-postfix
+	docker start misp-modules
 	docker start misp-robot
 
 # restart all misp docker container
@@ -138,7 +138,7 @@ test:
 
 
 ####################	used in misp-robot	####################
-DOCKER_EXEC=docker exec
+DOCKER_EXEC=docker exec -ti
 #DOCKER_EXEC= "docker run -it --rm "
 
 
