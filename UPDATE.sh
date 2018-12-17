@@ -11,6 +11,5 @@
 
 
 ###### UPDATE
-pushd current
-make install
-popd
+make -C current pull
+make -C current install
