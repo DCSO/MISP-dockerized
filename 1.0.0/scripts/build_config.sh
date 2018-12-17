@@ -95,7 +95,6 @@ function default_container_version() {
   [ -z $(echo $PROXY_CONTAINER_TAG|grep dev) ] && PROXY_CONTAINER_TAG="$PROXY_CONTAINER_TAG-dev"
   [ -z $(echo $ROBOT_CONTAINER_TAG|grep dev) ] && ROBOT_CONTAINER_TAG="$ROBOT_CONTAINER_TAG-dev"
   [ -z $(echo $MISP_MODULES_CONTAINER_TAG|grep dev) ] && MISP_MODULES_CONTAINER_TAG="$MISP_MODULES_CONTAINER_TAG-dev"
-
   ###
   MISP_TAG=$(echo $MISP_CONTAINER_TAG|cut -d - -f 1)
   ######################  END GLOBAL  ###########
@@ -473,7 +472,7 @@ if [ "$AUTOMATE_BUILD" = "true" ]
     [ "$QUERY_PGP" == "yes" ] && query_pgp_settings
     # LOG_SETTINGS
     [ "$QUERY_LOG_SETTINGS" == "yes" ] && query_log_settings
-
+    
     if [ "$DEV" == true ]
     then
       IMAGE_MISP_MODULES="image: ${DOCKER_REGISTRY}/misp-dockerized-misp-modules:${MISP_MODULES_CONTAINER_TAG}"

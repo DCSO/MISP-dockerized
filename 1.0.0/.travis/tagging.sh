@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 DOCKER_REPO="$1"
 tag="$2"

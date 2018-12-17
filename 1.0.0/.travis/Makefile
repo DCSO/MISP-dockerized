@@ -40,4 +40,3 @@ push:
 	bash ./push.sh $(REPOURL)/misp-dockerized-proxy $(proxy_tag);
 	bash ./push.sh $(REPOURL)/misp-dockerized-robot $(robot_tag);
 	bash ./push.sh $(REPOURL)/misp-dockerized-misp-modules $(modules_tag);
-
