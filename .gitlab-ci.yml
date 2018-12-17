@@ -112,7 +112,7 @@ before_script:
   # retag all existing tags dev 2 public repo
   - $makefile_travis tag REPOURL=$REPOURL server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} db_tag=${modules_tag} redis_tag=${modules_tag}
   # Push Images to registry
-  - echo "$makefile_travis push REPOURL=$REPOURL server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} REPOURL=${REPOURL};"
+  - echo "$makefile_travis push REPOURL=$REPOURL server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag};"
   - make -C $FOLDER delete
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
   artifacts:
