@@ -1,23 +1,19 @@
 #!/bin/bash
 
+set -ex
+
 # check if user has currently a installed version
     # This function checks the current version on misp-server version from docker ps
     # https://forums.docker.com/t/docker-ps-a-command-to-publish-only-container-names/8483/2
-    CURRENT_CONTAINER=$(docker ps --format '{{.Image}}'|grep server|cut -d : -f 2|cut -d - -f 1)
-    [ "$CURRENT_CONTAINER" == "" ] && echo "Sorry, no Upgrade is possible. The reason is there is no running misp-server. I exit now." && docker ps && exit
+    CURRENT_CONTAINER="$(docker ps --format '{{.Image}}'|grep server|cut -d : -f 2|cut -d - -f 1)"
+    [ -z "$CURRENT_CONTAINER" ] && echo "Sorry, no Upgrade is possible. The reason is there is no running misp-server. I exit now." && docker ps && exit
 
 
-
-
-function upgrade_to_1.0.0(){
+function upgrade_to_1_0_0() {
     echo "Upgrade from Version before 1.0.0"
     # if current folder not exists execute install.sh script
-    [ -L ./current ] || ./FOR_NEW_INSTALL.sh
+    
 
-    # # move old files into the current folder
-    # FOLDER="./current/"
-    # mv .env $FOLDER
-    # mv Makefile $FOLDER
 
 }
 
@@ -42,6 +38,33 @@ then
         read -p "Do you upgrade from an version earlier than 1.0.0? [DEFAULT: $EARLIER_1_0_0]: " -ei $EARLIER_1_0_0  EARLIER_1_0_0
         [ "$EARLIER_1_0_0" == "no" ] && echo "There is a bug, please open a ticket on https://github.com/DCSO/MISP-dockerized/issues and report the Error. Now i will exit." && exit
     fi
+
+    [ "$CURRENT_CONTAINER" == "2.4.94" ] && INSTALLED_VERSION="0.3.4"
+    read -r -p "From which version do you upgrade?: " -ei "$INSTALLED_VERSION" INSTALLED_VERSION 
+        case $INSTALLED_VERSION in
+        0.3.4)
+            [ -L ./scripts ] || ln -s ./0.3.4/scripts ./scripts
+            make -C 0.3.4/ backup-all
+            [ -L ./scripts ] && rm ./scripts
+            break
+            ;;
+        0.2.0)
+            [ -L ./scripts ] || ln -s ./0.2.0/scripts ./scripts
+            make -C 0.2.0/ backup-all
+            break
+            ;;
+        0.1.2)
+            [ -L ./scripts ] || ln -s ./0.1.2/scripts ./scripts
+            make -C 0.1.2/ backup-all
+            break
+            ;;
+        *)
+            echo -e "\nplease choose only options from the text below!\n"
+            exit
+        ;;
+        esac
+
+
 
     # [2] make a backup
     echo "We do now a full backup, this can be take a long time."
