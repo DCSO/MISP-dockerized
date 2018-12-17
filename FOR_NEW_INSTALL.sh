@@ -61,6 +61,7 @@ CURRENT_VERSION=""
             [ "${FOLDER[$i-1]}" == "config" ] && continue
             [ "${FOLDER[$i-1]}" == "current" ] && continue
             [ "${FOLDER[$i-1]}" == ".travis" ] && continue
+            [[ "${FOLDER[$i-1]}" == "0."* ]] && continue
             [ "${FOLDER[$i-1]}" == "$CURRENT_VERSION" ] || echo "[ ${i} ] - ${FOLDER[$i-1]}"
             [ "${FOLDER[$i-1]}" == "$CURRENT_VERSION" ] && echo "[ ${i} ] - ${FOLDER[$i-1]} (currently installed)"
         done

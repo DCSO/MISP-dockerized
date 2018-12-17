@@ -21,8 +21,12 @@ The documentation of MISP-dockerized is central published at the following addre
 * git pull or git checkout origin/master -f
 * `make install`
 * wait ca. 90 seconds: `docker logs -f misp-server`
-* `make restore-db`
-* `make restore-server`
+* `make -C current restore-db`
+* `make -C current restore-server`
+* `make -C current change-ssl`
+* `docker exec -ti misp-server bash -c "rm /etc/apache2/ssl/SSL_create.pid.proxy"`
+* `make -C current restart-all`
+
 
 
 
