@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -e
 
 echo "###################################################################"
 echo "### remove dev MISP images after retagging ###";
