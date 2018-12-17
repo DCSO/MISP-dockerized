@@ -1,0 +1,61 @@
+---
+- name: MISP Installation Script for Docker
+  hosts: all
+  become: yes
+  become_method: sudo
+  gather_facts: False
+
+  vars_files:
+    - "/srv/misp-dockerized/config/misp.conf.yml"  
+
+  pre_tasks:
+  - name: read MISP version
+    shell: "cat /srv/misp-dockerized/docker-compose.yml |grep dcso/misp-server*|cut -d : -f 3|cut -d ' ' -f 1"
+    register: MISP_VERSION
+    tags: always
+  - name: read proxy version
+    shell: "cat /srv/misp-dockerized/docker-compose.yml |grep dcso/misp-proxy*|cut -d : -f 3|cut -d ' ' -f 1"
+    register: PROXY_VERSION
+    tags: always
+  - name: read robot version
+    shell: "cat /srv/misp-dockerized/docker-compose.yml |grep dcso/misp-robot*|cut -d : -f 3|cut -d ' ' -f 1"
+    register: ROBOT_VERSION
+    tags: always
+  - name: read redis version
+    shell: "cat /srv/misp-dockerized/docker-compose.yml |grep redis*|cut -d : -f 3|cut -d ' ' -f 1"
+    register: REDIS_VERSION
+    tags: always
+  - name: read db
+    shell: "cat /srv/misp-dockerized/docker-compose.yml |grep mariadb*|cut -d : -f 3|cut -d ' ' -f 1"
+    register: DB_VERSION
+    tags: always
+  - name: read db version
+    shell: "cat /srv/misp-dockerized/docker-compose.yml |grep -A1 misp-db|grep image|cut -d : -f 3|cut -d ' ' -f 1"
+    register: DB_VERSION
+    tags: always
+
+  roles:
+  - role: update_proxy
+    when: "{{ PROXY_VERSION.stdout }} < 1.0.1"
+  
+  - role: update_robot
+    when: "{{ ROBOT_VERSION.stdout }} != latest"
+  
+  - role: update_redis
+    when: "{{ REDIS_VERSION.stdout }} < 3.2.11"
+  
+  - role: update_db
+    when: "{{ DB_VERSION.stdout }} < 10.3.5"
+  
+  - role: update_server_2.4.88_2.4.89
+    when: "{{ MISP_VERSION.stdout }}" < 2.4.89
+
+
+
+  tasks:
+  - name: Ensure directories are 0755
+    command: find {{ path }} -type d -exec chmod 0755 {} \;
+
+  - name: Ensure files are 0644
+    command: find {{ path }} -type f -exec chmod 0644 {} \;
+    

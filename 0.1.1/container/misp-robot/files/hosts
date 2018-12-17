@@ -1,0 +1,6 @@
+[MISP_DOCKER]
+misp-db
+misp-server
+misp-proxy
+misp-robot
+misp-redis

@@ -1,0 +1,32 @@
+# HTTP Config to redirect traffic to HTTPS
+server {
+	listen 80;
+	include conf.d/vars_common;
+
+	# Logfiles
+	access_log      /var/log/nginx/misp-server/access.80.log;
+	error_log       /var/log/nginx/misp-server/error.80.log;
+
+	# redirect to HTTPS
+	return 301 https://$host$request_uri;
+
+}
+
+# HTTPS Config to Proxy traffic to misp-server
+server {
+	listen 443 ssl http2;
+
+	include conf.d/vars_common;
+
+	# SSL Certificate and Key
+	ssl_certificate /etc/nginx/conf.d/ssl/cert.pem;
+	ssl_certificate_key /etc/nginx/conf.d/ssl/key.pem;
+
+	# Logfiles
+	access_log      /var/log/nginx/misp-server/access.443.log;
+	error_log       /var/log/nginx/misp-server/error.443.log;
+
+	location / {
+		include conf.d/vars_proxy;
+	}
+}

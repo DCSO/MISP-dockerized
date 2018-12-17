@@ -5,6 +5,7 @@ services:
 
 stages:
 - build
+- scan
 - deploy
 
 variables:
@@ -16,73 +17,149 @@ variables:
   # INTERNAL_REGISTRY_HOST
   # INTERNAL_REGISTRY_USER
   # INTERNAL_REGISTRY_PW
-  DOCKER_COMPOSE_VERSION: 1.22.0
+  CURRENT_VERSION: "1.0.0"
+  FOLDER: "./current"
+  ENV_OPTION: "$FOLDER/"
+  MYmake_travis: "make -C $FOLDER/.travis/"
+  CI: "true"
+  REPOURL: "dockerhub.dcso.de"
+
+
+# Include other YML Files for Jobs
+# Source: https://docs.gitlab.com/ee/ci/yaml/README.html#include
+include:
+  #- '0.1.0/.gitlab-ci.yml'
+  #- '0.1.1/.gitlab-ci.yml'
+  #- '0.1.2/.gitlab-ci.yml'
+  #- '0.2.0/.gitlab-ci.yml'
+  #- '0.3.0/.gitlab-ci.yml'
+  #- '0.3.1/.gitlab-ci.yml'
+  #- '0.3.2/.gitlab-ci.yml'
+  #- '0.3.3/.gitlab-ci.yml'
+  #- '0.3.4/.gitlab-ci.yml'
+  - '1.0.0/.gitlab-ci.yml'
+  
+
 
 before_script:
-  - apk add --no-cache make bash sudo git curl python py2-pip coreutils grep
-  - export makefile="make -C .travis/"
-  - export CI="true"
-  - export REPOURL="dockerhub.dcso.de"
-  - docker login -u "$INTERNAL_REGISTRY_USER" -p "$INTERNAL_REGISTRY_PW" "$INTERNAL_REGISTRY_HOST"
+  - apk add --no-cache make bash sudo git curl python py2-pip coreutils grep python3
   # https://stackoverflow.com/questions/42295457/using-docker-compose-in-a-gitlab-ci-pipeline
-  - pip install --no-cache-dir docker-compose
-  # download latest images from registry
-  - $makefile pull-latest REPOURL=${REPOURL}
+  - pip3 install --no-cache-dir docker-compose
+  - docker-compose -v
+  - echo "$INTERNAL_REGISTRY_PW"| docker login -u "$INTERNAL_REGISTRY_USER" "$INTERNAL_REGISTRY_HOST" --password-stdin
+  # Choose the Environment Version
+  - bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
+  # Pull all latest tagged container
+  - make -C $FOLDER/.travis/ pull-latest REPOURL=${REPOURL}
 
-
-Short_Test_without_Push:
+# On all other pull requests and branches exclude dev and master: Build Environment, but do nothing more. No tests. Tests with our Test Framework are only done in the dev branch.
+.env_test_only:
   stage: build
   except:
   - master
-  - unstable
+  - dev
   script:
-  - make build-config
-  - docker-compose -v
-  - docker-compose pull
-  - echo "#############################################START with make install############################################"
-  # start deploy script
-  - make install
+  # Deploy Environment
+  - make -C $FOLDER build-config
+  - cd $FOLDER; docker-compose pull; cd ..
+  # Deploy Environment
+  - make -C $FOLDER deploy
+  - docker ps -a
+  - make -C $FOLDER delete
 
-Long_Test_without_Push:
+# On dev Branch: Build Environment and Test it with our own Test Framework
+.long_test:
   stage: build
   only:
-  - unstable
+  - dev
+  allow_failure: true
   script:
-  - make build-config
-  - docker-compose -v
-  - docker-compose pull
-  - echo "#############################################START with make install############################################"
-  # start deploy script
-  - make install
-  # test if MISP is ready
-  - $makefile test
+  - make -C $FOLDER build-config
+  - cd $FOLDER; docker-compose pull; cd ..
+  # Deploy Environment
+  - make -C $FOLDER deploy
+  - docker ps -a
+  # Testing
+  - make -C $FOLDER/.travis/ test
+  - make -C $FOLDER delete
+  # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
+  artifacts:
+    reports:
+      junit: ./current/.travis/reports/*.xml
 
-Upload_2_Repository:
-  stage: build
+
+# On MASTER Branch: Build Environment + retag Images to remove "-dev" tag
+.push_productive_images:
+  stage: deploy
   only: 
   - master
   script:
-  - make build-config
-  - docker-compose -v
-  - docker-compose pull
-  - echo "#############################################START with make install############################################"
-  # start deploy script
-  - make install
-  # test if MISP is ready
-  - $makefile test
+  - make -C $FOLDER build-config
+  - cd $FOLDER; docker-compose pull; cd ..
+  # Deploy Environment
+  - make -C $FOLDER deploy
+  - docker ps -a
+  # Testing
+  - make -C $FOLDER/.travis/ test
   # prepare retagging
-  - export server_tag=$(cat .env |grep MISP_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export proxy_tag=$(cat .env |grep PROXY_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export robot_tag=$(cat .env |grep ROBOT_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export postfix_tag=$(cat .env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export postfix_tag=$(cat .env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export modules_tag=$(cat .env |grep MISP_MODULES_CONTAINER|cut -d = -f 2|sed 's,....$,,')
-  - export db_tag=$(cat .env |grep DB_CONTAINER_TAG|cut -d = -f 2|sed 's,....$,,')
-  - export redis_tag=$(cat .env |grep REDIS_CONTAINER_TAG|cut -d = -f 2|sed 's,....$,,')
+  - export server_tag=$(cat $ENV_FOLDER.env |grep MISP_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export proxy_tag=$(cat $ENV_FOLDER.env |grep PROXY_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export robot_tag=$(cat $ENV_FOLDER.env |grep ROBOT_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  #- export postfix_tag=$(cat $ENV_FOLDER.env |grep POSTFIX_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export modules_tag=$(cat $ENV_FOLDER.env |grep MISP_MODULES_CONTAINER|cut -d = -f 2|sed 's,....$,,')
+  - export db_tag=$(cat $ENV_FOLDER.env |grep DB_CONTAINER_TAG|cut -d = -f 2|sed 's,....$,,')
+  - export redis_tag=$(cat $ENV_FOLDER.env |grep REDIS_CONTAINER_TAG|cut -d = -f 2|sed 's,....$,,')
   # retag all existing tags dev 2 public repo
-  - $makefile tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} REPOURL=${REPOURL};
+  - $MYmake_travis tag server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} REPOURL=${REPOURL};
   # Push Images to registry
-  - $makefile push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} REPOURL=${REPOURL};
+  - $MYmake_travis push server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} postfix_tag=${postfix_tag} modules_tag=${modules_tag} REPOURL=${REPOURL};
   # If we need separate Images fro DB and Redsi
   #- ./travis/push.sh $(REPOURL)/misp-dockerized-db $(db_tag);
   #- ./travis/push.sh $(REPOURL)/misp-dockerized-redis $(redis_tag);
+  - make -C $FOLDER delete
+  # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
+  artifacts:
+    reports:
+      junit: ./current/.travis/reports/*.xml
+
+
+
+# deactivated:
+# https://docs.gitlab.com/ee/ci/examples/container_scanning.html
+# https://docs.gitlab.com/ee/ci/yaml/README.html#artifactsreportscontainer_scanning
+# https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html
+# https://docs.gitlab.com/ee/ci/yaml/#artifactsreportscontainer_scanning-ultimate
+
+.container_scanning:
+  stage: scan
+  #image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+    ## Define two new variables based on GitLab's CI/CD predefined variables
+    ## https://docs.gitlab.com/ee/ci/variables/#predefined-variables-environment-variables
+    CI_CONTAINER_NAME: misp-dockerized-server
+    CI_APPLICATION_REPOSITORY: $INTERNAL_REGISTRY_HOST/$CI_CONTAINER_NAME
+    CI_APPLICATION_TAG: latest-dev
+  allow_failure: true
+  #services:
+  #  - docker:stable-dind
+  script:
+    - echo "$INTERNAL_REGISTRY_PW"| docker login -u "$INTERNAL_REGISTRY_USER" "$INTERNAL_REGISTRY_HOST" --password-stdin
+    - docker run -d --name db arminc/clair-db:latest
+    - docker run -p 6060:6060 --link db:postgres -d --name clair --restart on-failure arminc/clair-local-scan:v2.0.1
+    - docker ps
+    - apk add -U wget ca-certificates
+    - docker pull ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
+    - wget https://github.com/arminc/clair-scanner/releases/download/v8/clair-scanner_linux_amd64
+    - mv clair-scanner_linux_amd64 clair-scanner
+    - chmod +x clair-scanner
+    - touch clair-whitelist.yml
+    #- while( ! wget -q -O /dev/null http://localhost:6060/v1/namespaces ) ; do sleep 1 ; done
+    #- retries=0
+    - docker ps -a
+    - echo "Waiting for clair daemon to start"
+    - bash -c 'while( ! wget -T 10 -q -O /dev/null http://localhost:6060/v1/namespaces ) ; do sleep 1 ; echo -n "." ; if [ $retries -eq 10 ] ; then echo " Timeout, aborting." ; exit 1 ; fi ; retries=$(($retries+1)) ; done'
+    - bash -c ''./clair-scanner -c http://localhost:6060 --ip $(hostname -i) -r gl-container-scanning-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true'
+  artifacts:
+    reports:
+      container_scanning: gl-container-scanning-report.json

@@ -1,0 +1,78 @@
+- name: Configure MISP | Copy MISP default configuration files
+  copy:
+    src: "{{MISP_PATH}}/Config/{{ item }}.default.php"
+    dest: "{{MISP_PATH}}/Config/{{ item }}.php"
+    force: no
+    owner: www-data
+    group: www-data
+    mode: 0750
+  with_items:
+    - bootstrap
+    - database
+    - core
+    - config
+
+- name: Configure MISP | Set DB User, Password and Host in database.php
+  replace:
+    name: "{{MISP_PATH}}/Config/database.php"
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.replace }}"
+    owner: www-data
+    group: www-data
+  with_items:
+  - { regexp: "db password", replace: "{{ MYSQL_PASSWORD }}" }
+  - { regexp: "db login", replace: "{{ MYSQL_USER }}" }
+  - { regexp: "localhost", replace: "{{ MYSQL_HOST }}" }
+
+- name: Configure MISP | Set MISP-Url in config.php
+  replace:
+    name: "{{MISP_PATH}}/Config/config.php"
+    regexp: "'baseurl'\\s*=>\\s*''"
+    replace: "'baseurl'                        => 'https://{{ MISP_FQDN }}'"
+    owner: www-data
+    group: www-data
+
+- name: Configure MISP | Set Email in config.php
+  replace:
+    name: "{{MISP_PATH}}/Config/config.php"
+    regexp: "email@address.com"
+    replace: "{{ SENDER_ADDRESS }}"
+    owner: www-data
+    group: www-data
+
+- name: Configure MISP | Set Admin Email in config.php
+  replace:
+    name: "{{MISP_PATH}}/Config/config.php"
+    regexp: "admin@misp.example.com"
+    replace: "{{ SENDER_ADDRESS }}"
+    owner: www-data
+    group: www-data
+
+- name: Configure MISP | Set GNUPG Homedir in config.php
+  replace:
+    name: "{{MISP_PATH}}/Config/config.php"
+    regexp: "'homedir'\\s*=>\\s*''"
+    replace: "'homedir'                        => '/var/www/MISP/.gnupg'"
+    owner: www-data
+    group: www-data
+
+- name: Configure MISP | Change Salt in config.php
+  replace:
+    name: "{{MISP_PATH}}/Config/config.php"
+    regexp: "'salt'\\s*=>\\s*''"
+    replace: "'salt'                        => '{{ MISP_SALT }}'"
+    owner: www-data
+    group: www-data
+
+##### Check permissions #####
+- name: Configure MISP | Check permissions
+  file:
+    path: "{{ item.file }}"
+    owner: www-data
+    group: www-data
+    mode: "{{ item.mode }}"
+  with_items:
+  - {file: "{{MISP_PATH}}", mode: "0750" }
+  - {file: "{{MISP_PATH}}/app/tmp", mode: "g+ws" }
+  - {file: "{{MISP_PATH}}/app/files", mode: "g+ws" }
+

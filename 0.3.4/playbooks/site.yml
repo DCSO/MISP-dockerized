@@ -1,0 +1,18 @@
+---
+- name: MISP Installation Script for Docker
+  hosts: localhost
+  become: yes
+  become_method: sudo
+  gather_facts: False
+
+  vars_files:
+    - "{{ MAIN_REPO_CONFIG }}/misp.conf.yml"  
+
+
+  roles:
+   - role: server
+     tags: ['server']
+  #  - role: database
+  #    tags: ['database']
+   - role: proxy
+     tags: ['proxy']

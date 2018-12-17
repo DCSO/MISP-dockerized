@@ -1,0 +1,53 @@
+---
+- name: MISP Proxy Maintenance Mode
+  hosts: all
+  become: yes
+  become_method: sudo
+  gather_facts: False
+  vars:
+    SERVER_CONFIG_PATH: /srv/misp-proxy/conf.d
+    HTTP_CONFIG_NAME: SERVER_HTTP_only
+    HTTPS_CONFIG_NAME: SERVER_HTTPS_and_redirected_HTTP
+    MAINTENANCE: SERVER_MAINTENANCE
+
+  vars_files:
+    - "/srv/misp-dockerized/config/misp.conf.yml"  
+
+  tasks:
+  ### Activate Maintenance Mode
+  - name: Proxy | deactivate config on proxy
+    tags: enable
+    shell:
+      "mv {{SERVER_CONFIG_PATH}}/{{ item }}.conf {{SERVER_CONFIG_PATH}}/{{ item }}"
+    ignore_errors: True
+    with_items:
+      - "{{HTTPS_CONFIG_NAME}}"
+      - "{{HTTP_CONFIG_NAME}}"
+
+  - name: Proxy | activate maintenance config
+    tags: enable
+    shell:
+      "mv {{SERVER_CONFIG_PATH}}/{{ item }} {{SERVER_CONFIG_PATH}}/{{ item }}.conf"
+    with_items:
+      - "{{MAINTENANCE}}"
+  
+  ### Deactivate Maintenance Mode
+  - name: Proxy | deactivate maintenance config
+    tags: disable
+    shell:
+      "mv {{SERVER_CONFIG_PATH}}/{{ item }}.conf {{SERVER_CONFIG_PATH}}/{{ item }}"
+    ignore_errors: True
+    with_items:
+      - "{{MAINTENANCE}}"
+
+  - name: Proxy | activate config on proxy
+    tags: disable
+    shell:
+      "mv {{SERVER_CONFIG_PATH}}/{{ item }} {{SERVER_CONFIG_PATH}}/{{ item }}.conf"
+    with_items:
+      - "{{HTTPS_CONFIG_NAME}}"
+
+  ### Reload Container
+  - name: Proxy | Reload proxy
+    tags: all
+    shell: "docker exec misp-proxy 'nginx -s reload'"

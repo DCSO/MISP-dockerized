@@ -1,0 +1,115 @@
+##### Copy MISP configs #####
+- name: Configure MISP | Copy MISP configuration files
+  copy:
+    remote_src: True
+    src: "/srv/misp-server/MISP/app/Config/{{ item }}.default.php"
+    dest: "/srv/misp-server/MISP/app/Config/{{ item }}.php"
+    force: yes
+    owner: www-data
+    group: www-data
+    mode: 0750
+  with_items:
+    - bootstrap
+    - database
+    - core
+    - config
+
+#### Write settings #####
+- name: Configure MISP | Set DB-Password
+  replace:
+    path: /srv/misp-server/MISP/app/Config/database.php
+    regexp: "db password"
+    replace: "{{ MISP_db_password }}"
+    owner: www-data
+    group: www-data
+
+- name: Configure MISP | Set DB-User
+  replace:
+    path: /srv/misp-server/MISP/app/Config/database.php
+    regexp: "db login"
+    replace: "{{ MISP_db_login }}"
+    owner: www-data
+    group: www-data
+
+- name: Configure MISP | Set DB-Host
+  replace:
+    path: /srv/misp-server/MISP/app/Config/database.php
+    regexp: "localhost"
+    replace: "{{ MISP_db_host }}"
+    owner: www-data
+    group: www-data
+
+- name: Configure MISP | Set MISP-Url
+  replace:
+    path: /srv/misp-server/MISP/app/Config/config.php
+    regexp: "'baseurl'\\s*=>\\s*''"
+    replace: "'baseurl'                        => 'https://{{ MISP_hostname }}:{{ MISP_hostport }}'"
+    owner: www-data
+    group: www-data
+
+- name: Configure MISP | Set Redis URL
+  replace:
+    path: /srv/misp-server/MISP/app/Plugin/CakeResque/Config/config.php
+    regexp: "'host'\\s*=>\\s*'localhost'" # 'host' => 'misp-redis'
+    replace: "'host' => '{{ REDIS_hostname }}'"
+    owner: www-data
+    group: www-data
+
+##### Check permissions #####
+- name: Configure MISP | Check permissions
+  shell: "{{ item }}"
+  with_items:
+    - "sudo chown -R www-data:www-data /srv/misp-server/MISP"
+    - "sudo chmod -R 750 /srv/misp-server/MISP"
+    - "sudo chmod -R g+ws /srv/misp-server/MISP/app/tmp"
+    - "sudo chmod -R g+ws /srv/misp-server/MISP/app/files"
+    - "sudo chmod -R g+ws /srv/misp-server/MISP/app/files/scripts/tmp"
+
+##### Configure SSL #####
+- name: Apache2 SSL | Create SSL folder
+  file:
+    path: /srv/apache-config/ssl
+    owner: root
+    group: root
+    mode: 0640
+    state: directory
+
+#- name: Apache2 SSL | Create internal certificate
+#  openssl_certificate:
+#    path: /srv/apache-config/ssl/cert.pem
+#    privatekey_path: /srv/apache-config/ssl/key.pem
+#    provider: selfsigned
+#    selfsigned_digest: sha256
+#    subject: "CN=misp-server"
+#    subject_alt_name: 
+#      - misp-server
+
+- name: Apache2 SSL | Create internal certificate
+  shell: openssl req -x509 -newkey rsa:4096 -keyout /srv/apache-config/ssl/key.pem -out /srv/apache-config/ssl/cert.pem -days 3650 -nodes -subj '/CN=misp-server'
+
+- name: Apache2 SSL | Create DH params - This can take a long time, so take a break and enjoy a cup of tea or coffee.
+  shell: openssl dhparam -out /srv/apache-config/ssl/dhparams.pem 2048
+
+#- name: Apache2 SSL | Activate SSL config
+#  file:
+#    src: /etc/apache2/sites-available/misp.ssl.conf
+#    dest: /etc/apache2/sites-enabled/misp.ssl.conf
+#    owner: root
+#   group: root
+#    state: link
+
+- name: Apache2 SSL | Activate SSL config
+  copy:
+    remote_src: True
+    src: "/srv/apache-config/sites-available/misp.ssl.conf"
+    dest: "/srv/apache-config/sites-enabled/misp.ssl.conf"
+    force: yes
+    owner: root
+    group: root
+    mode: 0640
+
+- name: Apache2 SSL | Reload Apache configs
+  shell: "{{ item }}"
+  with_items:
+    #- "docker exec -i misp-server /bin/bash -c 'service apache2 restart'"
+    - docker restart misp-server
