@@ -51,7 +51,7 @@ services:
   
   ### MISP Modules ###
   misp-modules:
-    image: dockerhub.dcso.de/misp-dockerized-misp-modules:1-dev
+    image: dockerhub.dcso.de/misp-dockerized-misp-modules:1
     container_name: misp-modules
     restart: unless-stopped
     networks:
@@ -114,7 +114,7 @@ services:
 
   ### Robot ###
   misp-robot:
-    image: dockerhub.dcso.de/misp-dockerized-robot:1
+    image: dockerhub.dcso.de/misp-dockerized-robot:2
     container_name: misp-robot
     restart: unless-stopped
     tty: true
