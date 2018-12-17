@@ -81,11 +81,11 @@ function default_container_version() {
   ############################################
   [ -z "$DB_CONTAINER_TAG" ] && DB_CONTAINER_TAG="10.3"
   [ -z "$REDIS_CONTAINER_TAG" ] && REDIS_CONTAINER_TAG="5-alpine"
-  [ -z "$POSTFIX_CONTAINER_TAG" ] && POSTFIX_CONTAINER_TAG="1"
+  [ -z "$POSTFIX_CONTAINER_TAG" ] && POSTFIX_CONTAINER_TAG="1.0.1-alpine"
   [ -z "$MISP_CONTAINER_TAG" ] && MISP_CONTAINER_TAG="2.4.94-ubuntu"
-  [ -z "$PROXY_CONTAINER_TAG" ] && PROXY_CONTAINER_TAG="1"
-  [ -z "$ROBOT_CONTAINER_TAG" ] && ROBOT_CONTAINER_TAG="1"
-  [ -z "$MISP_MODULES_CONTAINER_TAG" ] && MISP_MODULES_CONTAINER_TAG="1"
+  [ -z "$PROXY_CONTAINER_TAG" ] && PROXY_CONTAINER_TAG="1.0.2-alpine"
+  [ -z "$ROBOT_CONTAINER_TAG" ] && ROBOT_CONTAINER_TAG="1.0.4-debian"
+  [ -z "$MISP_MODULES_CONTAINER_TAG" ] && MISP_MODULES_CONTAINER_TAG="1.0.1-debian"
   ###
   MISP_TAG=$(echo $MISP_CONTAINER_TAG|cut -d - -f 1)
   ######################  END GLOBAL  ###########
