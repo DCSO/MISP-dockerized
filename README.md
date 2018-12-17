@@ -11,6 +11,22 @@ MISP dockerized
 # Documentation
 The documentation of MISP-dockerized is central published at the following address: https://dcso.github.io/MISP-dockerized-docs.
 
+# Upgrade from Beta to 1.0.0
+* Make an snapshot from your server
+* `docker exec -ti misp-robot sh -c "apt update && apt install -y mysql-client"`
+* `cd <PATH to MISP-dockerized repo>`
+* `make backup-all`
+* `make delete`
+* `rm docker-compose.yml`
+* git pull or git checkout origin/master -f
+* `make install`
+* wait ca. 90 seconds: `docker logs -f misp-server`
+* `make restore-db`
+* `make restore-server`
+
+
+
+
 # License
 
 This software is released under a BSD 3-Clause license.
