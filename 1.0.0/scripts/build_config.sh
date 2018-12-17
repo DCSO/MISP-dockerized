@@ -86,13 +86,14 @@ function default_container_version() {
   ############################################
   # Start Global Variable Section
   ############################################
-  [ -z "$MISP_CONTAINER_TAG" ] && MISP_CONTAINER_TAG="2.4.99-debian"
-  [ -z "$PROXY_CONTAINER_TAG" ] && PROXY_CONTAINER_TAG="1"
-  [ -z "$ROBOT_CONTAINER_TAG" ] && ROBOT_CONTAINER_TAG="2"
-  [ -z "$MISP_MODULES_CONTAINER_TAG" ] && MISP_MODULES_CONTAINER_TAG="1"
+  MISP_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep server|cut -d : -f 3)"
+  PROXY_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep proxy|cut -d : -f 3)"
+  ROBOT_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep robot|cut -d : -f 3)"
+  MISP_MODULES_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep modules|cut -d : -f 3)"
   ###
   MISP_TAG=$(echo $MISP_CONTAINER_TAG|cut -d - -f 1)
   ######################  END GLOBAL  ###########
+
 }
 
 # Start Function Section
@@ -443,6 +444,10 @@ if [ "$AUTOMATE_BUILD" = "true" ]
     
     # set hostname to an fix one
     myHOSTNAME="misp.example.com"
+    IMAGE_MISP_MODULES="image: ${DOCKER_REGISTRY}/misp-dockerized-misp-modules:${MISP_MODULES_CONTAINER_TAG}"
+    IMAGE_MISP_SERVER="image: ${DOCKER_REGISTRY}/misp-dockerized-server:${MISP_CONTAINER_TAG}"
+    IMAGE_MISP_PROXY="image: ${DOCKER_REGISTRY}/misp-dockerized-proxy:${PROXY_CONTAINER_TAG}"
+    IMAGE_MISP_ROBOT="image: ${DOCKER_REGISTRY}/misp-dockerized-robot:${ROBOT_CONTAINER_TAG}"
 
   else
     echo "manual build..."
@@ -494,7 +499,7 @@ services:
   #     MYSQL_PASSWORD: ${MYSQL_PASSWORD}
 
   misp-modules:
-    image: ${DOCKER_REGISTRY}/misp-dockerized-misp-modules:${MISP_MODULES_CONTAINER_TAG}
+    ${IMAGE_MISP_MODULES}
     environment:
       REDIS_FQDN: ${REDIS_FQDN}
       HTTP_PROXY: ${HTTP_PROXY}
@@ -503,7 +508,7 @@ services:
     ${LOG_SETTINGS}
 
   misp-server:
-    image: ${DOCKER_REGISTRY}/misp-dockerized-server:${MISP_CONTAINER_TAG}
+    ${IMAGE_MISP_SERVER}
     # ports:
     #   - "8080:80" # DEBUG only
     #   - "8443:443" # DEBUG only
@@ -543,7 +548,7 @@ services:
     ${LOG_SETTINGS}
 
   misp-proxy:
-    image: ${DOCKER_REGISTRY}/misp-dockerized-proxy:${PROXY_CONTAINER_TAG}
+    ${IMAGE_MISP_PROXY}
     environment:
       HOSTNAME: ${myHOSTNAME}
       HTTP_SERVERADMIN: ${HTTP_SERVERADMIN}
@@ -554,7 +559,7 @@ services:
     ${LOG_SETTINGS}
 
   misp-robot:
-    image: ${DOCKER_REGISTRY}/misp-dockerized-robot:${ROBOT_CONTAINER_TAG}
+    ${IMAGE_MISP_ROBOT}
     environment:
       HTTP_PROXY: ${HTTP_PROXY}
       HTTPS_PROXY: ${HTTPS_PROXY}

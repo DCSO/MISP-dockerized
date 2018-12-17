@@ -21,6 +21,13 @@ function upgrade_to_1.0.0(){
 
 }
 
+##################      MAIN        #########################
+
+echo "#############################################################################"
+echo "Please Backup your full server and your storage for all critical MISP data!!!"
+echo "If the backup is already done press enter now"
+echo "#############################################################################"
+read TMP
 
 
 
