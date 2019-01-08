@@ -11,5 +11,5 @@ install:
 
 new: install
 
-make delete:
+delete:
 	make -C current delete
