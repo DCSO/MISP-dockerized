@@ -37,9 +37,9 @@ include:
   #- '0.3.4/.gitlab-ci.yml'
   - '1.0.0/.gitlab-ci.yml'
   - '1.0.1/.gitlab-ci.yml'
-  - '1.0.2/.gitlab-ci.yml'
+  - '1.1.0/.gitlab-ci.yml'
 
-before_script: - Add MISP Version 2.4.100
+before_script: 
   - apk add --no-cache make bash sudo git curl python py2-pip coreutils grep python3
   # https://stackoverflow.com/questions/42295457/using-docker-compose-in-a-gitlab-ci-pipeline
   - pip3 install --no-cache-dir docker-compose
