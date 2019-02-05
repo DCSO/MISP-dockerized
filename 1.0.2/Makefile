@@ -70,7 +70,7 @@ requirements:
 # Build Configuration
 build-config:
 	@echo " ###########	Build Configuration	###########"
-	@scripts/build_config.sh
+	@scripts/build_config.sh $(REPOURL)
 	@sleep 2
 
 # Start Docker environment
