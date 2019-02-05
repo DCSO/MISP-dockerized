@@ -34,8 +34,8 @@ before_install:
 
 script:
   # If Git branch == dev OR master make an test
-  - if [[ "$TRAVIS_BRANCH" == "dev" -o "$TRAVIS_BRANCH" == "master" -o "$TRAVIS_BRANCH" == "bug/MDD174" ]]; then bash .ci/02_script.sh long_test; fi
-  - if [[ "$TRAVIS_BRANCH" != "dev" ]]; then bash .ci/02_script.sh; fi
+  - if [[ "$TRAVIS_BRANCH" == "dev" -o "$TRAVIS_BRANCH" == "master" ]]; then bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION; fi
+  - if [[ "$TRAVIS_BRANCH" != "dev" ]]; then bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD no_test $CURRENT_VERSION; fi
   # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
   
