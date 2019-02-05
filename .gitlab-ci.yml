@@ -34,8 +34,17 @@ before_script:
   - master
   - dev
   script:
-  - bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD no_test $CURRENT_VERSION
   - bash .ci/02_script.sh $CUSTOM_REGISTRY_URL $CUSTOM_REGISTRY_USER $CUSTOM_REGISTRY_PW no_test $CURRENT_VERSION
+  # Clean Up
+  - echo "##### clean up..." &&  make -C $FOLDER delete
+
+.env_test_only_hub.docker.com:
+  stage: build
+  except:
+  - master
+  - dev
+  script:
+  - bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD no_test $CURRENT_VERSION
   # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
 
@@ -48,8 +57,25 @@ before_script:
   - bug/MDD174
   allow_failure: true
   script:
-  - bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION
   - bash .ci/02_script.sh $CUSTOM_REGISTRY_URL $CUSTOM_REGISTRY_USER $CUSTOM_REGISTRY_PW long_test $CURRENT_VERSION
+  # Clean Up
+  - echo "##### clean up..." &&  make -C $FOLDER delete
+  # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
+  artifacts:
+    paths: 
+    - ./current/.travis/reports/*.xml
+    reports:
+      junit: ./current/.travis/reports/*.xml
+
+
+# On dev Branch: Build Environment and Test it with our own Test Framework
+.long_test_hub.docker.com:
+  stage: build
+  only:
+  - dev
+  - bug/MDD174
+  script:
+  - bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION
   # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
@@ -66,13 +92,6 @@ before_script:
   only: 
   - master
   script:
-  # Check hub.docker.com Registry
-    # Test
-  - bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION
-    # Push 
-  - bash .ci/30_push_2_registry.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD
-    # Clean Up
-  - echo "##### clean up..." &&  make -C $FOLDER delete
   # Check internal Registry
     # Test
   - bash .ci/02_script.sh $CUSTOM_REGISTRY_URL $CUSTOM_REGISTRY_USER $CUSTOM_REGISTRY_PW long_test $CURRENT_VERSION
@@ -87,6 +106,24 @@ before_script:
     reports:
       junit: ./current/.travis/reports/*.xml
 
+.push_productive_images_hub.docker.com:
+  stage: deploy
+  only: 
+  - master
+  script:
+  # Check hub.docker.com Registry
+    # Test
+  - bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION
+    # Push 
+  - bash .ci/30_push_2_registry.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD
+    # Clean Up
+  - echo "##### clean up..." &&  make -C $FOLDER delete
+  # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
+  artifacts:
+    paths: 
+    - ./current/.travis/reports/*.xml
+    reports:
+      junit: ./current/.travis/reports/*.xml
 
 # deactivated:
 # https://docs.gitlab.com/ee/ci/examples/container_scanning.html
