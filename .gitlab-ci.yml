@@ -10,7 +10,6 @@ stages:
 
 variables:
   # The following variables are setup via gitlab project group:
-    # DOCKER_HUB_TOKEN
     # DOCKER_SLUG
     # DOCKER_USERNAME
     # DOCKER_PASSWORD
@@ -35,7 +34,8 @@ before_script:
   - master
   - dev
   script:
-  - bash .ci/02_script.sh
+  - bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD no_test
+  - bash .ci/02_script.sh $CUSTOM_REGISTRY_URL $CUSTOM_REGISTRY_USER $CUSTOM_REGISTRY_PW no_test
   # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
 
@@ -48,7 +48,8 @@ before_script:
   - bug/MDD174
   allow_failure: true
   script:
-  - bash .ci/02_script.sh long_test
+  - bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test
+  - bash .ci/02_script.sh $CUSTOM_REGISTRY_URL $CUSTOM_REGISTRY_USER $CUSTOM_REGISTRY_PW long_test
   # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
@@ -65,7 +66,8 @@ before_script:
   only: 
   - master
   script:
-  - bash .ci/02_script.sh long_test
+  - bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test
+  - bash .ci/02_script.sh $CUSTOM_REGISTRY_URL $CUSTOM_REGISTRY_USER $CUSTOM_REGISTRY_PW long_test
   # Push hub.docker.com
   - bash .ci/30_push_2_registry.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD
   # Push internal registry
