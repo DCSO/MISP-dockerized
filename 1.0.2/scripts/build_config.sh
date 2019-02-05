@@ -9,6 +9,7 @@ set -e
 # export DEV=true
 # export DOCKER_REGISTRY=custom.url
 
+PARAMETER_DOCKER_REGISTRY="$1"
 
 # check if this is an automate build not ask any questions
 [ "$CI" = true ] && AUTOMATE_BUILD=true
@@ -362,8 +363,8 @@ function query_smime_settings(){
 function query_docker_registry() { 
   echo -n "check Docker registry..."
   if [ -z "$DOCKER_REGISTRY" ]; then
-    # On our own registry we have none group tag, but we have another URL
-    DOCKER_REGISTRY="dockerhub.dcso.de"
+    # Default use hub.docker.com
+    DOCKER_REGISTRY="dcso"
     ############## FILE exists ##############
     echo
     echo "We switched the container repository to secure DCSO registry."
@@ -418,6 +419,8 @@ function query_log_settings(){
 #################################################
 # import existing .env
 import_config
+# Override Registry if it is set via parameter
+[ ! -z "$PARAMETER_DOCKER_REGISTRY" ] && DOCKER_REGISTRY="$PARAMETER_DOCKER_REGISTRY"
 # if vars not exists
 check_if_vars_exists
 # Docker Registry
