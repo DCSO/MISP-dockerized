@@ -43,17 +43,15 @@ echo $DOCKER_LOGIN_OUTPUT
      echo "$STARTMSG show running docker container..." &&  docker ps
 
 # Automated test
-if [[ "$TEST_TYPE" == "long_test" ]]; then 
+if [ "$TEST_TYPE" == "long_test" ]
+then 
     echo "$STARTMSG test environment..." &&  $makefile_travis test; 
     # Wait a short time
         sleep 10
     # show docker container
         echo "$STARTMSG show running docker container..." &&  docker ps
-
 fi  
 
 # show config folders
     ls -laR config/
 
-# Clean Up
-echo "$STARTMSG clean up..." &&  make -C $FOLDER delete
