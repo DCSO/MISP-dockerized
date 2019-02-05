@@ -34,8 +34,8 @@ before_script:
   - master
   - dev
   script:
-  - bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD no_test
-  - bash .ci/02_script.sh $CUSTOM_REGISTRY_URL $CUSTOM_REGISTRY_USER $CUSTOM_REGISTRY_PW no_test
+  - bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD no_test $CURRENT_VERSION
+  - bash .ci/02_script.sh $CUSTOM_REGISTRY_URL $CUSTOM_REGISTRY_USER $CUSTOM_REGISTRY_PW no_test $CURRENT_VERSION
   # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
 
@@ -48,8 +48,8 @@ before_script:
   - bug/MDD174
   allow_failure: true
   script:
-  - bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test
-  - bash .ci/02_script.sh $CUSTOM_REGISTRY_URL $CUSTOM_REGISTRY_USER $CUSTOM_REGISTRY_PW long_test
+  - bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION
+  - bash .ci/02_script.sh $CUSTOM_REGISTRY_URL $CUSTOM_REGISTRY_USER $CUSTOM_REGISTRY_PW long_test $CURRENT_VERSION
   # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
@@ -66,13 +66,19 @@ before_script:
   only: 
   - master
   script:
-  - bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test
-  - bash .ci/02_script.sh $CUSTOM_REGISTRY_URL $CUSTOM_REGISTRY_USER $CUSTOM_REGISTRY_PW long_test
-  # Push hub.docker.com
+  # Check hub.docker.com Registry
+    # Test
+  - bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION
+    # Push 
   - bash .ci/30_push_2_registry.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD
-  # Push internal registry
+    # Clean Up
+  - echo "##### clean up..." &&  make -C $FOLDER delete
+  # Check internal Registry
+    # Test
+  - bash .ci/02_script.sh $CUSTOM_REGISTRY_URL $CUSTOM_REGISTRY_USER $CUSTOM_REGISTRY_PW long_test $CURRENT_VERSION
+    # Push
   - bash .ci/30_push_2_registry.sh $CUSTOM_REGISTRY_URL $CUSTOM_REGISTRY_USER $CUSTOM_REGISTRY_PW
-  # Clean Up
+    # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
   artifacts:
