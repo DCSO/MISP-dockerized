@@ -63,9 +63,9 @@ before_script:
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
   artifacts:
     paths: 
-    - ./current/.travis/reports/*.xml
+    - .ci/reports/*.xml
     reports:
-      junit: ./current/.travis/reports/*.xml
+      junit: .ci/reports/*.xml
 
 # On dev Branch: Build Environment and Test it with our own Test Framework
 .long_test_hub.docker.com:
@@ -80,9 +80,9 @@ before_script:
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
   artifacts:
     paths: 
-    - ./current/.travis/reports/*.xml
+    - .ci/reports/*.xml
     reports:
-      junit: ./current/.travis/reports/*.xml
+      junit: .ci/reports/*.xml
 
 
 # On MASTER Branch: Build Environment + retag Images to remove "-dev" tag
@@ -103,9 +103,9 @@ before_script:
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
   artifacts:
     paths: 
-    - ./.ci/reports/*.xml
+    - .ci/reports/*.xml
     reports:
-      junit: ./.ci/reports/*.xml
+      junit: .ci/reports/*.xml
 
 .push_productive_images_hub.docker.com:
   stage: deploy
