@@ -103,9 +103,9 @@ before_script:
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
   artifacts:
     paths: 
-    - ./current/.travis/reports/*.xml
+    - ./.ci/reports/*.xml
     reports:
-      junit: ./current/.travis/reports/*.xml
+      junit: ./.ci/reports/*.xml
 
 .push_productive_images_hub.docker.com:
   stage: deploy
@@ -124,9 +124,9 @@ before_script:
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
   artifacts:
     paths: 
-    - ./current/.travis/reports/*.xml
+    - ./.ci/reports/*.xml
     reports:
-      junit: ./current/.travis/reports/*.xml
+      junit: ./.ci/reports/*.xml
 
 # deactivated:
 # https://docs.gitlab.com/ee/ci/examples/container_scanning.html

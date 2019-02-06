@@ -23,8 +23,8 @@ func_push() {
 func_tag() {
     DOCKER_REPO="$1"
     tag="$2"
-    
-    [ -z $(echo $tag|grep dev) ] && tag="$tag-dev"
+    set -xv 
+    [ -z $(echo $tag| grep dev) ] && tag="$tag-dev"
     image_id=$(docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep $DOCKER_REPO:$tag|cut -d : -f 3|head -n 1;)
     image_tags=$(docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep $image_id|cut -d : -f 2;)
     for i in $image_tags
@@ -36,8 +36,6 @@ func_tag() {
 
 
 # change directory for make usage
-pushd ..
-
 [ -z "$1" ] && echo "$STARTMSG No parameter with the Docker registry URL. Exit now." && exit 1
 [ "$1" == "NOT2PUSH" ] && echo "$STARTMSG The NOT2PUSH slug is only for local build and retag not for pushin to docker registries. Exit now." && exit 1
 [ -z "$2" ] && echo "$STARTMSG No parameter with the Docker registry username. Exit now." && exit 1
@@ -51,7 +49,7 @@ REGISTRY_PW="$3"
 # Pull all latest tagged container
     echo
     echo "$START Pull all latest-dev container..."
-    make -C .ci pull-latest REPOURL=${REGISTRY_URL}
+    make pull-latest REPOURL=${REGISTRY_URL}
 
 
 # prepare retagging
