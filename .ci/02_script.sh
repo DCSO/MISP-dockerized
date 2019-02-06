@@ -8,7 +8,7 @@ pushd ..
 [ "$1" == "NOT2PUSH" ] && echo "$STARTMSG The NOT2PUSH slug is only for local build and retag not for pushin to docker registries. Exit now." && exit 1
 [ -z "$2" ] && echo "$STARTMSG No parameter with the Docker registry username. Exit now." && exit 1
 [ -z "$3" ] && echo "$STARTMSG No parameter with the Docker registry password. Exit now." && exit 1
-[ -z "$4" ] && echo "$STARTMSG No parameter with the test type [long_test | no_test ]. Exit now." && exit 1
+[ -z "$4" ] && echo "$STARTMSG No parameter with the test type [ long_test | no_test ]. Exit now." && exit 1
 [ -z "$5" ] && echo "$STARTMSG No parameter with the current version. Exit now." && exit 1
 
 REGISTRY_URL="$1"
