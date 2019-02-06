@@ -36,15 +36,17 @@ before_install:
 
 jobs:
   include:
-    - stage: "Build-Environment-only"
-      name: "Build-Environment-only"
-      script: make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=no_test VERSION=$CURRENT_VERSION
-      script: echo "##### clean up..." &&  make -C $FOLDER delete
+    - stage: "env_test_only_hub.docker.com"
+      name: "env_test_only_hub.docker.com"
+      script: 
+      - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=no_test VERSION=$CURRENT_VERSION
+      - echo "##### clean up..." &&  make -C $FOLDER delete
       if: branch != dev AND branch != master
-    - stage: "Test-Environment"
-      name: "Test-Environment"
-      script: make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
-      script: echo "##### clean up..." &&  make -C $FOLDER delete
+    - stage: "long_test_hub.docker.com"
+      name: "long_test_hub.docker.com"
+      script: 
+      - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
+      - echo "##### clean up..." &&  make -C $FOLDER delete
       if: branch == dev OR branch == master OR type == cron
 
       
