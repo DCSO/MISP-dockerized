@@ -28,4 +28,4 @@ push:
 	@bash 30_push.sh $(REPO) $(USER) $(PW)
 
 script:
-	@bash 02_script.sh $(REPO) $(USER) $(PW) $(test) $(VERSION)
+	@bash 02_script.sh $(REPO) $(USER) $(PW) $(TEST) $(VERSION)

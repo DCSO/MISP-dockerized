@@ -1,5 +1,5 @@
 #!/bin/sh
-STARTMSG="[build-script]"
+STARTMSG="[02_script]"
 
 # change directory for make usage
 pushd ..
