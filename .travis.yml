@@ -34,7 +34,7 @@ before_install:
   # Install dependencies
   - .ci/01_before_install.sh
 
-stages:
+jobs:
   include:
     - stage: "Build-Environment-only"
       name: "Build-Environment-only"
