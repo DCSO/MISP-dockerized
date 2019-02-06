@@ -32,7 +32,7 @@ before_install:
   # Include Variables
   - source .ci/00_vars.sh
   # Install dependencies
-  - .ci/01_before_install.sh
+  - sudo .ci/01_before_install.sh
 
 jobs:
   include:
