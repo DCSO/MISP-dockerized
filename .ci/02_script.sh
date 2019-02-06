@@ -46,7 +46,6 @@ echo $DOCKER_LOGIN_OUTPUT
      echo "$STARTMSG show running docker container..." &&  docker ps
 
 # Automated test
-set -xv
 if [ "$TEST_TYPE" == "long_test" ]
 then 
     echo "$STARTMSG test environment..." &&  make -C .ci test; 
