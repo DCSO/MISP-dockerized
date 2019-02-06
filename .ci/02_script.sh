@@ -1,6 +1,9 @@
 #!/bin/sh
 STARTMSG="[build-script]"
 
+# change directory for make usage
+pushd ..
+
 [ -z "$1" ] && echo "$STARTMSG No parameter with the Docker registry URL. Exit now." && exit 1
 [ "$1" == "NOT2PUSH" ] && echo "$STARTMSG The NOT2PUSH slug is only for local build and retag not for pushin to docker registries. Exit now." && exit 1
 [ -z "$2" ] && echo "$STARTMSG No parameter with the Docker registry username. Exit now." && exit 1
@@ -45,7 +48,7 @@ echo $DOCKER_LOGIN_OUTPUT
 # Automated test
 if [ "$TEST_TYPE" == "long_test" ]
 then 
-    echo "$STARTMSG test environment..." &&  $makefile_travis test; 
+    echo "$STARTMSG test environment..." &&  make -C .ci test; 
     # Wait a short time
         sleep 10
     # show docker container

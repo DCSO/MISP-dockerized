@@ -112,5 +112,5 @@ CURRENT_VERSION=""
         [ "$CI" == true ] || echo "start installation..."
         [ "$CI" == true ] || sleep 1
         [ "$CI" == true ] || make -C current install
-        
+  
     fi

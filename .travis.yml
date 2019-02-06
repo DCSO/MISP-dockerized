@@ -18,6 +18,8 @@ env:
   - secure: "UVqDqQ5UFX8kzaU3wxFg0BUr2Cq0dh4BvuGl2krMkfHPWIseZZYAqctqCvQffKUROD+h+sCALepQZX4ZKsi2a08OJclv6TN8Eri2A3i5dYfBbeZ6rHq4e18bm+dEi00VYbqKMvz0SewqlewpowrKdfnLsO9ZvPr8pdKLWWqCdK90Id/OeQKs+THDtFcshqdtNrDaDBqQsZqWX58oLXzT6jio6hAlIh3MmSRFrx3nplLM5P9xJ3gKy1BIhs+3G26UfTrVxjuwCEsvhpWB52735INkA4vxunHZT/vbP+WDkI3am//pFz6Xg0F+9l8LepaTYT2Ksowq8GZD5lKLnfhknJOvyRhGWiV2k6SYz7cnW66RK630G588O9oa0ol3HnjQYCW9PNnQn11EZUBpcf2BVFEi4k/OGtJarv2dAI9LjLDerMKdHDpVqlAINLlWNrCwgxmg682SvsiEQwurxux9WEcMQacPU0ruTdV6GGgZdu67NEBkOP+Wcn/6ZjVXrPTXCDBSMOO/DVLd/HJyCCs3wkusf7/bdcG5Fta8DSW25VY8pZzfFVG1m5yAvl/Ndgl0wiHfsEUuhLK/TkUOOtFlSspbtnWXG1qzlJOWuFEBS6f5MogOJxQU17gJmCLHg9qvoR/tMv5UfezziwXn7m3mRagy1FMBG9VFf6ri6BR7XC8="
   # Docker Password only valid for this repo
   - secure: "DbvcY54cCCFfCNcqGNL4leThq/a9HTCVf5dj4hX7LKgh7xi9UYWVE9y/v/3i9kmVvptDu4c3xkUw1hKaLXIMJ0xSRvzJMtMQTz4awlymJmYXyJrV1Hvy6O+Xq961xff/gFSLYvntomlhDiA3f5e2VGYLacrVXExyQdy/uvy0I23ceyFgcRb2U0iRuBscWyvvXLyTYtvQFFnMlGwxXl789YK6YYIKf30AOZ6Q7ffm4VRPJ+ppRxJk4HxglBHcE+Ez81OW9PdXJTsUSBw8UcS0ZV7tD1cSOwL3lTCdlVYKEwDnSwIYLbXnnBhm4aG0L2flJ4hHUUk6TIQGTHtG2Z9wihLEjeEqLGg9vr9xE0XJdaL2stM6UgLJa9Oyb2Zl3UUQeaxkXU0LDWnwOBvamGhhWvHWi6qvVOh011Qb7WlLZcBY+Di+EGellb4NG8MvLmU0K0DEUQuCpi9yz5opiy1TYgZwNLBwRcX15nc3ePaqKLPkH5SQxFPMY9DkOpgtGNda7HRkEZ9Zy0d2MizzmS6/PfTKXQOzJordnWJdZ8lPh2mZmPN0Jpv4WsJZtszN+airztCeC0pkkkOurRI1Cz+cxky15QtfOPbuC7/3OCi60m5SoYxqNN172PdCZQdO2VY25YTTRiExLBJkA/Xwmc0b0DZ2maTownJX3yi8HOAhKcA="
+  - COMMAND_LONG_TEST:  "make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD long_test $CURRENT_VERSION"
+  - COMMAND_NO_TEST:    "make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD no_test $CURRENT_VERSION"
   matrix:
   #- VERSION=0.1.2
   #- VERSION=0.2.0
@@ -35,12 +37,12 @@ before_install:
 script:
   # If Git branch == dev OR master make an test
     # long_test
-  - if [[ "$TRAVIS_BRANCH" == "dev" ]]; then bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION; fi
-  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION; fi
-  - if [[ "$TRAVIS_BRANCH" == "feat/1.1.0" ]]; then bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION; fi
-  - if [[ "$TRAVIS_EVENT_TYPE" == "cron" ]]; then bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION; fi
+  - if [[ "$TRAVIS_BRANCH" == "dev" ]]; then $COMMAND_LONG_TEST; fi
+  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then $COMMAND_LONG_TEST; fi
+  - if [[ "$TRAVIS_BRANCH" == "feat/1.1.0" ]]; then $COMMAND_LONG_TEST; fi
+  - if [[ "$TRAVIS_EVENT_TYPE" == "cron" ]]; then $COMMAND_LONG_TEST; fi
     # no test
-  - if [[ "$TRAVIS_BRANCH" != "dev" ]]; then bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD no_test $CURRENT_VERSION; fi
+  - if [[ "$TRAVIS_BRANCH" != "dev" ]]; then $COMMAND_NO_TEST; fi
   # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
   

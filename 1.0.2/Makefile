@@ -113,14 +113,6 @@ upgrade:
 update: install
 
 
-test:
-	@make -C .travis test
-	@echo
-	@echo "#############################################"
-	@echo "For the report output: cat $(CURDIR)/.travis/reports/*.xml"
-	@echo "#############################################"
-
-
 ####################	used in misp-robot	####################
 DOCKER_EXEC=docker exec -ti
 #DOCKER_EXEC= "docker run -it --rm "
