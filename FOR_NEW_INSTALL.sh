@@ -109,10 +109,8 @@ CURRENT_VERSION=""
         echo "[OK] create symlink 'current/config' " && ln -s "../config" ./current/
 
 
-        if [ "$CI" != true ] 
-        then
-            echo "start installation..."
-            sleep 1
-            make -C current install
-        fi
+        [ "$CI" == true ] || echo "start installation..."
+        [ "$CI" == true ] || sleep 1
+        [ "$CI" == true ] || make -C current install
+        
     fi
