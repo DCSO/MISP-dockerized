@@ -22,8 +22,8 @@ env:
   #- VERSION=0.1.2
   #- VERSION=0.2.0
   #- VERSION=0.3.4
-  - VERSION=1.0.0
-  - VERSION=1.0.1
+  #- VERSION=1.0.0
+  #- VERSION=1.0.1
   - VERSION=1.0.2
 
 before_install:
@@ -34,7 +34,12 @@ before_install:
 
 script:
   # If Git branch == dev OR master make an test
-  - if [[ "$TRAVIS_BRANCH" == "dev" -o "$TRAVIS_BRANCH" == "master" ]]; then bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION; fi
+    # long_test
+  - if [[ "$TRAVIS_BRANCH" == "dev" ]]; then bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION; fi
+  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION; fi
+  - if [[ "$TRAVIS_BRANCH" == "dev/1.1.0" ]]; then bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION; fi
+  - if [[ "$TRAVIS_EVENT_TYPE" == "cron" ]]; then bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION; fi
+    # no test
   - if [[ "$TRAVIS_BRANCH" != "dev" ]]; then bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD no_test $CURRENT_VERSION; fi
   # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
@@ -46,15 +51,14 @@ script:
 # deploy:
 #   provider: script
 #   script: 
-#     - bash .ci/02_script.sh long_test
+#     - bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION;
 #     # Push hub.docker.com
 #     - bash .ci/30_push_2_registry.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD
-#     # Push internal registry
-#     - bash .ci/30_push_2_registry.sh $CUSTOM_REGISTRY_URL $CUSTOM_REGISTRY_USER $CUSTOM_REGISTRY_PW
 #     # Clean Up
 #     - echo "##### clean up..." &&  make -C $FOLDER delete
 #   on:
-#     branch: master
+#     all_branches: true
+#     condition: $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+ OR $TRAVIS_BRANCH = master
 
 # don't notify me when things fail
 notifications:
