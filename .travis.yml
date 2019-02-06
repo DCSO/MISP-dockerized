@@ -40,13 +40,11 @@ jobs:
       if: branch != dev AND branch != master
       script: 
       - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=no_test VERSION=$CURRENT_VERSION
-      - echo "##### clean up..." &&  make -C $FOLDER delete
     - stage: "long_test_hub.docker.com"
       name: "long_test_hub.docker.com"
       if: branch == dev OR branch == master OR type == cron
       script: 
       - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
-      - echo "##### clean up..." &&  make -C $FOLDER delete
       
 
       
