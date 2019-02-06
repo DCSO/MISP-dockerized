@@ -25,7 +25,7 @@ test:
 	@docker cp misp-robot:/srv/MISP-dockerized-testbench/reports/. reports/
 
 push:
-	@bash 30_push.sh $(REPOURL) $(USER) $(PW)
+	@bash 30_push_2_registry.sh $(REPOURL) $(USER) $(PW)
 
 script:
 	@bash 02_script.sh $(REPOURL) $(USER) $(PW) $(TEST) $(VERSION)
