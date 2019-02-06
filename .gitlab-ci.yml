@@ -34,7 +34,7 @@ before_script:
   - dev
   - feat/1.1.0
   script:
-  - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW no_test $CURRENT_VERSION
+  - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=no_test VERSION=$CURRENT_VERSION
   # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
 
@@ -45,7 +45,7 @@ before_script:
   - dev
   - feat/1.1.0
   script:
-  - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD no_test $CURRENT_VERSION
+  - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=no_test VERSION=$CURRENT_VERSION
   # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
 
@@ -57,7 +57,7 @@ before_script:
   - feat/1.1.0
   allow_failure: true
   script:
-  - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW long_test $CURRENT_VERSION
+  - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=long_test VERSION=$CURRENT_VERSION
   # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
@@ -74,7 +74,7 @@ before_script:
   - dev
   - feat/1.1.0
   script:
-  - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD long_test $CURRENT_VERSION
+  - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
   # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
@@ -94,9 +94,9 @@ before_script:
   script:
   # Check internal Registry
     # Test
-  - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW long_test $CURRENT_VERSION
+  - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=long_test VERSION=$CURRENT_VERSION
     # Push
-  - make -C .ci push REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW long_test $CURRENT_VERSION
+  - make -C .ci push REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=long_test VERSION=$CURRENT_VERSION
     # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
@@ -114,7 +114,7 @@ before_script:
   script:
   # Check hub.docker.com Registry
     # Test
-  - make -C .ci  REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD long_test $CURRENT_VERSION
+  - make -C .ci  REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
     # Push 
   - bash .ci/30_push_2_registry.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD
     # Clean Up
