@@ -53,12 +53,12 @@ REGISTRY_PW="$3"
 
 
 # prepare retagging
-SERVER_TAG=$(docker ps -f name=server --format '{{.Image}}'|cut -d : -f 2|cut -d - -f 3)
-PROXY_TAG=$(docker ps -f name=proxy --format '{{.Image}}'|cut -d : -f 2|cut -d - -f 3)
-ROBOT_TAG=$(docker ps -f name=robot --format '{{.Image}}'|cut -d : -f 2|cut -d - -f 3)
-MODULES_TAG=$(docker ps -f name=modules --format '{{.Image}}'|cut -d : -f 2|cut -d - -f 3)
-#DB_TAG=$(docker ps -f name=db --format '{{.Image}}'|cut -d : -f 2|cut -d - -f 3)
-#REDIS_TAG=$(docker ps -f name=redis --format '{{.Image}}'|cut -d : -f 2|cut -d - -f 3)
+SERVER_TAG=$(docker ps -f name=server --format '{{.Image}}'|cut -d : -f 2|cut -d - -f 1)
+PROXY_TAG=$(docker ps -f name=proxy --format '{{.Image}}'|cut -d : -f 2|cut -d - -f 1)
+ROBOT_TAG=$(docker ps -f name=robot --format '{{.Image}}'|cut -d : -f 2|cut -d - -f 1)
+MODULES_TAG=$(docker ps -f name=modules --format '{{.Image}}'|cut -d : -f 2|cut -d - -f 1)
+#DB_TAG=$(docker ps -f name=db --format '{{.Image}}'|cut -d : -f 2|cut -d - -f 1)
+#REDIS_TAG=$(docker ps -f name=redis --format '{{.Image}}'|cut -d : -f 2|cut -d - -f 1)
 
 
 # Login to Docker registry
