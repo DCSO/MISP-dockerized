@@ -37,7 +37,7 @@ script:
     # long_test
   - if [[ "$TRAVIS_BRANCH" == "dev" ]]; then bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION; fi
   - if [[ "$TRAVIS_BRANCH" == "master" ]]; then bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION; fi
-  - if [[ "$TRAVIS_BRANCH" == "dev/1.1.0" ]]; then bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION; fi
+  - if [[ "$TRAVIS_BRANCH" == "feat/1.1.0" ]]; then bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION; fi
   - if [[ "$TRAVIS_EVENT_TYPE" == "cron" ]]; then bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION; fi
     # no test
   - if [[ "$TRAVIS_BRANCH" != "dev" ]]; then bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD no_test $CURRENT_VERSION; fi

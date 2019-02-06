@@ -33,7 +33,7 @@ before_script:
   except:
   - master
   - dev
-  - dev/1.1.0
+  - feat/1.1.0
   script:
   - bash .ci/02_script.sh $CUSTOM_REGISTRY_URL $CUSTOM_REGISTRY_USER $CUSTOM_REGISTRY_PW no_test $CURRENT_VERSION
   # Clean Up
@@ -44,7 +44,7 @@ before_script:
   except:
   - master
   - dev
-  - dev/1.1.0
+  - feat/1.1.0
   script:
   - bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD no_test $CURRENT_VERSION
   # Clean Up
@@ -56,7 +56,7 @@ before_script:
   stage: build
   only:
   - dev
-  - dev/1.1.0
+  - feat/1.1.0
   allow_failure: true
   script:
   - bash .ci/02_script.sh $CUSTOM_REGISTRY_URL $CUSTOM_REGISTRY_USER $CUSTOM_REGISTRY_PW long_test $CURRENT_VERSION
@@ -75,7 +75,7 @@ before_script:
   stage: build
   only:
   - dev
-  - dev/1.1.0
+  - feat/1.1.0
   script:
   - bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $CURRENT_VERSION
   # Clean Up
