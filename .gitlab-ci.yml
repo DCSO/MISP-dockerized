@@ -91,6 +91,7 @@ before_script:
   only: 
   - master
   - schedules
+  - bug/MDD179
   script:
   # Check internal Registry
     # Test
