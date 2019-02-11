@@ -25,9 +25,9 @@ func_tag() {
     for i in $IMAGE_TAGS
     do
         k=$(echo $i|sed 's,-dev$,,')
-        echo "$STARTMSG retag: $DOCKER_REPO:$i with $DOCKER_REPO:$k"
+        echo "$STARTMSG Retag: $DOCKER_REPO:$i with $DOCKER_REPO:$k"
         docker tag $DOCKER_REPO:$i $DOCKER_REPO:$k;
-        echo "$STARTMSG remove: $DOCKER_REPO:$i"
+        echo "$STARTMSG Remove: $DOCKER_REPO:$i"
         docker image rm $DOCKER_REPO:$i
     done
 }
