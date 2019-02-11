@@ -25,9 +25,9 @@ func_tag() {
     for i in $IMAGE_TAGS
     do
         k=$(echo $i|sed 's,-dev$,,')
-        echo "$STARTMSG### retag: $DOCKER_REPO:$i with $DOCKER_REPO:$k"
+        echo "$STARTMSG retag: $DOCKER_REPO:$i with $DOCKER_REPO:$k"
         docker tag $DOCKER_REPO:$i $DOCKER_REPO:$k;
-        echo "$STARTMSG### remove: $DOCKER_REPO:$i"
+        echo "$STARTMSG remove: $DOCKER_REPO:$i"
         docker image rm $DOCKER_REPO:$i
     done
 }
@@ -46,7 +46,7 @@ REGISTRY_PW="$3"
 
 # Pull all latest tagged container
     echo
-    echo "$START Pull all latest-dev container..."
+    echo "$STARTMSG Pull all latest-dev container..."
     make pull-latest REPOURL=${REGISTRY_URL}
 
 

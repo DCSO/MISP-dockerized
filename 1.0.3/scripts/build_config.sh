@@ -1,8 +1,7 @@
 #!/bin/bash
 #description     :This script build the configuration for the MISP Container and their content.
 #==============================================================================
-set -e
-#set -xv # for debugging only
+STARTMSG="[build_config.sh]"
 
 # Available Parameters from outside:
 # export CI=true
@@ -34,13 +33,13 @@ ENABLE_FILE_PGP="${MISP_dockerized_repo}/config/pgp/pgp.enable"
 ######################################################################
 # Function to import configuration
 function import_config(){
-  echo -n "check and import existing configuration..."
+  echo -n "$STARTMSG Check and import existing configuration..."
   [ -f $CONFIG_FILE ] && source $CONFIG_FILE
   echo "done"
 }
 # Function to set default values
 function check_if_vars_exists() {
-  echo -n "check if all vars exists..."
+  echo -n "$STARTMSG Check if all vars exists..."
   # Default Variables for the config:
   # Hostname
   [ -z "${myHOSTNAME+x}" ] && myHOSTNAME="`hostname -f`" && QUERY_myHOSTNAME="yes"
@@ -96,7 +95,7 @@ function check_if_vars_exists() {
 }
 # Function for the Container Versions
 function default_container_version() {
-  echo -n "check container version..."
+  echo -n "$STARTMSG Check container version..."
   ############################################
   # Start Global Variable Section
   ############################################
@@ -124,7 +123,7 @@ function check_exists_configs(){
   EXIT_ANSIBLE=0
   # check config file and backup if its needed
   if [[ -f $DOCKER_COMPOSE_CONF ]]; then
-    read -r -p "A docker-compose config file exists and will be overwritten, are you sure you want to contine? [y/N] " -ei "n" response
+    read -r -p "$STARTMSG A docker-compose config file exists and will be overwritten, are you sure you want to contine? [y/N] " -ei "n" response
     case $response in
       [yY][eE][sS]|[yY])
         # move existing configuration in backup folder and add the date of this movement
@@ -138,7 +137,7 @@ function check_exists_configs(){
   fi
   # check config file and backup if its needed
   if [[ -f $MISP_CONF_YML ]]; then
-    read -r -p "A misp config file exists and will be overwritten, are you sure you want to continue? [y/N] " -ei "n" response
+    read -r -p "$STARTMSG A misp config file exists and will be overwritten, are you sure you want to continue? [y/N] " -ei "n" response
     case $response in
       [yY][eE][sS]|[yY])
         # move existing configuration in backup folder and add the date of this movement
@@ -176,15 +175,15 @@ function query_timezone(){
 # Questions for Hostname
 function query_hostname(){
   # read Hostname for MISP Instance
-  read -p "Hostname (FQDN - example.org is not a valid FQDN) [DEFAULT: $myHOSTNAME]: " -ei $myHOSTNAME myHOSTNAME
+  read -p "$STARTMSG Hostname (FQDN - example.org is not a valid FQDN) [DEFAULT: $myHOSTNAME]: " -ei $myHOSTNAME myHOSTNAME
   MISP_FQDN="${myHOSTNAME}"
   MISP_URL="https://${myHOSTNAME}"
 }
 
 # Questions for Network
 function query_network_settings(){
-  read -p "Which MISP Network should we use [DEFAULT: $DOCKER_NETWORK]: " -ei $DOCKER_NETWORK DOCKER_NETWORK
-  read -p "Which MISP Network BRIDGE Interface Name should we use [DEFAULT: $BRIDGE_NAME]: " -ei $BRIDGE_NAME BRIDGE_NAME
+  read -p "$STARTMSG Which MISP Network should we use [DEFAULT: $DOCKER_NETWORK]: " -ei $DOCKER_NETWORK DOCKER_NETWORK
+  read -p "$STARTMSG Which MISP Network BRIDGE Interface Name should we use [DEFAULT: $BRIDGE_NAME]: " -ei $BRIDGE_NAME BRIDGE_NAME
 }
 
 # Questions for Proxy Settings
@@ -192,13 +191,13 @@ function query_proxy_settings(){
   # read Proxy Settings MISP Instance
   while (true)
   do
-    read -r -p "Should we use an proxy configuration? [y/N] " -ei "$QUESTION_USE_PROXY" QUESTION_USE_PROXY
+    read -r -p "$STARTMSG Should we use an proxy configuration? [y/N] " -ei "$QUESTION_USE_PROXY" QUESTION_USE_PROXY
     case $QUESTION_USE_PROXY in
       [yY][eE][sS]|[yY])
         QUESTION_USE_PROXY="yes"
-        read -p "Which proxy we should use for HTTPS connections (for example: http://proxy.example.com:8080) [DEFAULT: $HTTPS_PROXY]: " -ei "$HTTPS_PROXY" HTTPS_PROXY
-        read -p "Which proxy we should use for HTTP  connections (for example: http://proxy.example.com:8080) [DEFAULT: $HTTP_PROXY]: " -ei "$HTTP_PROXY" HTTP_PROXY
-        read -p "For which site(s) we shouldn't use a Proxy (for example: localhost,127.0.0.0/8,docker-registry.somecorporation.com) [DEFAULT: $NO_PROXY]: " -ei $NO_PROXY NO_PROXY
+        read -p "$STARTMSG Which proxy we should use for HTTPS connections (for example: http://proxy.example.com:8080) [DEFAULT: $HTTPS_PROXY]: " -ei "$HTTPS_PROXY" HTTPS_PROXY
+        read -p "$STARTMSG Which proxy we should use for HTTP  connections (for example: http://proxy.example.com:8080) [DEFAULT: $HTTP_PROXY]: " -ei "$HTTP_PROXY" HTTP_PROXY
+        read -p "$STARTMSG For which site(s) we shouldn't use a Proxy (for example: localhost,127.0.0.0/8,docker-registry.somecorporation.com) [DEFAULT: $NO_PROXY]: " -ei $NO_PROXY NO_PROXY
         break
         ;;
       [nN][oO]|[nN])
@@ -218,32 +217,32 @@ function query_db_settings(){
   # check if a own DB is needed
     while (true)
     do
-      read -r -p "Do you want to use an external Database? [y/N] " -ei "$QUESTION_OWN_DB" QUESTION_OWN_DB
+      read -r -p "$STARTMSG Do you want to use an external Database? [y/N] " -ei "$QUESTION_OWN_DB" QUESTION_OWN_DB
       case $QUESTION_OWN_DB in
         [yY][eE][sS]|[yY])
           QUESTION_OWN_DB="yes"
-          read -p "Which DB Host should we use for DB Connection [DEFAULT: $MYSQL_HOST]: " -ei "$MYSQL_HOST" MYSQL_HOST
-          read -p "Which DB Port should we use for DB Connection [DEFAULT: $MYSQL_PORT]: " -ei "$MYSQL_PORT" MYSQL_PORT
+          read -p "$STARTMSG Which DB Host should we use for DB Connection [DEFAULT: $MYSQL_HOST]: " -ei "$MYSQL_HOST" MYSQL_HOST
+          read -p "$STARTMSG Which DB Port should we use for DB Connection [DEFAULT: $MYSQL_PORT]: " -ei "$MYSQL_PORT" MYSQL_PORT
           break;
           ;;
         [nN][oO]|[nN])
           QUESTION_OWN_DB="no"
           # Set MISP_host to DB Container Name and Port
-          echo "Set DB Host to docker default: $MYSQL_HOST"
-          echo "Set DB Host Port to docker default: $MYSQL_PORT"
-          read -p "Which DB Root Password should we use for DB Connection [DEFAULT: generated]: " -ei "$MYSQL_ROOT_PASSWORD" MYSQL_ROOT_PASSWORD
+          echo "$STARTMSG Set DB Host to docker default: $MYSQL_HOST"
+          echo "$STARTMSG Set DB Host Port to docker default: $MYSQL_PORT"
+          read -p "$STARTMSG Which DB Root Password should we use for DB Connection [DEFAULT: generated]: " -ei "$MYSQL_ROOT_PASSWORD" MYSQL_ROOT_PASSWORD
           break;
           ;;
         [eE][xX][iI][tT])
           exit 1
           ;;
         *)
-          echo -e "\nplease only choose [y|n] for the question!\n"
+          echo -e "\n$STARTMSG Please only choose [y|n] for the question!\n"
       esac
     done
-  read -p "Which DB Name should we use for DB Connection [DEFAULT: $MYSQL_DATABASE]: " -ei "$MYSQL_DATABASE" MYSQL_DATABASE
-  read -p "Which DB User should we use for DB Connection [DEFAULT: $MYSQL_USER]: " -ei "$MYSQL_USER" MYSQL_USER
-  read -p "Which DB User Password should we use for DB Connection [DEFAULT: generated]: " -ei "$MYSQL_PASSWORD" MYSQL_PASSWORD
+  read -p "$STARTMSG Which DB Name should we use for DB Connection [DEFAULT: $MYSQL_DATABASE]: " -ei "$MYSQL_DATABASE" MYSQL_DATABASE
+  read -p "$STARTMSG Which DB User should we use for DB Connection [DEFAULT: $MYSQL_USER]: " -ei "$MYSQL_USER" MYSQL_USER
+  read -p "$STARTMSG Which DB User Password should we use for DB Connection [DEFAULT: generated]: " -ei "$MYSQL_PASSWORD" MYSQL_PASSWORD
 
 }
 
@@ -255,12 +254,12 @@ function query_http_settings(){
   #read -p "Which HTTP Port should we expose [DEFAULT: $HTTP_PORT]: " -ei "$HTTP_PORT" HTTP_PORT
   
   
-  read -p "Which HTTP Serveradmin mailadress should we use [DEFAULT: $HTTP_SERVERADMIN]: " -ei "$HTTP_SERVERADMIN" HTTP_SERVERADMIN
-  read -p "How much PHP memory should be used? [DEFAULT: $PHP_MEMORY]: " -ei $PHP_MEMORY  PHP_MEMORY
+  read -p "$STARTMSG Which HTTP Serveradmin mailadress should we use [DEFAULT: $HTTP_SERVERADMIN]: " -ei "$HTTP_SERVERADMIN" HTTP_SERVERADMIN
+  read -p "$STARTMSG How much PHP memory should be used? [DEFAULT: $PHP_MEMORY]: " -ei $PHP_MEMORY  PHP_MEMORY
 
   while (true)
   do
-    read -r -p "Should we allow access to misp from every IP? [y/N] " -ei "$ALLOW_ALL_IPs" ALLOW_ALL_IPs
+    read -r -p "$STARTMSG Should we allow access to misp from every IP? [y/N] " -ei "$ALLOW_ALL_IPs" ALLOW_ALL_IPs
     case $ALLOW_ALL_IPs in
       [yY][eE][sS]|[yY])
         ALLOW_ALL_IPs=yes
@@ -269,14 +268,14 @@ function query_http_settings(){
         ;;
       [nN][oO]|[nN])
         ALLOW_ALL_IPs=no
-        read -p "Which IPs should have access? [DEFAULT: 192.168.0.0/16 172.16.0.0/12 10.0.0.0/8]: " -ei "$HTTP_ALLOWED_IP" HTTP_ALLOWED_IP
+        read -p "$STARTMSG Which IPs should have access? [DEFAULT: 192.168.0.0/16 172.16.0.0/12 10.0.0.0/8]: " -ei "$HTTP_ALLOWED_IP" HTTP_ALLOWED_IP
         break
         ;;
       [eE][xX][iI][tT])
         exit 1
         ;;
       *)
-        echo -e "\nplease only choose [y|n] for the question!\n"
+        echo -e "\n$STARTMSG Please only choose [y|n] for the question!\n"
       ;;
     esac
   done
@@ -287,25 +286,25 @@ function query_misp_settings(){
   # read and set MISP config settings
   # read -p "Which MISP DB prefix should we use [default: '']: " -ei $MISP_prefix MISP_prefix
   # read -p "Which MISP Encoding should we use [default: utf8]: " -ei $MISP_encoding  MISP_encoding
-  read -p "If you do a fresh Installation, you should have a Salt. Is this SALT ok [DEFAULT: generated]: " -ei $MISP_SALT  MISP_SALT
-  read -p "Do you require the analyse column at List Events page? [DEFAULT: no]: " -ei $ADD_ANALYZE_COLUMN  ADD_ANALYZE_COLUMN
-  read -p "Which sender mailadress should MISP use [DEFAULT: $SENDER_ADDRESS]: " -ei "$SENDER_ADDRESS" SENDER_ADDRESS
+  read -p "$STARTMSG If you do a fresh Installation, you should have a Salt. Is this SALT ok [DEFAULT: generated]: " -ei $MISP_SALT  MISP_SALT
+  read -p "$STARTMSG Do you require the analyse column at List Events page? [DEFAULT: no]: " -ei $ADD_ANALYZE_COLUMN  ADD_ANALYZE_COLUMN
+  read -p "$STARTMSG Which sender mailadress should MISP use [DEFAULT: $SENDER_ADDRESS]: " -ei "$SENDER_ADDRESS" SENDER_ADDRESS
 }
 
 # Questions for Postfix Mailer
 function query_postfix_settings(){
-  read -p "Which mail domain we should use [DEFAULT: $DOMAIN]: " -ei $DOMAIN DOMAIN
-  read -p "Which relay host we should use [ IP or DNS]: " -ei $RELAYHOST RELAYHOST
-  read -p "Which relay user we should use [DEFAULT: generated]: " -ei $RELAY_USER RELAY_USER
-  read -p "Which relay user password we should use [DEFAULT: generated]: " -ei $RELAY_PASSWORD RELAY_PASSWORD
-  read -p "Which sender address we should use [MAIL]:" -ei $HTTP_SERVERADMIN SENDER_ADDRESS
+  read -p "$STARTMSG Which mail domain we should use [DEFAULT: $DOMAIN]: " -ei $DOMAIN DOMAIN
+  read -p "$STARTMSG Which relay host we should use [ IP or DNS]: " -ei $RELAYHOST RELAYHOST
+  read -p "$STARTMSG Which relay user we should use [DEFAULT: generated]: " -ei $RELAY_USER RELAY_USER
+  read -p "$STARTMSG Which relay user password we should use [DEFAULT: generated]: " -ei $RELAY_PASSWORD RELAY_PASSWORD
+  read -p "$STARTMSG Which sender address we should use [MAIL]:" -ei $HTTP_SERVERADMIN SENDER_ADDRESS
   while (true)
   do
-    read -r -p "Should we enable debugging options for a special peer? [y/N]: " -ei $QUESTION_DEBUG_PEERS QUESTION_DEBUG_PEERS
+    read -r -p "$STARTMSG Should we enable debugging options for a special peer? [y/N]: " -ei $QUESTION_DEBUG_PEERS QUESTION_DEBUG_PEERS
     case $QUESTION_DEBUG_PEERS in
       [yY][eE][sS]|[yY])
         QUESTION_DEBUG_PEERS=yes
-        read -p "For which peer we need debug informations?: " -ei $DEBUG_PEER DEBUG_PEER
+        read -p "$STARTMSG For which peer we need debug informations?: " -ei $DEBUG_PEER DEBUG_PEER
         break
         ;;
       [nN][oO]|[nN])
@@ -317,7 +316,7 @@ function query_postfix_settings(){
         exit 1
         ;;
       *)
-        echo -e "\nplease only choose [y|n] for the question!\n"
+        echo -e "\n$STARTMSG Please only choose [y|n] for the question!\n"
       ;;
     esac
   done
@@ -330,7 +329,7 @@ function query_redis_settings(){
 
 # Questions for PGP
 function query_pgp_settings(){
-  read -r -p "Would you start with PGP? [y/N] " -ei "n" response
+  read -r -p "$STARTMSG Would you start with PGP? [y/N] " -ei "n" response
   case $response in
   [yY][eE][sS]|[yY])
     touch $ENABLE_FILE_PGP
@@ -345,7 +344,7 @@ function query_pgp_settings(){
 
 # Questions for S/MIME
 function query_smime_settings(){
-  read -r -p "Would you start with S/MIME? [y/N] " -ei "n" response
+  read -r -p "$STARTMSG Would you start with S/MIME? [y/N] " -ei "n" response
   case $response in
   [yY][eE][sS]|[yY])
     touch $ENABLE_FILE_SMIME
@@ -361,7 +360,7 @@ function query_smime_settings(){
 
 # Questions for Docker Registry
 function query_docker_registry() { 
-  echo -n "check Docker registry..."
+  echo -n "$STARTMSG Check Docker registry..."
   if [ -z "$DOCKER_REGISTRY" ]; then
     # Default use hub.docker.com
     DOCKER_REGISTRY="dcso"
@@ -379,10 +378,10 @@ function query_docker_registry() {
 
 # Questions for Log Settings
 function query_log_settings(){
-  read -r -p "Would you enable Syslog logging? [y/N] " -ei "n" response
+  read -r -p "$STARTMSG Would you enable Syslog logging? [y/N] " -ei "n" response
   case $response in
   [yY][eE][sS]|[yY])
-    read -p "Do you require syslog logging to an remote host if yes, please enter Hostname, DNS or IP? [DEFAULT: $SYSLOG_REMOTE_HOST]: " -ei $SYSLOG_REMOTE_HOST  SYSLOG_REMOTE_HOST
+    read -p "$STARTMSG Do you require syslog logging to an remote host if yes, please enter Hostname, DNS or IP? [DEFAULT: $SYSLOG_REMOTE_HOST]: " -ei $SYSLOG_REMOTE_HOST  SYSLOG_REMOTE_HOST
     #syslog-address: "unix:///dev/log"
          #syslog-address: "unix:///tmp/syslog.sock"
     [ ! $SYSLOG_REMOTE_HOST == "no" ] && SYSLOG_REMOTE_LINE="syslog-address: tcp://$SYSLOG_REMOTE_HOST"
@@ -434,12 +433,13 @@ if [ "$AUTOMATE_BUILD" = "true" ]
     # Automated Startup only for travis
     ################################################
     # ask no questions only defaults
-    echo "automatic build..."
+    echo "$STARTMSG Automatic build..."
     ####
     # set hostname to an fix one
     myHOSTNAME="misp.example.com"
+    MISP_URL="https://$myHostname"
   else
-    echo "manual build..."
+    echo "$STARTMSG Manual build..."
     # Hostname
     [ "$QUERY_myHOSTNAME" == "yes" ] && query_hostname
     # Network
@@ -473,7 +473,7 @@ fi
 
 ###################################
 # Write Configuration
-echo -n "write configuration..."
+echo -n "$STARTMSG Write configuration..."
 ###################################
 # Docker-compose override File
 cat << EOF > $DOCKER_COMPOSE_CONF
@@ -667,7 +667,7 @@ EOF
 
 echo "...done"
 echo
-echo "To change the configuration, delete the corresponding line in:"
+echo "$STARTMSG To change the configuration, delete the corresponding line in:"
 echo "$CONFIG_FILE"
 sleep 2
 ##########################################
