@@ -3,18 +3,12 @@ STARTMSG="[push]"
 
 func_push() {
     DOCKER_REPO="$1"
-    tag="$2"
+    TAG="$2"
+    TAG=$(echo $TAG|sed 's,-dev$,,')
 
-    echo "$STARTMSG ###################################################################"
-    echo "$STARTMSG### remove dev MISP images after retagging ###";
-    echo "$STARTMSG### remove: $1 with tag $2"
-    [ -z $(docker image ls --format '{{.Repository}}:{{.Tag}}'|grep -e "$2-dev") ] || docker image rm -f $(docker image ls --format '{{.Repository}}:{{.Tag}}'|grep -e "$2-dev")
-    [ -z $(docker image ls --format '{{.Repository}}:{{.Tag}}'|grep -e "$1:latest-dev") ] || docker image rm -f $(docker image ls --format '{{.Repository}}:{{.Tag}}'|grep -e "$1:latest-dev")
-    docker images -f name=$DOCKER_REPO
-    
-    image_id=$(docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep $DOCKER_REPO:$tag|cut -d : -f 3|head -n 1;)
-    image_tags=$(docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep $image_id|cut -d : -f 2;)
-    for i in $image_tags
+    IMAGE_ID=$(docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep $DOCKER_REPO:$TAG|cut -d : -f 3|head -n 1;)
+    IMAGE_TAGS=$(docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep $IMAGE_ID|cut -d : -f 2;)
+    for i in $IMAGE_TAGS
     do
         docker push $DOCKER_REPO:$i
     done
@@ -22,15 +16,19 @@ func_push() {
 
 func_tag() {
     DOCKER_REPO="$1"
-    tag="$2"
+    TAG="$2"
     
-    [ -z $(echo $tag| grep dev) ] && tag="$tag-dev"
-    image_id=$(docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep $DOCKER_REPO:$tag|cut -d : -f 3|head -n 1;)
-    image_tags=$(docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep $image_id|cut -d : -f 2;)
-    for i in $image_tags
+    # add -dev 
+    [ -z $(echo $TAG| grep dev) ] && TAG="$TAG-dev"
+    IMAGE_ID=$(docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep $DOCKER_REPO:$TAG|cut -d : -f 3|head -n 1;)
+    IMAGE_TAGS=$(docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep $IMAGE_ID|cut -d : -f 2;)
+    for i in $IMAGE_TAGS
     do
         k=$(echo $i|sed 's,-dev$,,')
-        docker tag $DOCKER_REPO:$i $DOCKER_REPO:$k; \
+        echo "$STARTMSG### retag: $DOCKER_REPO:$i with $DOCKER_REPO:$k"
+        docker tag $DOCKER_REPO:$i $DOCKER_REPO:$k;
+        echo "$STARTMSG### remove: $DOCKER_REPO:$i"
+        docker image rm $DOCKER_REPO:$i
     done
 }
 
@@ -53,12 +51,12 @@ REGISTRY_PW="$3"
 
 
 # prepare retagging
-SERVER_TAG=$(docker ps -f name=server --format '{{.Image}}'|cut -d : -f 2|cut -d - -f 1)
-PROXY_TAG=$(docker ps -f name=proxy --format '{{.Image}}'|cut -d : -f 2|cut -d - -f 1)
-ROBOT_TAG=$(docker ps -f name=robot --format '{{.Image}}'|cut -d : -f 2|cut -d - -f 1)
-MODULES_TAG=$(docker ps -f name=modules --format '{{.Image}}'|cut -d : -f 2|cut -d - -f 1)
-#DB_TAG=$(docker ps -f name=db --format '{{.Image}}'|cut -d : -f 2|cut -d - -f 1)
-#REDIS_TAG=$(docker ps -f name=redis --format '{{.Image}}'|cut -d : -f 2|cut -d - -f 1)
+SERVER_TAG=$(docker ps -f name=server --format '{{.Image}}'|cut -d : -f 2)
+PROXY_TAG=$(docker ps -f name=proxy --format '{{.Image}}'|cut -d : -f 2)
+ROBOT_TAG=$(docker ps -f name=robot --format '{{.Image}}'|cut -d : -f 2)
+MODULES_TAG=$(docker ps -f name=modules --format '{{.Image}}'|cut -d : -f 2)
+#DB_TAG=$(docker ps -f name=db --format '{{.Image}}'|cut -d : -f 2)
+#REDIS_TAG=$(docker ps -f name=redis --format '{{.Image}}'|cut -d : -f 2)
 
 
 # Login to Docker registry

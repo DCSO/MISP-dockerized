@@ -26,6 +26,7 @@ env:
   #- CURRENT_VERSION=1.0.0
   #- CURRENT_VERSION=1.0.1
   - CURRENT_VERSION=1.0.2
+  - CURRENT_VERSION=1.0.3
 
 before_install:
   # Include Variables

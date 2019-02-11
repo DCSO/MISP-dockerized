@@ -96,7 +96,7 @@ before_script:
     # Test
   - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=long_test VERSION=$CURRENT_VERSION
     # Push
-  - make -C .ci push REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=long_test VERSION=$CURRENT_VERSION
+  - make -C .ci push REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW
     # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
@@ -116,7 +116,7 @@ before_script:
     # Test
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
     # Push 
-  - bash .ci/30_push_2_registry.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD
+  - make -C .ci push REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
     # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
@@ -180,3 +180,4 @@ include:
   #- '1.0.0/.gitlab-ci.yml'
   #- '1.0.1/.gitlab-ci.yml'
   - '1.0.2/.gitlab-ci.yml'
+  - '1.0.3/.gitlab-ci.yml'
