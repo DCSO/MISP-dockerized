@@ -5,7 +5,7 @@ STARTMSG="[02_script]"
 pushd ..
 
 [ -z "$1" ] && echo "$STARTMSG No parameter with the Docker registry URL. Exit now." && exit 1
-[ "$1" == "NOT2PUSH" ] && echo "$STARTMSG The NOT2PUSH slug is only for local build and retag not for pushin to docker registries. Exit now." && exit 1
+[ "$1" = "NOT2PUSH" ] && echo "$STARTMSG The NOT2PUSH slug is only for local build and retag not for pushin to docker registries. Exit now." && exit 1
 [ -z "$2" ] && echo "$STARTMSG No parameter with the Docker registry username. Exit now." && exit 1
 [ -z "$3" ] && echo "$STARTMSG No parameter with the Docker registry password. Exit now." && exit 1
 [ -z "$4" ] && echo "$STARTMSG No parameter with the test type [ long_test | no_test ]. Exit now." && exit 1
@@ -20,14 +20,14 @@ CURRENT_VERSION="$5"
 
 # Login to Docker registry
 [ "$REGISTRY_URL" != "dcso" ] && DOCKER_LOGIN_OUTPUT="$(echo "$REGISTRY_PW" | docker login -u "$REGISTRY_USER" "$REGISTRY_URL" --password-stdin)"
-[ "$REGISTRY_URL" == "dcso" ] && DOCKER_LOGIN_OUTPUT="$(echo "$REGISTRY_PW" | docker login -u "$REGISTRY_USER" --password-stdin)"
-echo $DOCKER_LOGIN_OUTPUT
+[ "$REGISTRY_URL" = "dcso" ] && DOCKER_LOGIN_OUTPUT="$(echo "$REGISTRY_PW" | docker login -u "$REGISTRY_USER" --password-stdin)"
+echo "$DOCKER_LOGIN_OUTPUT"
 
 ###### Create current folder 
 # Choose the Environment Version
     echo
     echo "$STARTMSG Create current folder and choose version..."
-    bash ./FOR_NEW_INSTALL.sh $CURRENT_VERSION
+    bash ./FOR_NEW_INSTALL.sh "$CURRENT_VERSION"
 
 
 # Build config and deploy environent
@@ -46,7 +46,7 @@ echo $DOCKER_LOGIN_OUTPUT
      echo "$STARTMSG show running docker container..." &&  docker ps
 
 # Automated test
-if [ "$TEST_TYPE" == "long_test" ]
+if [ "$TEST_TYPE" = "long_test" ]
 then 
     echo "$STARTMSG test environment..." &&  make -C .ci test; 
     # Wait a short time
