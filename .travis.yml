@@ -47,8 +47,6 @@ jobs:
       script: 
       - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
       
-
-      
 # Push all Images found with the current Docker container name to the Docker registries
 #
 # deploy:

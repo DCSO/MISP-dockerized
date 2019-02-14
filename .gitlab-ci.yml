@@ -125,7 +125,9 @@ before_script:
     - ./.ci/reports/*.xml
     reports:
       junit: ./.ci/reports/*.xml
-
+      
+      
+      
 # deactivated:
 # https://docs.gitlab.com/ee/ci/examples/container_scanning.html
 # https://docs.gitlab.com/ee/ci/yaml/README.html#artifactsreportscontainer_scanning

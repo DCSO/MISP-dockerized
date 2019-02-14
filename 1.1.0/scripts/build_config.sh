@@ -90,7 +90,8 @@ function default_container_version() {
   PROXY_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep proxy|cut -d : -f 3)"
   ROBOT_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep robot|cut -d : -f 3)"
   MISP_MODULES_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep modules|cut -d : -f 3)"
-  #[ -z $(echo $POSTFIX_CONTAINER_TAG|grep dev) ] && POSTFIX_CONTAINER_TAG="$POSTFIX_CONTAINER_TAG-dev"
+
+
   [ -z $(echo $MISP_CONTAINER_TAG|grep dev) ] && MISP_CONTAINER_TAG="$MISP_CONTAINER_TAG-dev"
   [ -z $(echo $PROXY_CONTAINER_TAG|grep dev) ] && PROXY_CONTAINER_TAG="$PROXY_CONTAINER_TAG-dev"
   [ -z $(echo $ROBOT_CONTAINER_TAG|grep dev) ] && ROBOT_CONTAINER_TAG="$ROBOT_CONTAINER_TAG-dev"
@@ -161,7 +162,7 @@ function query_timezone(){
 function query_hostname(){
   # read Hostname for MISP Instance
   read -p "Hostname (FQDN - example.org is not a valid FQDN) [DEFAULT: $myHOSTNAME]: " -ei $myHOSTNAME myHOSTNAME
-  MISP_URL="https://${myHOSTNAME}"
+  MISP_FQDN="https://${myHOSTNAME}"
 }
 
 # Questions for Network
@@ -543,7 +544,7 @@ services:
       # PHP
       PHP_MEMORY: ${PHP_MEMORY}
       # MISP
-      MISP_URL: ${MISP_URL}
+      MISP_FQDN: ${MISP_FQDN}
       MISP_HTTPS_PORT: ${HTTPS_PORT}
       MISP_prefix: ${MISP_prefix}
       MISP_encoding: ${MISP_encoding}
@@ -590,7 +591,7 @@ cat << EOF > $CONFIG_FILE
 # Hostname
 # ------------------------------
 myHOSTNAME="${myHOSTNAME}"
-MISP_URL="${MISP_URL}"
+MISP_FQDN="${MISP_FQDN}"
 # ------------------------------
 # Network Configuration
 # ------------------------------
@@ -649,7 +650,7 @@ REDIS_PORT=${REDIS_PORT}
 # ------------------------------
 # misp-server env configuration
 # ------------------------------
-MISP_URL="${MISP_URL}"
+MISP_FQDN="${MISP_FQDN}"
 MISP_HTTPS_PORT="${HTTPS_PORT}"
 MISP_TAG="${MISP_TAG}"
 MISP_prefix="${MISP_prefix}"
