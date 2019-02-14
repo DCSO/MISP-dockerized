@@ -144,10 +144,10 @@ DOCKER_EXEC=docker exec -ti
 
 # logging on whole service if syslog is deactivated
 log:
-	$(DOCKER_EXEC) misp-robot docker-compose -f /srv/MISP-dockerized/current/docker-compose.yml logs
+	$(DOCKER_EXEC) misp-robot docker-compose -f /srv/MISP-dockerized/docker-compose.yml logs
 
 log-f:
-	$(DOCKER_EXEC) misp-robot docker-compose -f /srv/MISP-dockerized/current/docker-compose.yml logs -f
+	$(DOCKER_EXEC) misp-robot docker-compose -f /srv/MISP-dockerized/docker-compose.yml logs -f
 
 # configure
 configure:
