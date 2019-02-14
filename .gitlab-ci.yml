@@ -32,7 +32,7 @@ before_script:
   except:
   - master
   - dev
-  - feat/1.1.0
+  - 1.1.0
   script:
   - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=no_test VERSION=$CURRENT_VERSION
   # Clean Up
@@ -43,7 +43,7 @@ before_script:
   except:
   - master
   - dev
-  - feat/1.1.0
+  - 1.1.0
   script:
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=no_test VERSION=$CURRENT_VERSION
   # Clean Up
@@ -54,7 +54,7 @@ before_script:
   stage: build
   only:
   - dev
-  - feat/1.1.0
+  - 1.1.0
   allow_failure: true
   script:
   - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=long_test VERSION=$CURRENT_VERSION
@@ -72,7 +72,7 @@ before_script:
   stage: build
   only:
   - dev
-  - feat/1.1.0
+  - 1.1.0
   script:
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
   # Clean Up
@@ -91,7 +91,6 @@ before_script:
   only: 
   - master
   - schedules
-  - bug/MDD157
   script:
   # Check internal Registry
     # Test
