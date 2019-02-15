@@ -103,12 +103,17 @@ function default_container_version() {
   PROXY_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep proxy|cut -d : -f 3)"
   ROBOT_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep robot|cut -d : -f 3)"
   MISP_MODULES_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep modules|cut -d : -f 3)"
+  POSTFIX_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep postfix|cut -d : -f 3)"
+  REDIS_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep redis|cut -d : -f 3)"
+  DB_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep db|cut -d : -f 3)"
   if [ "$DEV_MODE" = true ]; then
-    #[ -z $(echo $POSTFIX_CONTAINER_TAG|grep dev) ] && POSTFIX_CONTAINER_TAG="$POSTFIX_CONTAINER_TAG-dev"
-    [ -z $(echo $MISP_CONTAINER_TAG|grep dev) ] && MISP_CONTAINER_TAG="$MISP_CONTAINER_TAG-dev"
-    [ -z $(echo $PROXY_CONTAINER_TAG|grep dev) ] && PROXY_CONTAINER_TAG="$PROXY_CONTAINER_TAG-dev"
-    [ -z $(echo $ROBOT_CONTAINER_TAG|grep dev) ] && ROBOT_CONTAINER_TAG="$ROBOT_CONTAINER_TAG-dev"
-    [ -z $(echo $MISP_MODULES_CONTAINER_TAG|grep dev) ] && MISP_MODULES_CONTAINER_TAG="$MISP_MODULES_CONTAINER_TAG-dev"
+    [ -z "$(echo "$POSTFIX_CONTAINER_TAG"|grep dev)" ] && POSTFIX_CONTAINER_TAG="$POSTFIX_CONTAINER_TAG-dev"
+    [ -z "$(echo "$MISP_CONTAINER_TAG"|grep dev)" ] && MISP_CONTAINER_TAG="$MISP_CONTAINER_TAG-dev"
+    [ -z "$(echo "$PROXY_CONTAINER_TAG"|grep dev)" ] && PROXY_CONTAINER_TAG="$PROXY_CONTAINER_TAG-dev"
+    [ -z "$(echo "$ROBOT_CONTAINER_TAG"|grep dev)" ] && ROBOT_CONTAINER_TAG="$ROBOT_CONTAINER_TAG-dev"
+    [ -z "$(echo "$MISP_MODULES_CONTAINER_TAG"|grep dev)" ] && MISP_MODULES_CONTAINER_TAG="$MISP_MODULES_CONTAINER_TAG-dev"
+    [ -z "$(echo "$REDIS_CONTAINER_TAG"|grep dev)" ] && REDIS_CONTAINER_TAG="$REDIS_CONTAINER_TAG-dev"
+    [ -z "$(echo "$DB_CONTAINER_TAG"|grep dev)" ] && DB_CONTAINER_TAG="$DB_CONTAINER_TAG-dev"
   fi
   ###
   MISP_TAG=$(echo $MISP_CONTAINER_TAG|cut -d - -f 1)
@@ -469,6 +474,9 @@ if [ "$DEV_MODE" == true -o DOCKER_REGISTRY != "dockerhub.dcso.de" ]; then
   IMAGE_MISP_SERVER="image: ${DOCKER_REGISTRY}/misp-dockerized-server:${MISP_CONTAINER_TAG}"
   IMAGE_MISP_PROXY="image: ${DOCKER_REGISTRY}/misp-dockerized-proxy:${PROXY_CONTAINER_TAG}"
   IMAGE_MISP_ROBOT="image: ${DOCKER_REGISTRY}/misp-dockerized-robot:${ROBOT_CONTAINER_TAG}"
+  IMAGE_MISP_REDIS="image: ${DOCKER_REGISTRY}/misp-dockerized-redis:${REDIS_CONTAINER_TAG}"
+  IMAGE_MISP_POSTFIX="image: ${DOCKER_REGISTRY}/misp-dockerized-postfix:${POSTFIX_CONTAINER_TAG}"
+  IMAGE_MISP_DB="image: ${DOCKER_REGISTRY}/misp-dockerized-db:${DB_CONTAINER_TAG}"
 fi
 
 ###################################
@@ -489,11 +497,15 @@ networks:
 
 services:
   # misp-db:
+  #   ${IMAGE_MISP_DB}
   #   environment:
   #     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
   #     MYSQL_DATABASE: ${MYSQL_DATABASE}
   #     MYSQL_USER: ${MYSQL_USER}
   #     MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+  misp-redis:
+     ${IMAGE_MISP_REDIS}
 
   misp-modules:
     ${IMAGE_MISP_MODULES}
@@ -603,6 +615,8 @@ DOCKER_REGISTRY=${DOCKER_REGISTRY}
 #PROXY_CONTAINER_TAG=${PROXY_CONTAINER_TAG}
 #ROBOT_CONTAINER_TAG=${ROBOT_CONTAINER_TAG}
 #MISP_MODULES_CONTAINER_TAG=${MISP_MODULES_CONTAINER_TAG}
+#REDIS_CONTAINER_TAG=${REDIS_CONTAINER_TAG}
+#DB_CONTAINER_TAG=${DB_CONTAINER_TAG}
 # ------------------------------
 # Proxy Configuration
 # ------------------------------
