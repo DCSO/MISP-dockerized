@@ -1,6 +1,8 @@
-#!/bin/bash
-sudo: required
-services: docker
+dist: xenial
+addons:
+  apt:
+    sources:
+      - docker-xenial
 
 env:
   global:
