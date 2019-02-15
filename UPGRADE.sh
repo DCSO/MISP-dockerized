@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -ex
-
 # check if user has currently a installed version
     # This function checks the current version on misp-server version from docker ps
     # https://forums.docker.com/t/docker-ps-a-command-to-publish-only-container-names/8483/2
@@ -15,7 +13,7 @@ echo "##########################################################################
 echo "Please Backup your full server and your storage for all critical MISP data!!!"
 echo "If the backup is already done press enter now"
 echo "#############################################################################"
-read TMP
+read -r
 
 
 
@@ -27,7 +25,7 @@ then
     then
         EARLIER_1_0_0=no
         echo "no 'current' directory exists an direct upgrade is not possible."
-        read -p "Do you upgrade from an version earlier than 1.0.0? [DEFAULT: $EARLIER_1_0_0]: " -ei $EARLIER_1_0_0  EARLIER_1_0_0
+        read -rp "Do you upgrade from an version earlier than 1.0.0? [DEFAULT: $EARLIER_1_0_0]: " -ei $EARLIER_1_0_0  EARLIER_1_0_0
         [ "$EARLIER_1_0_0" == "no" ] && echo "There is a bug, please open a ticket on https://github.com/DCSO/MISP-dockerized/issues and report the Error. Now i will exit." && exit
         [ "$EARLIER_1_0_0" == "yes" ] && echo "An Upgrade from an earlier version than 0.3.4 requires manual steps. See at https://dcso.github.io/MISP-dockerized-docs/ in the upgrade section"
     fi

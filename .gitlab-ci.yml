@@ -32,7 +32,7 @@ before_script:
   except:
   - master
   - dev
-  - feat/1.1.0
+  - 1.1.0
   script:
   - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=no_test VERSION=$CURRENT_VERSION
   # Clean Up
@@ -43,7 +43,7 @@ before_script:
   except:
   - master
   - dev
-  - feat/1.1.0
+  - 1.1.0
   script:
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=no_test VERSION=$CURRENT_VERSION
   # Clean Up
@@ -54,7 +54,7 @@ before_script:
   stage: build
   only:
   - dev
-  - feat/1.1.0
+  - 1.1.0
   allow_failure: true
   script:
   - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=long_test VERSION=$CURRENT_VERSION
@@ -72,7 +72,7 @@ before_script:
   stage: build
   only:
   - dev
-  - feat/1.1.0
+  - 1.1.0
   script:
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
   # Clean Up
@@ -96,7 +96,7 @@ before_script:
     # Test
   - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=long_test VERSION=$CURRENT_VERSION
     # Push
-  - make -C .ci push REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=long_test VERSION=$CURRENT_VERSION
+  - make -C .ci push REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW
     # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
@@ -116,7 +116,7 @@ before_script:
     # Test
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
     # Push 
-  - bash .ci/30_push_2_registry.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD
+  - make -C .ci push REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
     # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
@@ -125,43 +125,28 @@ before_script:
     - ./.ci/reports/*.xml
     reports:
       junit: ./.ci/reports/*.xml
-
+      
+      
+      
 # deactivated:
 # https://docs.gitlab.com/ee/ci/examples/container_scanning.html
 # https://docs.gitlab.com/ee/ci/yaml/README.html#artifactsreportscontainer_scanning
 # https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html
 # https://docs.gitlab.com/ee/ci/yaml/#artifactsreportscontainer_scanning-ultimate
-
 .container_scanning:
+  # deactivated:
+  # https://docs.gitlab.com/ee/ci/examples/container_scanning.html
+  # https://docs.gitlab.com/ee/ci/yaml/README.html#artifactsreportscontainer_scanning
+  # https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html
+  # https://docs.gitlab.com/ee/ci/yaml/#artifactsreportscontainer_scanning-ultimate
   stage: scan
-  #image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
     ## Define two new variables based on GitLab's CI/CD predefined variables
     ## https://docs.gitlab.com/ee/ci/variables/#predefined-variables-environment-variables
-    CI_CONTAINER_NAME: misp-dockerized-server
-    CI_APPLICATION_REPOSITORY: $INTERNAL_REGISTRY_HOST/$CI_CONTAINER_NAME
-    CI_APPLICATION_TAG: latest-dev
   allow_failure: true
-  #services:
-  #  - docker:stable-dind
   script:
-    - echo "$INTERNAL_REGISTRY_PW"| docker login -u "$INTERNAL_REGISTRY_USER" "$INTERNAL_REGISTRY_HOST" --password-stdin
-    - docker run -d --name db arminc/clair-db:latest
-    - docker run -p 6060:6060 --link db:postgres -d --name clair --restart on-failure arminc/clair-local-scan:v2.0.1
-    - docker ps
-    - apk add -U wget ca-certificates
-    - docker pull ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
-    - wget https://github.com/arminc/clair-scanner/releases/download/v8/clair-scanner_linux_amd64
-    - mv clair-scanner_linux_amd64 clair-scanner
-    - chmod +x clair-scanner
-    - touch clair-whitelist.yml
-    #- while( ! wget -q -O /dev/null http://localhost:6060/v1/namespaces ) ; do sleep 1 ; done
-    #- retries=0
-    - docker ps -a
-    - echo "Waiting for clair daemon to start"
-    - bash -c 'while( ! wget -T 10 -q -O /dev/null http://localhost:6060/v1/namespaces ) ; do sleep 1 ; echo -n "." ; if [ $retries -eq 10 ] ; then echo " Timeout, aborting." ; exit 1 ; fi ; retries=$(($retries+1)) ; done'
-    - bash -c ''./clair-scanner -c http://localhost:6060 --ip $(hostname -i) -r gl-container-scanning-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true'
+  - bash .ci/10_scanning.sh
   artifacts:
     reports:
       container_scanning: gl-container-scanning-report.json
@@ -180,3 +165,4 @@ include:
   #- '1.0.0/.gitlab-ci.yml'
   #- '1.0.1/.gitlab-ci.yml'
   - '1.0.2/.gitlab-ci.yml'
+  - '1.0.3/.gitlab-ci.yml'

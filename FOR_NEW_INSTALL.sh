@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 set -e
 
 
@@ -21,7 +21,7 @@ CURRENT_VERSION=""
         [ "$CURRENT_CONTAINER" == "2.4.92" ] && CURRENT_VERSION="0.2.0" && return
         [ "$CURRENT_CONTAINER" == "2.4.88" ] && CURRENT_VERSION="0.1.2" && return
         echo
-        echo "Sorry the script can't detect your version."
+        echo "Sorry the script can not detect your version."
     }
     
     function check_version(){
@@ -41,8 +41,8 @@ CURRENT_VERSION=""
 
 
 # check requirements
-    $SCRIPTPATH/.scripts/requirements.sh
-    echo "### REQUIREMENTS CHECK FINISHED ###"
+    "$SCRIPTPATH"/.scripts/requirements.sh
+    echo "### Requirements check...finished"
 
 # check if this execution is automatic from gitlab-ci or travis-ci
     if [ "$CI" != true ]
@@ -54,7 +54,7 @@ CURRENT_VERSION=""
         # Ask User which Version he want to install:
         # We made a recalculation the result is the element 0 in the array FOLDER[0] is shown as Element 1. If the user type in the version this recalculation is reverted.
         echo
-        echo "Which Version do you want to install:"
+        echo "Which version do you want to install:"
         for (( i=1; i<=${#FOLDER[@]}; i++ ))
         do
             [ "${FOLDER[$i-1]}" == "backup" ] && continue
@@ -70,7 +70,7 @@ CURRENT_VERSION=""
         # User setup the right version 
         input_sel=0
         while [[ ${input_sel} -lt 1 ||  ${input_sel} -gt ${i} ]]; do
-            read -p "Please Selects the version to Install: " input_sel
+            read -rp "Please choose the version: " input_sel
         done
         # set new Version
         CURRENT_VERSION="${FOLDER[${input_sel}-1]}"
@@ -82,7 +82,7 @@ CURRENT_VERSION=""
 
         # Parameter 1:
         param_VERSION="$1"
-        [ "$CI" == true ] && [ -z "$param_VERSION" ] && echo "No version parameter given. Please call: '$0 1.0.0'. Exit." && exit
+        [ "$CI" == true ] && [ -z "$param_VERSION" ] && echo "No version parameter. Please call: '$0 1.0.2'. Exit." && exit
 
         # If the user is a CI Pipeline:
         [ "$CI" == true ] && CURRENT_VERSION="$param_VERSION"
@@ -93,24 +93,22 @@ CURRENT_VERSION=""
 # Create Symlink to "current" Folder
     if [ -z "$CURRENT_VERSION" ]
     then
-        echo "[Error] The scripts fails and no version could be selected. Exit."
+        echo "[Error] The script failed and no version could be selected. Exit now."
         exit
     else
         # create symlink for 'current' folder
-        [ -L $PWD/current ] && echo "[OK] delete symlink 'current'" && rm $PWD/current
-        [ -f $PWD/current ] && echo "[Error] There is a file called 'current' please backup and delete first. Command: 'rm $PWD/current'" && exit
-        [ -d $PWD/current ] && echo "[Error] There is a directory called 'current' please backup and delete first. Command: 'rmdir $PWD/current'" && exit
-        echo "[OK] create symlink 'current' for the folder $CURRENT_VERSION" && ln -s "$CURRENT_VERSION" current
+        [ -L "$PWD"/current ] && echo "[OK] Delete symlink 'current'" && rm "$PWD"/current
+        [ -f "$PWD"/current ] && echo "[Error] There is a file called 'current' please backup and delete this file first. Command: 'rm -v $PWD/current'" && exit
+        [ -d "$PWD"/current ] && echo "[Error] There is a directory called 'current' please backup and delete this folder first. Command: 'rm -Rv $PWD/current'" && exit
+        echo "[OK] Create symlink 'current' for the folder $CURRENT_VERSION" && ln -s "$CURRENT_VERSION" current
         # create symlink for backup
-        [ -L $PWD/current/backup ] && echo "[OK] delete symlink 'current/backup'" && rm $PWD/current/backup
-        echo "[OK] create symlink 'current/backup'" && ln -s "../backup" ./current/
+        [ -L "$PWD"/current/backup ] && echo "[OK] Delete symlink 'current/backup'" && rm "$PWD"/current/backup
+        echo "[OK] Create symlink 'current/backup'" && ln -s "../backup" ./current/
         # create symlink for config
-        [ -L $PWD/current/config ] && echo "[OK] delete symlink 'current/config'" && rm $PWD/current/config
-        echo "[OK] create symlink 'current/config' " && ln -s "../config" ./current/
+        [ -L "$PWD"/current/config ] && echo "[OK] Delete symlink 'current/config'" && rm "$PWD"/current/config
+        echo "[OK] Create symlink 'current/config' " && ln -s "../config" ./current/
 
-
-        [ "$CI" == true ] || echo "start installation..."
-        [ "$CI" == true ] || sleep 1
-        [ "$CI" == true ] || make -C current install
-
+        # [ "$CI" == true ] || echo "start installation..."
+        # [ "$CI" == true ] || sleep 1
+        # [ "$CI" == true ] || make -C current install
     fi
