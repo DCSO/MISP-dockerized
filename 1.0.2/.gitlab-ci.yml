@@ -1,0 +1,74 @@
+env_test_only 1.0.2:
+  variables:
+    CURRENT_VERSION: 1.0.2
+  extends: .env_test_only
+  # only:
+  #   changes:
+  #     - 1.0.2/*
+
+env_test_only_hub.docker.com 1.0.2:
+  variables:
+    CURRENT_VERSION: 1.0.2
+  extends: .env_test_only_hub.docker.com
+  # only:
+  #   changes:
+  #     - 1.0.2/*
+
+
+
+long_test 1.0.2:
+  variables:
+    CURRENT_VERSION: 1.0.2
+  extends: .long_test
+  # only:
+  #   changes:
+  #     - 1.0.2/*
+
+
+long_test_hub.docker.com 1.0.2:
+  variables:
+    CURRENT_VERSION: 1.0.2
+  extends: .long_test_hub.docker.com
+  # only:
+  #   changes:
+  #     - 1.0.2/*
+
+push_productive_images 1.0.2:
+  variables:
+    CURRENT_VERSION: 1.0.2
+  extends: .push_productive_images
+  # only:
+  #   changes:
+  #     - 1.0.2/*
+
+push_productive_images_hub.docker.com 1.0.2:
+  variables:
+    CURRENT_VERSION: 1.0.2
+  extends: .push_productive_images_hub.docker.com
+  # only:
+  #   changes:
+  #     - 1.0.2/*
+
+# scan proxy:
+#   variables:
+#     CI_CONTAINER_NAME: misp-dockerized-proxy
+#     #CI_APPLICATION_TAG: 
+#   extends: .container_scanning
+
+# scan robot:
+#   variables:
+#     CI_CONTAINER_NAME: misp-dockerized-robot
+#     #CI_APPLICATION_TAG: 
+#   extends: .container_scanning
+
+# scan server:
+#   variables:
+#     CI_CONTAINER_NAME: misp-dockerized-server
+#     #CI_APPLICATION_TAG: 
+#   extends: .container_scanning
+
+# scan modules:
+#   variables:
+#     CI_CONTAINER_NAME: misp-dockerized-misp-modules
+#     #CI_APPLICATION_TAG: 
+#   extends: .container_scanning

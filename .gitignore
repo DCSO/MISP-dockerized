@@ -6,6 +6,7 @@ current
 # for 1.0.0 and newer:
 docker-compose.override.yml
 reports
+local_test*
 
 # for older:
 secrets

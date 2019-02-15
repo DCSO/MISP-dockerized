@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -ex
-
 # check if user has currently a installed version
     # This function checks the current version on misp-server version from docker ps
     # https://forums.docker.com/t/docker-ps-a-command-to-publish-only-container-names/8483/2
@@ -15,7 +13,7 @@ echo "##########################################################################
 echo "Please Backup your full server and your storage for all critical MISP data!!!"
 echo "If the backup is already done press enter now"
 echo "#############################################################################"
-read TMP
+read
 
 
 
