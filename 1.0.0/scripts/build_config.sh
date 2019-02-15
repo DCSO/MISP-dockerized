@@ -161,7 +161,7 @@ function query_timezone(){
 function query_hostname(){
   # read Hostname for MISP Instance
   read -p "Hostname (FQDN - example.org is not a valid FQDN) [DEFAULT: $myHOSTNAME]: " -ei $myHOSTNAME myHOSTNAME
-  MISP_URL="https://${myHOSTNAME}"
+  MISP_FQDN="https://${myHOSTNAME}"
 }
 
 # Questions for Network
@@ -543,7 +543,7 @@ services:
       # PHP
       PHP_MEMORY: ${PHP_MEMORY}
       # MISP
-      MISP_URL: ${MISP_URL}
+      MISP_FQDN: ${MISP_FQDN}
       MISP_HTTPS_PORT: ${HTTPS_PORT}
       MISP_prefix: ${MISP_prefix}
       MISP_encoding: ${MISP_encoding}
@@ -590,7 +590,7 @@ cat << EOF > $CONFIG_FILE
 # Hostname
 # ------------------------------
 myHOSTNAME="${myHOSTNAME}"
-MISP_URL="${MISP_URL}"
+MISP_FQDN="${MISP_FQDN}"
 # ------------------------------
 # Network Configuration
 # ------------------------------
@@ -649,7 +649,7 @@ REDIS_PORT=${REDIS_PORT}
 # ------------------------------
 # misp-server env configuration
 # ------------------------------
-MISP_URL="${MISP_URL}"
+MISP_FQDN="${MISP_FQDN}"
 MISP_HTTPS_PORT="${HTTPS_PORT}"
 MISP_TAG="${MISP_TAG}"
 MISP_prefix="${MISP_prefix}"
