@@ -3,7 +3,8 @@
 #==============================================================================
 
 echo "This will remove all container, volumes and corresponding images."
-read -p "Are you sure? (y): " USER_GO
+[ CI == "true" ] || read -p "Are you sure? (y): " USER_GO
+[ CI == "true" ] && USER_GO="y"
 if [ "$USER_GO" == "y" ]; then
     echo '### stop and remove all container ###'
     docker rm -f $(docker ps -aqf name=misp*)
