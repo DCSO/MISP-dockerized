@@ -26,7 +26,7 @@ func_tag() {
     do
         k="$(echo "$i"|sed 's,-dev$,,')"
         echo "$STARTMSG Retag: $DOCKER_REPO:$i with $DOCKER_REPO:$k"
-        docker tag "$DOCKER_REPO:$i" "$DOCKER_REPO:$k;"
+        docker tag "$DOCKER_REPO:$i" "$DOCKER_REPO:$k"
         echo "$STARTMSG Remove: $DOCKER_REPO:$i"
         docker image rm "$DOCKER_REPO:$i"
     done
