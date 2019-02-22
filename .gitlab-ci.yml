@@ -91,7 +91,6 @@ before_script:
   only: 
   - master
   - schedules
-  - bug/MDD-187
   script:
   # Check internal Registry
     # Test
@@ -112,7 +111,6 @@ before_script:
   only: 
   - master
   - schedules
-  - bug/MDD-187
   script:
   # Check hub.docker.com Registry
     # Test
