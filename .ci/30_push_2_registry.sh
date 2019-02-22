@@ -83,6 +83,7 @@ if [ ! -z "$DOCKER_LOGIN_STATE" ]; then
         func_push "$REGISTRY_URL/misp-dockerized-misp-modules" "$MODULES_TAG"
         #func_push "$REGISTRY_URL/misp-dockerized-db" "$DB_TAG"
         #func_push "$REGISTRY_URL/misp-dockerized-redis" "$REDIS_TAG"
+
 else
     echo "$DOCKER_LOGIN_OUTPUT"
     exit
