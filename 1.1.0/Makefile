@@ -161,10 +161,10 @@ config-ssl: copy-ssl
 	docker restart misp-proxy
 
 copy-ssl:
-	docker cp $(CURDIR)/config/ssl/cert.pem misp-proxy:/etc/nginx/ssl/
-	docker cp $(CURDIR)/config/ssl/key.pem misp-proxy:/etc/nginx/ssl/
-	docker cp misp-proxy:/etc/nginx/ssl/cert.pem $(CURDIR)/config/ssl/
-	docker cp misp-proxy:/etc/nginx/ssl/key.pem $(CURDIR)/config/ssl/
+	-docker cp $(CURDIR)/config/ssl/cert.pem misp-proxy:/etc/nginx/ssl/
+	-docker cp $(CURDIR)/config/ssl/key.pem misp-proxy:/etc/nginx/ssl/
+	-docker cp misp-proxy:/etc/nginx/ssl/cert.pem $(CURDIR)/config/ssl/
+	-docker cp misp-proxy:/etc/nginx/ssl/key.pem $(CURDIR)/config/ssl/
 
 config-smime:
 	#$(DOCKER_EXEC) misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t smime /etc/ansible/playbooks/robot-playbook/site.yml"
