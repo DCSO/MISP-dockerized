@@ -82,7 +82,7 @@ function check_if_vars_exists() {
   [ -z "$RELAYHOST" ] && RELAYHOST="mail.example.com" && QUERY_POSTFIX="yes"
   [ -z "$QUESTION_DEBUG_PEERS" ] && QUESTION_DEBUG_PEERS="no" && QUERY_POSTFIX="yes"
   # Redis
-  [ -z "$REDIS_FQDN" ] && REDIS_FQDN="misp-server"  && QUERY_REDIS="yes"
+  [ -z "$REDIS_FQDN" ] && REDIS_FQDN="misp-redis"  && QUERY_REDIS="yes"
   [ -z "${REDIS_PORT}" ] && REDIS_PORT="" && QUERY_REDIS="yes"
   [ -z "${REDIS_PW}" ]   && REDIS_PW="" && QUERY_REDIS="yes"
   # SMIME / PGP
@@ -91,6 +91,10 @@ function check_if_vars_exists() {
   # LOG_SETTINGS
   [ -z "${USE_SYSLOG}" ] && QUERY_LOG_SETTINGS="yes"
   [ ! "${USE_SYSLOG}" == "no" ]  && [ -z "${SYSLOG_REMOTE_HOST}" ] && SYSLOG_REMOTE_HOST="127.0.0.1" && QUERY_LOG_SETTINGS="yes"
+  # Cron
+  [ -z "$CRON_INTERVAL" ] && CRON_INTERVAL=3600 && QUERY_CRON="yes"
+  [ -z "$CRON_USER_ID" ] && CRON_USER_ID=1 && QUERY_CRON="yes"
+  #
   echo "...done"
 }
 # Function for the Container Versions
@@ -418,6 +422,11 @@ function query_log_settings(){
   esac
 }
 
+function query_cron_settings(){
+  read -rp "$STARTMSG How often you to start a cronjob? [ Dafault: 3600(s) | 0 means deactivated ]: " -ei "$CRON_INTERVAL"  CRON_INTERVAL
+  read -rp "$STARTMSG Which user id do you want to use for the cron job execution? [ Default: 1 ]: " -ei "$CRON_USER_ID"  CRON_USER_ID
+}
+
 #################################################
 ##  main part
 #################################################
@@ -462,11 +471,13 @@ if [ "$AUTOMATE_BUILD" = "true" ]
     # Redis
     [ "$QUERY_REDIS" == "yes" ] && query_redis_settings
     # SMIME
-    [ "$QUERY_SMIME" == "yes" ] && query_smime_settings
+    [ "$QUERY_SMIME" = "yes" ] && query_smime_settings
     # PGP
-    [ "$QUERY_PGP" == "yes" ] && query_pgp_settings
+    [ "$QUERY_PGP" = "yes" ] && query_pgp_settings
     # LOG_SETTINGS
-    [ "$QUERY_LOG_SETTINGS" == "yes" ] && query_log_settings
+    [ "$QUERY_LOG_SETTINGS" = "yes" ] && query_log_settings
+    # CRON
+    [ "$QUERY_CRON" = "yes" ] && query_cron_settings
 fi
 
 if [ "$DEV_MODE" == true -o DOCKER_REGISTRY != "dockerhub.dcso.de" ]; then
@@ -554,7 +565,9 @@ services:
       ADD_ANALYZE_COLUMN: "${ADD_ANALYZE_COLUMN}"
       USE_PGP: "${USE_PGP}"
       USE_SMIME: "${USE_SMIME}"
-      PHP_MEMORY: ${PHP_MEMORY}
+      # Cron
+      CRON_INTERVAL: "${CRON_INTERVAL}"
+      CRON_USER_ID: "${CRON_USER_ID}"
     ${LOG_SETTINGS}
 
   misp-proxy:
@@ -664,6 +677,8 @@ ADD_ANALYZE_COLUMN="${ADD_ANALYZE_COLUMN}"
 USE_PGP="${USE_PGP}"
 USE_SMIME="${USE_SMIME}"
 PHP_MEMORY="${PHP_MEMORY}"
+CRON_INTERVAL="${CRON_INTERVAL}"
+CRON_USER_ID="${CRON_USER_ID}"
 # ------------------------------
 # misp-postfix Configuration
 # ------------------------------
