@@ -94,6 +94,11 @@ function check_if_vars_exists() {
   # Cron
   [ -z "$CRON_INTERVAL" ] && CRON_INTERVAL=3600 && QUERY_CRON="yes"
   [ -z "$CRON_USER_ID" ] && CRON_USER_ID=1 && QUERY_CRON="yes"
+  # PHP
+  [ -z "${PHP_MEMORY}" ] && PHP_MEMORY="512M" && QUERY_PHP="yes"
+  [ -z "${PHP_MAX_EXECUTION_TIME}" ] && PHP_MAX_EXECUTION_TIME="600" && QUERY_PHP="yes"
+  [ -z "${PHP_UPLOAD_MAX_FILESIZE}" ] && PHP_UPLOAD_MAX_FILESIZE="50M" && QUERY_PHP="yes"
+  [ -z "${PHP_POST_MAX_SIZE}" ] && PHP_POST_MAX_SIZE="50M" && QUERY_PHP="yes"
   #
   echo "...done"
 }
@@ -334,6 +339,18 @@ function query_postfix_settings(){
 # Questions for Redis
 function query_redis_settings(){
   echo
+  read -rp "$STARTMSG Do you want to use an external Redis database? [y/n]: " -ei "n"  response
+  case $response in
+  [yY][eE][sS]|[yY])
+    USE_EXTERNAL_REDIS="yes"
+    read -rp "$STARTMSG Which FQDN has the external redis database? [Example: $REDIS_FQDN ]: " -ei "$REDIS_FQDN"  REDIS_FQDN
+    read -rp "$STARTMSG Which port has the external redis database? [Default: 6379 ]: " -ei "$REDIS_PORT"  REDIS_PORT
+    read -rp "$STARTMSG Which password has the external redis database? [Default: '' (empty) ]: " -ei ""  REDIS_PW
+    ;;
+  *)
+    USE_EXTERNAL_REDIS="no"
+    ;;
+  esac
 }
 
 # Questions for PGP
@@ -427,6 +444,13 @@ function query_cron_settings(){
   read -rp "$STARTMSG Which user id do you want to use for the cron job execution? [ Default: 1 ]: " -ei "$CRON_USER_ID"  CRON_USER_ID
 }
 
+function query_php_settings(){
+   read -rp "$STARTMSG Set PHP variable memory_limit? [ Default: 512M ]: " -ei "$PHP_MEMORY"  PHP_MEMORY
+   read -rp "$STARTMSG Set PHP variable max_execution_time? [ Default: 300 ]: " -ei "$PHP_MAX_EXECUTION_TIME"  PHP_MAX_EXECUTION_TIME
+   read -rp "$STARTMSG Set PHP variable post_max_size? [ Default: 50M ]: " -ei "$PHP_POST_MAX_SIZE"  PHP_POST_MAX_SIZE
+   read -rp "$STARTMSG Set PHP variable upload_max_filesize? [ Default: 50M ]: " -ei "$PHP_UPLOAD_MAX_FILESIZE"  PHP_UPLOAD_MAX_FILESIZE
+}
+
 #################################################
 ##  main part
 #################################################
@@ -478,6 +502,8 @@ if [ "$AUTOMATE_BUILD" = "true" ]
     [ "$QUERY_LOG_SETTINGS" = "yes" ] && query_log_settings
     # CRON
     [ "$QUERY_CRON" = "yes" ] && query_cron_settings
+    # PHP
+    [ "$QUERY_PHP" = "yes" ] && query_php_settings
 fi
 
 if [ "$DEV_MODE" == true -o DOCKER_REGISTRY != "dockerhub.dcso.de" ]; then
@@ -553,8 +579,6 @@ services:
       RELAY_PASSWORD: ${RELAY_PASSWORD}
       DOCKER_NETWORK: ${DOCKER_NETWORK}
       DEBUG_PEER: ${DEBUG_PEER}
-      # PHP
-      PHP_MEMORY: ${PHP_MEMORY}
       # MISP
       MISP_FQDN: ${MISP_FQDN}
       MISP_URL: ${MISP_URL}
@@ -568,6 +592,11 @@ services:
       # Cron
       CRON_INTERVAL: "${CRON_INTERVAL}"
       CRON_USER_ID: "${CRON_USER_ID}"
+      # PHP
+      PHP_MEMORY: "${PHP_MEMORY}"
+      PHP_MAX_EXECUTION_TIME: "${PHP_MAX_EXECUTION_TIME}"
+      PHP_POST_MAX_SIZE: "${PHP_POST_MAX_SIZE}"
+      PHP_UPLOAD_MAX_FILESIZE: "${PHP_UPLOAD_MAX_FILESIZE}"
     ${LOG_SETTINGS}
 
   misp-proxy:
@@ -603,26 +632,19 @@ cat << EOF > $CONFIG_FILE
 #description     :This file is the global configuration file
 #=================================================
 # ------------------------------
-# Hostname
-# ------------------------------
-myHOSTNAME="${myHOSTNAME}"
-# ------------------------------
 # Network Configuration
 # ------------------------------
 DOCKER_NETWORK="${DOCKER_NETWORK}"
 BRIDGE_NAME="${BRIDGE_NAME}"
 # ------------------------------
-# Logging
+# For more than one container
 # ------------------------------
+myHOSTNAME="${myHOSTNAME}"
+# Logging
 USE_SYSLOG="${USE_SYSLOG}"
 SYSLOG_REMOTE_HOST="${SYSLOG_REMOTE_HOST}"
-# ------------------------------
 # Docker Registry Environment Variables
-# ------------------------------
 DOCKER_REGISTRY=${DOCKER_REGISTRY}
-# ------------------------------
-# Container Configuration
-# ------------------------------
 #POSTFIX_CONTAINER_TAG=${POSTFIX_CONTAINER_TAG}
 #MISP_CONTAINER_TAG=${MISP_CONTAINER_TAG}
 #PROXY_CONTAINER_TAG=${PROXY_CONTAINER_TAG}
@@ -630,15 +652,13 @@ DOCKER_REGISTRY=${DOCKER_REGISTRY}
 #MISP_MODULES_CONTAINER_TAG=${MISP_MODULES_CONTAINER_TAG}
 #REDIS_CONTAINER_TAG=${REDIS_CONTAINER_TAG}
 #DB_CONTAINER_TAG=${DB_CONTAINER_TAG}
-# ------------------------------
-# Proxy Configuration
-# ------------------------------
+# Proxy
 QUESTION_USE_PROXY="${QUESTION_USE_PROXY}"
 HTTP_PROXY="${HTTP_PROXY}"
 HTTPS_PROXY="${HTTPS_PROXY}"
 NO_PROXY="${NO_PROXY}"
 # ------------------------------
-# DB configuration
+# misp-db
 # ------------------------------
 #         ALL DB SETTINGS REQUIRED WITHOUT ""!!!
 QUESTION_OWN_DB="${QUESTION_OWN_DB}"
@@ -649,7 +669,7 @@ MYSQL_USER="${MYSQL_USER}"
 MYSQL_PASSWORD="${MYSQL_PASSWORD}"
 MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}"
 # ------------------------------
-# misp-proxy configuration
+# misp-proxy
 # ------------------------------
 HTTP_PORT="${HTTP_PORT}"
 HTTPS_PORT="${HTTPS_PORT}"
@@ -658,13 +678,14 @@ ALLOW_ALL_IPs="${ALLOW_ALL_IPs}"
 HTTP_ALLOWED_IP="${HTTP_ALLOWED_IP}"
 HTTP_SERVERADMIN="${HTTP_SERVERADMIN}"
 # ------------------------------
-# misp-redis configuration
+# misp-redis
 # ------------------------------
-REDIS_FQDN=${REDIS_FQDN}
-REDIS_PW=${REDIS_PW}
-REDIS_PORT=${REDIS_PORT}
+REDIS_FQDN="${REDIS_FQDN}"
+REDIS_PW="${REDIS_PW}"
+REDIS_PORT="${REDIS_PORT}"
+USE_EXTERNAL_REDIS="${USE_EXTERNAL_REDIS}"
 # ------------------------------
-# misp-server env configuration
+# misp-server
 # ------------------------------
 MISP_FQDN="${MISP_FQDN}"
 MISP_URL="${MISP_URL}"
@@ -674,13 +695,19 @@ MISP_prefix="${MISP_prefix}"
 MISP_encoding="${MISP_encoding}"
 MISP_SALT="${MISP_SALT}"
 ADD_ANALYZE_COLUMN="${ADD_ANALYZE_COLUMN}"
+# PGP / SMIME
 USE_PGP="${USE_PGP}"
 USE_SMIME="${USE_SMIME}"
-PHP_MEMORY="${PHP_MEMORY}"
+# Cron
 CRON_INTERVAL="${CRON_INTERVAL}"
 CRON_USER_ID="${CRON_USER_ID}"
+# PHP
+PHP_MEMORY="${PHP_MEMORY}"
+PHP_MAX_EXECUTION_TIME="${PHP_MAX_EXECUTION_TIME}"
+PHP_POST_MAX_SIZE="${PHP_POST_MAX_SIZE}"
+PHP_UPLOAD_MAX_FILESIZE="${PHP_UPLOAD_MAX_FILESIZE}"
 # ------------------------------
-# misp-postfix Configuration
+# misp-postfix
 # ------------------------------
 DOMAIN="${DOMAIN}"
 RELAYHOST="${RELAYHOST}"
