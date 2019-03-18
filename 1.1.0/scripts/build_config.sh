@@ -96,7 +96,7 @@ function check_if_vars_exists() {
   [ -z "$CRON_USER_ID" ] && CRON_USER_ID=1 && QUERY_CRON="yes"
   # PHP
   [ -z "${PHP_MEMORY}" ] && PHP_MEMORY="512M" && QUERY_PHP="yes"
-  [ -z "${PHP_MAX_EXECUTION_TIME}" ] && PHP_MAX_EXECUTION_TIME="600" && QUERY_PHP="yes"
+  [ -z "${PHP_MAX_EXECUTION_TIME}" ] && PHP_MAX_EXECUTION_TIME="300" && QUERY_PHP="yes"
   [ -z "${PHP_UPLOAD_MAX_FILESIZE}" ] && PHP_UPLOAD_MAX_FILESIZE="50M" && QUERY_PHP="yes"
   [ -z "${PHP_POST_MAX_SIZE}" ] && PHP_POST_MAX_SIZE="50M" && QUERY_PHP="yes"
   #
@@ -445,10 +445,10 @@ function query_cron_settings(){
 }
 
 function query_php_settings(){
-   read -rp "$STARTMSG Set PHP variable memory_limit? [ Default: 512M ]: " -ei "$PHP_MEMORY"  PHP_MEMORY
-   read -rp "$STARTMSG Set PHP variable max_execution_time? [ Default: 300 ]: " -ei "$PHP_MAX_EXECUTION_TIME"  PHP_MAX_EXECUTION_TIME
-   read -rp "$STARTMSG Set PHP variable post_max_size? [ Default: 50M ]: " -ei "$PHP_POST_MAX_SIZE"  PHP_POST_MAX_SIZE
-   read -rp "$STARTMSG Set PHP variable upload_max_filesize? [ Default: 50M ]: " -ei "$PHP_UPLOAD_MAX_FILESIZE"  PHP_UPLOAD_MAX_FILESIZE
+   read -rp "$STARTMSG Set PHP variable memory_limit? [ Default: $PHP_MEMORY ]: " -ei "$PHP_MEMORY"  PHP_MEMORY
+   read -rp "$STARTMSG Set PHP variable max_execution_time? [ Default: $PHP_MAX_EXECUTION_TIME ]: " -ei "$PHP_MAX_EXECUTION_TIME"  PHP_MAX_EXECUTION_TIME
+   read -rp "$STARTMSG Set PHP variable post_max_size? [ Default: $PHP_POST_MAX_SIZE ]: " -ei "$PHP_POST_MAX_SIZE"  PHP_POST_MAX_SIZE
+   read -rp "$STARTMSG Set PHP variable upload_max_filesize? [ Default: $PHP_UPLOAD_MAX_FILESIZE ]: " -ei "$PHP_UPLOAD_MAX_FILESIZE"  PHP_UPLOAD_MAX_FILESIZE
 }
 
 #################################################
