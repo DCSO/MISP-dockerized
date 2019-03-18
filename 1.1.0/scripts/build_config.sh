@@ -68,7 +68,6 @@ function check_if_vars_exists() {
   [ -z "$ALLOW_ALL_IPs" ] && ALLOW_ALL_IPs="yes" && QUERY_HTTP="yes"
   [ -z "$client_max_body_size" ] && client_max_body_size="50M" && QUERY_HTTP="yes"
   [ -z "$HTTP_ALLOWED_IP" ] && HTTP_ALLOWED_IP="all" && QUERY_HTTP="yes"
-  [ -z "$PHP_MEMORY" ] && PHP_MEMORY="512M" && QUERY_HTTP="yes"
   # MISP
   [ -z "${MISP_prefix+x}" ] && MISP_prefix="" && QUERY_MISP="yes"
   [ -z "$MISP_encoding" ] && MISP_encoding="utf8" && QUERY_MISP="yes"
@@ -96,7 +95,7 @@ function check_if_vars_exists() {
   [ -z "$CRON_INTERVAL" ] && CRON_INTERVAL=3600 && QUERY_CRON="yes"
   [ -z "$CRON_USER_ID" ] && CRON_USER_ID=1 && QUERY_CRON="yes"
   # PHP
-  [ -z "${PHP_MEMORY}" ] && PHP_MEMORY="512M" && QUERY_PHP="yes"
+  [ -z "${PHP_MEMORY_LIMIT}" ] && PHP_MEMORY_LIMIT="512M" && QUERY_PHP="yes"
   [ -z "${PHP_MAX_EXECUTION_TIME}" ] && PHP_MAX_EXECUTION_TIME="300" && QUERY_PHP="yes"
   [ -z "${PHP_UPLOAD_MAX_FILESIZE}" ] && PHP_UPLOAD_MAX_FILESIZE="50M" && QUERY_PHP="yes"
   [ -z "${PHP_POST_MAX_SIZE}" ] && PHP_POST_MAX_SIZE="50M" && QUERY_PHP="yes"
@@ -270,7 +269,6 @@ function query_http_settings(){
   
   
   read -p "$STARTMSG Which HTTP Serveradmin mailadress should we use [DEFAULT: $HTTP_SERVERADMIN]: " -ei "$HTTP_SERVERADMIN" HTTP_SERVERADMIN
-  read -p "$STARTMSG How much PHP memory should be used? [DEFAULT: $PHP_MEMORY]: " -ei $PHP_MEMORY  PHP_MEMORY
 
   while (true)
   do
@@ -446,7 +444,7 @@ function query_cron_settings(){
 }
 
 function query_php_settings(){
-   read -rp "$STARTMSG Set PHP variable memory_limit? [ Default: $PHP_MEMORY ]: " -ei "$PHP_MEMORY"  PHP_MEMORY
+   read -rp "$STARTMSG Set PHP variable memory_limit? [ Default: $PHP_MEMORY_LIMIT ]: " -ei "$PHP_MEMORY_LIMIT"  PHP_MEMORY_LIMIT
    read -rp "$STARTMSG Set PHP variable max_execution_time? [ Default: $PHP_MAX_EXECUTION_TIME ]: " -ei "$PHP_MAX_EXECUTION_TIME"  PHP_MAX_EXECUTION_TIME
    read -rp "$STARTMSG Set PHP variable post_max_size? [ Default: $PHP_POST_MAX_SIZE ]: " -ei "$PHP_POST_MAX_SIZE"  PHP_POST_MAX_SIZE
    read -rp "$STARTMSG Set PHP variable upload_max_filesize? [ Default: $PHP_UPLOAD_MAX_FILESIZE ]: " -ei "$PHP_UPLOAD_MAX_FILESIZE"  PHP_UPLOAD_MAX_FILESIZE
@@ -596,7 +594,7 @@ services:
       CRON_INTERVAL: "${CRON_INTERVAL}"
       CRON_USER_ID: "${CRON_USER_ID}"
       # PHP
-      PHP_MEMORY: "${PHP_MEMORY}"
+      PHP_MEMORY_LIMIT: "${PHP_MEMORY_LIMIT}"
       PHP_MAX_EXECUTION_TIME: "${PHP_MAX_EXECUTION_TIME}"
       PHP_POST_MAX_SIZE: "${PHP_POST_MAX_SIZE}"
       PHP_UPLOAD_MAX_FILESIZE: "${PHP_UPLOAD_MAX_FILESIZE}"
@@ -705,7 +703,7 @@ USE_SMIME="${USE_SMIME}"
 CRON_INTERVAL="${CRON_INTERVAL}"
 CRON_USER_ID="${CRON_USER_ID}"
 # PHP
-PHP_MEMORY="${PHP_MEMORY}"
+PHP_MEMORY_LIMIT="${PHP_MEMORY_LIMIT}"
 PHP_MAX_EXECUTION_TIME="${PHP_MAX_EXECUTION_TIME}"
 PHP_POST_MAX_SIZE="${PHP_POST_MAX_SIZE}"
 PHP_UPLOAD_MAX_FILESIZE="${PHP_UPLOAD_MAX_FILESIZE}"
