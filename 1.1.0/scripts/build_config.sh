@@ -84,7 +84,8 @@ function check_if_vars_exists() {
   # Redis
   [ -z "$REDIS_FQDN" ] && REDIS_FQDN="misp-redis"  && QUERY_REDIS="yes"
   [ -z "${REDIS_PORT}" ] && REDIS_PORT="" && QUERY_REDIS="yes"
-  [ -z "${REDIS_PW}" ]   && REDIS_PW="" && QUERY_REDIS="yes"
+  [ -z "${REDIS_PW+x}" ]   && REDIS_PW="" && QUERY_REDIS="yes"
+  [ -z ${USE_EXTERNAL_REDIS} ] && QUERY_REDIS="yes"
   # SMIME / PGP
   [ -z "${USE_PGP}" ] && QUERY_PGP="yes"
   [ -z "${USE_SMIME}" ] && QUERY_SMIME="yes"
