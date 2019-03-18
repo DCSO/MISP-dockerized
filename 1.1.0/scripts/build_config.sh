@@ -82,10 +82,10 @@ function check_if_vars_exists() {
   [ -z "$RELAYHOST" ] && RELAYHOST="mail.example.com" && QUERY_POSTFIX="yes"
   [ -z "$QUESTION_DEBUG_PEERS" ] && QUESTION_DEBUG_PEERS="no" && QUERY_POSTFIX="yes"
   # Redis
+  [ -z "${USE_EXTERNAL_REDIS}" ] && USE_EXTERNAL_REDIS="no" && QUERY_REDIS="yes"
   [ -z "$REDIS_FQDN" ] && REDIS_FQDN="misp-redis"  && QUERY_REDIS="yes"
-  [ -z "${REDIS_PORT}" ] && REDIS_PORT="" && QUERY_REDIS="yes"
+  [ -z "${REDIS_PORT}" ] && REDIS_PORT="6379" && QUERY_REDIS="yes"
   [ -z "${REDIS_PW+x}" ]   && REDIS_PW="" && QUERY_REDIS="yes"
-  [ -z ${USE_EXTERNAL_REDIS} ] && QUERY_REDIS="yes"
   # SMIME / PGP
   [ -z "${USE_PGP}" ] && QUERY_PGP="yes"
   [ -z "${USE_SMIME}" ] && QUERY_SMIME="yes"
@@ -566,7 +566,9 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       # REDIS
-      REDIS_FQDN: ${REDIS_FQDN}
+      REDIS_FQDN: "${REDIS_FQDN}"
+      REDIS_PORT: "${REDIS_PORT}"
+      REDIS_PW: "${REDIS_PW}"
       # PROXY
       HTTP_PROXY: ${HTTP_PROXY}
       HTTPS_PROXY: ${HTTPS_PROXY}
