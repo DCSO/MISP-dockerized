@@ -609,6 +609,7 @@ services:
       HTTPS_PROXY: ${HTTPS_PROXY}
       NO_PROXY: ${NO_PROXY}
       IP: ${HTTP_ALLOWED_IP}
+      PHP_UPLOAD_MAX_FILESIZE="${PHP_UPLOAD_MAX_FILESIZE}"
     ${LOG_SETTINGS}
 
   misp-robot:
