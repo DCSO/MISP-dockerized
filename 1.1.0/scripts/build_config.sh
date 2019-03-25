@@ -547,7 +547,10 @@ services:
   misp-modules:
     ${IMAGE_MISP_MODULES}
     environment:
-      REDIS_FQDN: ${REDIS_FQDN}
+      REDIS_BACKEND: ${REDIS_FQDN}
+      REDIS_PORT: "${REDIS_PORT}"
+      REDIS_PW: "${REDIS_PW}"
+      REDIS_DATABASE: "245"
       http_proxy: ${HTTP_PROXY}
       https_proxy: ${HTTPS_PROXY}
       no_proxy: ${NO_PROXY}
