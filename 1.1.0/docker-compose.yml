@@ -38,7 +38,7 @@ services:
     container_name: misp-redis
     command: ["redis-server", "--appendonly", "yes"] #For Data persistence
     healthcheck:
-      test: ["CMD-SHELL", "[ $$(redis-cli ping) == PONG ] && exit 1"]
+      test: ["CMD-SHELL", "[ $$(redis-cli ping) == PONG ] || exit 1"]
       interval: 1m30s
       timeout: 15s
       retries: 3
