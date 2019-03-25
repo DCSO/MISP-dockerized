@@ -33,12 +33,12 @@ services:
   # LINK: https://docs.docker.com/samples/library/redis/
   # LINK: https://github.com/docker-library/docs/tree/master/redis
   misp-redis:
-    image: dockerhub.dcso.de/misp-dockerized-redis:1.0-alpine-dev
+    image: dockerhub.dcso.de/misp-dockerized-redis:5-alpine3.9
     restart: unless-stopped
     container_name: misp-redis
     command: ["redis-server", "--appendonly", "yes"] #For Data persistence
     healthcheck:
-      test: ["CMD-SHELL", "[ $$(redis-cli -h misp-redis ping) == PONG ] && exit 1"]
+      test: ["CMD-SHELL", "[ $$(redis-cli ping) == PONG ] && exit 1"]
       interval: 1m30s
       timeout: 15s
       retries: 3
@@ -51,7 +51,7 @@ services:
   
   ### MISP Modules ###
   misp-modules:
-    image: dockerhub.dcso.de/misp-dockerized-misp-modules:1
+    image: dockerhub.dcso.de/misp-dockerized-misp-modules:2
     container_name: misp-modules
     restart: unless-stopped
     networks:
@@ -62,7 +62,7 @@ services:
 
   ### MISP Apache Server ###    
   misp-server:
-    image: dockerhub.dcso.de/misp-dockerized-server:2.4.103-debian-dev
+    image: dockerhub.dcso.de/misp-dockerized-server:2.4.103-debian
     container_name: misp-server
     restart: unless-stopped
     volumes:
