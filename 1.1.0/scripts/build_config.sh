@@ -81,7 +81,7 @@ function check_if_vars_exists() {
   [ -z "$RELAYHOST" ] && RELAYHOST="mail.example.com" && QUERY_POSTFIX="yes"
   [ -z "$QUESTION_DEBUG_PEERS" ] && QUESTION_DEBUG_PEERS="no" && QUERY_POSTFIX="yes"
   # Redis
-  [ -z "${USE_EXTERNAL_REDIS}" ] && USE_EXTERNAL_REDIS="no" && QUERY_REDIS="yes"
+  [ -z "${USE_EXTERNAL_REDIS}" ] && USE_EXTERNAL_REDIS="yes" && QUERY_REDIS="yes"
   [ -z "$REDIS_FQDN" ] && REDIS_FQDN="misp-redis"  && QUERY_REDIS="yes"
   [ -z "${REDIS_PORT}" ] && REDIS_PORT="6379" && QUERY_REDIS="yes"
   [ -z "${REDIS_PW+x}" ]   && REDIS_PW="" && QUERY_REDIS="yes"
@@ -348,6 +348,7 @@ function query_redis_settings(){
     ;;
   *)
     USE_EXTERNAL_REDIS="no"
+    REDIS_FQDN="localhost"
     ;;
   esac
 }
@@ -547,9 +548,9 @@ services:
     ${IMAGE_MISP_MODULES}
     environment:
       REDIS_FQDN: ${REDIS_FQDN}
-      HTTP_PROXY: ${HTTP_PROXY}
-      HTTPS_PROXY: ${HTTPS_PROXY}
-      NO_PROXY: ${NO_PROXY}
+      http_proxy: ${HTTP_PROXY}
+      https_proxy: ${HTTPS_PROXY}
+      no_proxy: ${NO_PROXY}
     ${LOG_SETTINGS}
 
   misp-server:
@@ -568,9 +569,9 @@ services:
       REDIS_PORT: "${REDIS_PORT}"
       REDIS_PW: "${REDIS_PW}"
       # PROXY
-      HTTP_PROXY: ${HTTP_PROXY}
-      HTTPS_PROXY: ${HTTPS_PROXY}
-      NO_PROXY: ${NO_PROXY}
+      http_proxy: ${HTTP_PROXY}
+      https_proxy: ${HTTPS_PROXY}
+      no_proxy: ${NO_PROXY}
       # POSTFIX
       SENDER_ADDRESS: ${SENDER_ADDRESS}
       DOMAIN: ${DOMAIN}
@@ -603,22 +604,23 @@ services:
   misp-proxy:
     ${IMAGE_MISP_PROXY}
     environment:
-      HOSTNAME: ${myHOSTNAME}
+      MISP_FQDN: ${MISP_FQDN}
       HTTP_SERVERADMIN: ${HTTP_SERVERADMIN}
-      HTTP_PROXY: ${HTTP_PROXY}
-      HTTPS_PROXY: ${HTTPS_PROXY}
-      NO_PROXY: ${NO_PROXY}
+      http_proxy: ${HTTP_PROXY}
+      https_proxy: ${HTTPS_PROXY}
+      no_proxy: ${NO_PROXY}
       IP: ${HTTP_ALLOWED_IP}
-      PHP_UPLOAD_MAX_FILESIZE="${PHP_UPLOAD_MAX_FILESIZE}"
+      PHP_UPLOAD_MAX_FILESIZE: "${PHP_UPLOAD_MAX_FILESIZE}"
+      PHP_MAX_EXECUTION_TIME: "${PHP_MAX_EXECUTION_TIME}"
     ${LOG_SETTINGS}
 
   misp-robot:
     ${IMAGE_MISP_ROBOT}
     environment:
-      HTTP_PROXY: ${HTTP_PROXY}
-      HTTPS_PROXY: ${HTTPS_PROXY}
-      NO_PROXY: ${NO_PROXY}
-      HOSTNAME: ${myHOSTNAME}
+      http_proxy: ${HTTP_PROXY}
+      https_proxy: ${HTTPS_PROXY}
+      no_proxy: ${NO_PROXY}
+      MISP_FQDN: ${MISP_FQDN}
     volumes:
     # Github Repository
     - ${MISP_dockerized_repo}:/srv/MISP-dockerized
