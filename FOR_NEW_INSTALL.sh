@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 set -e
 
 
@@ -41,7 +41,7 @@ CURRENT_VERSION=""
 
 
 # check requirements
-    $SCRIPTPATH/.scripts/requirements.sh
+    "$SCRIPTPATH/.scripts/requirements.sh"
     echo "### Requirements check...finished"
 
 # check if this execution is automatic from gitlab-ci or travis-ci
@@ -70,7 +70,7 @@ CURRENT_VERSION=""
         # User setup the right version 
         input_sel=0
         while [[ ${input_sel} -lt 1 ||  ${input_sel} -gt ${i} ]]; do
-            read -p "Please choose the version: " input_sel
+            read -rp "Please choose the version: " input_sel
         done
         # set new Version
         CURRENT_VERSION="${FOLDER[${input_sel}-1]}"
@@ -97,15 +97,15 @@ CURRENT_VERSION=""
         exit
     else
         # create symlink for 'current' folder
-        [ -L $PWD/current ] && echo "[OK] Delete symlink 'current'" && rm $PWD/current
-        [ -f $PWD/current ] && echo "[Error] There is a file called 'current' please backup and delete this file first. Command: 'rm -v $PWD/current'" && exit
-        [ -d $PWD/current ] && echo "[Error] There is a directory called 'current' please backup and delete this folder first. Command: 'rm -Rv $PWD/current'" && exit
+        [ -L "$PWD/current" ] && echo "[OK] Delete symlink 'current'" && rm "$PWD/current"
+        [ -f "$PWD/current" ] && echo "[Error] There is a file called 'current' please backup and delete this file first. Command: 'rm -v $PWD/current'" && exit
+        [ -d "$PWD/current" ] && echo "[Error] There is a directory called 'current' please backup and delete this folder first. Command: 'rm -Rv $PWD/current'" && exit
         echo "[OK] Create symlink 'current' for the folder $CURRENT_VERSION" && ln -s "$CURRENT_VERSION" current
         # create symlink for backup
-        [ -L $PWD/current/backup ] && echo "[OK] Delete symlink 'current/backup'" && rm $PWD/current/backup
+        [ -L "$PWD/current/backup" ] && echo "[OK] Delete symlink 'current/backup'" && rm "$PWD/current/backup"
         echo "[OK] Create symlink 'current/backup'" && ln -s "../backup" ./current/
         # create symlink for config
-        [ -L $PWD/current/config ] && echo "[OK] Delete symlink 'current/config'" && rm $PWD/current/config
+        [ -L "$PWD/current/config" ] && echo "[OK] Delete symlink 'current/config'" && rm "$PWD/current/config"
         echo "[OK] Create symlink 'current/config' " && ln -s "../config" ./current/
 
         # [ "$CI" == true ] || echo "start installation..."

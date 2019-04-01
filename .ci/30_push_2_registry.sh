@@ -26,7 +26,7 @@ func_tag() {
     do
         k="$(echo "$i"|sed 's,-dev$,,')"
         echo "$STARTMSG Retag: $DOCKER_REPO:$i with $DOCKER_REPO:$k"
-        docker tag "$DOCKER_REPO:$i" "$DOCKER_REPO:$k;"
+        docker tag "$DOCKER_REPO:$i" "$DOCKER_REPO:$k"
         echo "$STARTMSG Remove: $DOCKER_REPO:$i"
         docker image rm "$DOCKER_REPO:$i"
     done
@@ -55,8 +55,8 @@ SERVER_TAG="$(docker ps -f name=server --format '{{.Image}}'|cut -d : -f 2)"
 PROXY_TAG="$(docker ps -f name=proxy --format '{{.Image}}'|cut -d : -f 2)"
 ROBOT_TAG="$(docker ps -f name=robot --format '{{.Image}}'|cut -d : -f 2)"
 MODULES_TAG="$(docker ps -f name=modules --format '{{.Image}}'|cut -d : -f 2)"
-#DB_TAG=$(docker ps -f name=db --format '{{.Image}}'|cut -d : -f 2)
-#REDIS_TAG=$(docker ps -f name=redis --format '{{.Image}}'|cut -d : -f 2)
+DB_TAG=$(docker ps -f name=db --format '{{.Image}}'|cut -d : -f 2)
+REDIS_TAG=$(docker ps -f name=redis --format '{{.Image}}'|cut -d : -f 2)
 
 
 # Login to Docker registry
@@ -72,6 +72,8 @@ if [ ! -z "$DOCKER_LOGIN_STATE" ]; then
         func_tag "$REGISTRY_URL/misp-dockerized-server" "$SERVER_TAG"
         func_tag "$REGISTRY_URL/misp-dockerized-robot" "$ROBOT_TAG"
         func_tag "$REGISTRY_URL/misp-dockerized-misp-modules" "$MODULES_TAG"
+        #func_tag "$REGISTRY_URL/misp-dockerized-db" "$DB_TAG"
+        func_tag "$REGISTRY_URL/misp-dockerized-redis" "$REDIS_TAG"
         echo "###########################################" && docker images && echo "###########################################"
     # Push all Docker images
         #$makefile_travis push REPOURL=$REGISTRY_URL server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} modules_tag=${modules_tag} postfix_tag=${postfix_tag} 
@@ -79,6 +81,8 @@ if [ ! -z "$DOCKER_LOGIN_STATE" ]; then
         func_push "$REGISTRY_URL/misp-dockerized-proxy" "$PROXY_TAG"
         func_push "$REGISTRY_URL/misp-dockerized-robot" "$ROBOT_TAG"
         func_push "$REGISTRY_URL/misp-dockerized-misp-modules" "$MODULES_TAG"
+        #func_push "$REGISTRY_URL/misp-dockerized-db" "$DB_TAG"
+        func_push "$REGISTRY_URL/misp-dockerized-redis" "$REDIS_TAG"
 else
     echo "$DOCKER_LOGIN_OUTPUT"
     exit
