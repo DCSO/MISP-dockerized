@@ -8,6 +8,9 @@ docker-compose.override.yml
 reports
 local_test*
 
+# for Support
+*.tar.gz
+
 # for older:
 secrets
 volumes

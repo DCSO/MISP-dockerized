@@ -22,3 +22,6 @@ new: install
 
 delete:
 	make -C current delete
+
+support:
+	bash .scripts/support.sh

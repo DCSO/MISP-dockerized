@@ -67,6 +67,9 @@ requirements:
 	@scripts/requirements.sh
 	@sleep 2
 
+support:
+	make -C ../ support
+
 # Build Configuration
 build-config:
 	@echo " ###########	Build Configuration	###########"
