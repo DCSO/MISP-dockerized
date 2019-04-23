@@ -19,7 +19,7 @@ func_push() {
 # func_tag() {
 #     DOCKER_REPO="$1"
 #     TAG="$2"
-    
+  
 #     # add -dev 
 #     [ -z "$(echo "$TAG"| grep dev)" ] && TAG="$TAG-dev"
 #     IMAGE_ID="$(docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep "$DOCKER_REPO:$TAG"|cut -d : -f 3|head -n 1;)"
