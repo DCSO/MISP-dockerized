@@ -24,6 +24,9 @@ test:
 	@if [ ! -d reports ]; then mkdir reports; fi
 	@docker cp misp-robot:/srv/MISP-dockerized-testbench/reports/. reports/
 
+tag:
+	@bash 20_tag_2_registry.sh $(REPOURL) $(USER) $(PW)
+
 push:
 	@bash 30_push_2_registry.sh $(REPOURL) $(USER) $(PW)
 

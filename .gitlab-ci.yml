@@ -5,6 +5,7 @@ services:
 
 stages:
 - build
+- test
 - scan
 - deploy
 
@@ -26,16 +27,19 @@ before_script:
 # Install dependencies
 - .ci/01_before_install.sh
 
+
+
 # On all other pull requests and branches exclude dev and master: Build Environment, but do nothing more. No tests. Tests with our Test Framework are only done in the dev branch.
 .env_test_only:
   stage: build
   except:
   - master
   - dev
-  - 1.1.0
+  - 1.2.0
   script:
+    # Test
   - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=no_test VERSION=$CURRENT_VERSION
-  # Clean Up
+    # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
 
 .env_test_only_hub.docker.com:
@@ -43,22 +47,28 @@ before_script:
   except:
   - master
   - dev
-  - 1.1.0
+  - 1.2.0
   script:
+    # Test
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=no_test VERSION=$CURRENT_VERSION
-  # Clean Up
+    # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
 
+
+  
 # On dev Branch: Build Environment and Test it with our own Test Framework
 .long_test:
-  stage: build
+  stage: test
   only:
   - dev
-  - 1.1.0
+  - 1.2.0
   allow_failure: true
   script:
+    # Test
   - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=long_test VERSION=$CURRENT_VERSION
-  # Clean Up
+    # Tag
+  - make -C .ci tag REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW
+    # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
   artifacts:
@@ -69,13 +79,16 @@ before_script:
 
 # On dev Branch: Build Environment and Test it with our own Test Framework
 .long_test_hub.docker.com:
-  stage: build
+  stage: test
   only:
   - dev
-  - 1.1.0
+  - 1.2.0
   script:
+    # Test
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
-  # Clean Up
+    # Tag 
+  - make -C .ci tag REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
+    # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
   artifacts:
@@ -83,6 +96,7 @@ before_script:
     - .ci/reports/*.xml
     reports:
       junit: .ci/reports/*.xml
+
 
 
 # On MASTER Branch: Build Environment + retag Images to remove "-dev" tag
@@ -95,6 +109,8 @@ before_script:
   # Check internal Registry
     # Test
   - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=long_test VERSION=$CURRENT_VERSION
+    # Tag
+  - make -C .ci tag REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW
     # Push
   - make -C .ci push REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW
     # Clean Up
@@ -115,6 +131,8 @@ before_script:
   # Check hub.docker.com Registry
     # Test
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
+    # Tag 
+  - make -C .ci tag REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
     # Push 
   - make -C .ci push REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
     # Clean Up
@@ -125,16 +143,10 @@ before_script:
     - ./.ci/reports/*.xml
     reports:
       junit: ./.ci/reports/*.xml
-      
-      
-      
-# deactivated:
-# https://docs.gitlab.com/ee/ci/examples/container_scanning.html
-# https://docs.gitlab.com/ee/ci/yaml/README.html#artifactsreportscontainer_scanning
-# https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html
-# https://docs.gitlab.com/ee/ci/yaml/#artifactsreportscontainer_scanning-ultimate
+
+
+
 .container_scanning:
-  # deactivated:
   # https://docs.gitlab.com/ee/ci/examples/container_scanning.html
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifactsreportscontainer_scanning
   # https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html
@@ -165,5 +177,6 @@ include:
   #- '1.0.0/.gitlab-ci.yml'
   #- '1.0.1/.gitlab-ci.yml'
   #- '1.0.2/.gitlab-ci.yml'
-  #- '1.0.3/.gitlab-ci.yml'
-  - '1.1.0/.gitlab-ci.yml'
+  - '1.0.3/.gitlab-ci.yml'
+  #- '1.1.0/.gitlab-ci.yml'
+  - '1.1.1/.gitlab-ci.yml'

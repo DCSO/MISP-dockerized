@@ -1,4 +1,6 @@
 #!/bin/sh
+set -e
+
 STARTMSG="[02_script]"
 
 # change directory for make usage
@@ -31,9 +33,9 @@ echo "$DOCKER_LOGIN_OUTPUT"
 
 
 # Build config and deploy environent
-    echo "$STARTMSG build configuration..." && $makefile_main build-config REPOURL=$REGISTRY_URL
-     echo "$STARTMSG pull images..." && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml pull
-     echo "$STARTMSG start environment..." && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml up -d
+    echo "$STARTMSG Build Configuration..." && $makefile_main build-config REPOURL="$REGISTRY_URL"
+    echo "$STARTMSG Pull Images..." && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml pull
+    echo "$STARTMSG Start Environment..." && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml up -d
     ###########################################################
     #       ATTENTION   ATTENTION   ATTENTION
     #   If you want to use docker-in-docker (dind) you cant start docker container on another filesystem!!!! You need to do it from the docker-compose directly!!!
@@ -55,6 +57,7 @@ then
         echo "$STARTMSG show running docker container..." &&  docker ps
 fi  
 
+$makefile_main configure
 # show config folders
     ls -laR config/
 

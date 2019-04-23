@@ -146,10 +146,10 @@ check_folder "backup"
 echo
 if [ ! -f ./config/ssl/key.pem -a ! -f ./config/ssl/cert.pem ]; then
     echo "[WARN] No SSL certificate found. We create a self-signed certificate in the volume."
-    echo "     To change: "
+    echo "     To change the SSL certificate and private key later: "
     echo "     1. Please save your certificate in:      $PWD/config/ssl/cert.pem"
     echo "     2. Please save your private keyfile in:  $PWD/config/ssl/key.pem"
-    echo "     3. do:                         make -C current config-ssl"
+    echo "     3. do:                         make config-ssl"
     echo
     echo
 fi
@@ -158,10 +158,9 @@ fi
 echo
 if [ ! -f ./config/smime/key.pem -a ! -f ./config/smime/cert.pem ]; then
     echo "[WARN] No S/MIME certificate found."
-    echo "     To change: "
     echo "     1. Please save your certificate in:  $PWD/config/smime/cert.pem" 
     echo "     2. Please save your private key  in:  $PWD/config/smime/key.pem"
-    echo "     3. Do:                        make -C current config-smime"
+    echo "     3. Do:                        make config-smime"
     echo
 fi
 
@@ -169,10 +168,10 @@ fi
 echo
 if [ ! -f ./config/pgp/private.key -a ! -f ./config/pgp/public.key ]; then
     echo "[WARN] No PGP key found."
-    echo "     To change: "
+    echo "     To replace the PGP public and private file later: "
     echo "     1. Please save your public key in:      $PWD/config/pgp/public.key"
     echo "     2. Please save your private key in:  $PWD/config/pgp/private.key"
-    echo "     3. Do:                         make -C current config-pgp"
+    echo "     3. Do:                         make config-pgp"
     echo
     echo
 fi
