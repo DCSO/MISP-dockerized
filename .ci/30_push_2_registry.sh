@@ -9,7 +9,7 @@ func_push() {
     for i in $TAGS
     do
         [ ! -z "$(echo $i | grep 'dev')" ] && continue
-        echo "docker push "$DOCKER_REPO:$i""
+        docker push "$DOCKER_REPO:$i"
     done
 }
 
