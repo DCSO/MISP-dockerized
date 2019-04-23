@@ -61,7 +61,7 @@ if [ ! -z "$DOCKER_LOGIN_STATE" ]; then
   # retag all existing tags dev 2 public repo
         #$makefile_travis tag REPOURL=$REGISTRY_URL server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} modules_tag=${modules_tag} db_tag=${modules_tag} redis_tag=${modules_tag} postfix_tag=${postfix_tag}
         func_tag "$REGISTRY_URL/misp-dockerized-server" "$SERVER_TAG"
-        func_tag "$REGISTRY_URL/misp-dockerized-server" "$SERVER_TAG"
+        func_tag "$REGISTRY_URL/misp-dockerized-proxy" "$PROXY_TAG"
         func_tag "$REGISTRY_URL/misp-dockerized-robot" "$ROBOT_TAG"
         func_tag "$REGISTRY_URL/misp-dockerized-misp-modules" "$MODULES_TAG"
         #func_tag "$REGISTRY_URL/misp-dockerized-db" "$DB_TAG"

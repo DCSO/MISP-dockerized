@@ -57,6 +57,7 @@ then
         echo "$STARTMSG show running docker container..." &&  docker ps
 fi  
 
+$makefile_main configure
 # show config folders
     ls -laR config/
 

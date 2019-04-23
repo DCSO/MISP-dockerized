@@ -56,7 +56,9 @@ install: requirements build-config pull deploy
 	@echo "      Username: admin@admin.test"
 	@echo "      Password: admin"
 	@echo
-	@echo "Do not forget to change your SSL certificate with:    make change-ssl"
+	@echo "Do not forget to change your SSL certificate with:    'make copy-ssl' or 'make -C current copy-ssl'"
+	@echo "Do not forget to change your S/MIME certificate with:    'make copy-ssl' or 'make -C current copy-ssl'"
+	@echo "Do not forget to change your PGP certificate with:    'make copy-ssl' or 'make -C current copy-ssl'"
 	@echo " ##########################################################"
 	@echo
 
@@ -99,7 +101,6 @@ deploy:
 		-v ~/.docker:/root/.docker:ro \
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
 		$(shell cat $(CURDIR)/config/config.env|grep DOCKER_REGISTRY|cut -d = -f 2)/misp-dockerized-robot:$(shell cat $(CURDIR)/config/config.env|grep ROBOT_CONTAINER_TAG|cut -d = -f 2) bash -c "docker-compose -f /srv/MISP-dockerized/docker-compose.yml -f /srv/MISP-dockerized/docker-compose.override.yml up -d "
-	make copy-ssl
 
 # delete all misp container, volumes and images
 delete: copy-ssl
@@ -133,7 +134,7 @@ update: install
 
 
 test:
-	@make -C .travis test
+	@make -C ../.ci test
 	@echo
 	@echo "#############################################"
 	@echo "For the report output: cat $(CURDIR)/.travis/reports/*.xml"
@@ -144,35 +145,35 @@ test:
 DOCKER_EXEC=docker exec -ti
 #DOCKER_EXEC= "docker run -it --rm "
 
-
-# logging on whole service if syslog is deactivated
-log:
-	$(DOCKER_EXEC) misp-robot docker-compose -f /srv/MISP-dockerized/docker-compose.yml logs
-
-log-f:
-	$(DOCKER_EXEC) misp-robot docker-compose -f /srv/MISP-dockerized/docker-compose.yml logs -f
-
 # configure
 configure:
 	@echo " ###########	Configure Environment	###########	"
+	make copy-smime
+	make copy-pgp
 	make config-ssl
-	make config-smime
-	make config-pgp
 
+
+change-ssl: config-ssl
 config-ssl: copy-ssl
 	docker restart misp-server
 	docker restart misp-proxy
 
+# x509 SSL Certificate
 copy-ssl:
 	-docker cp $(CURDIR)/config/ssl/cert.pem misp-proxy:/etc/nginx/ssl/
 	-docker cp $(CURDIR)/config/ssl/key.pem misp-proxy:/etc/nginx/ssl/
 	-docker cp misp-proxy:/etc/nginx/ssl/cert.pem $(CURDIR)/config/ssl/
 	-docker cp misp-proxy:/etc/nginx/ssl/key.pem $(CURDIR)/config/ssl/
 
-config-smime:
+# S/MIME
+change-smime: copy-smime
+copy-smime:
 	#$(DOCKER_EXEC) misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t smime /etc/ansible/playbooks/robot-playbook/site.yml"
 	docker cp $(CURDIR)/config/smime/. misp-server:/var/www/MISP/.smime
-config-pgp:
+
+# GnuPGP
+change-pgp: copy-pgp
+copy-pgp:
 	#$(DOCKER_EXEC) misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t pgp /etc/ansible/playbooks/robot-playbook/site.yml"
 	docker cp $(CURDIR)/config/pgp/. misp-server:/var/www/MISP/.pgp
 
@@ -183,9 +184,6 @@ enable-maintenance:
 disable-maintenance:
 	$(DOCKER_EXEC) misp-proxy /entrypoint_nginx.sh disable-maintenance
 	docker restart misp-proxy
-
-# reconfigure ssl
-change-ssl: config-ssl
 
 # backup all services
 backup-all:
@@ -200,6 +198,7 @@ backup-proxy:
 	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh backup proxy"
 backup-robot:
 	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh backup robot"
+backup-ssl: copy-ssl
 
 # restore service
 restore-all:

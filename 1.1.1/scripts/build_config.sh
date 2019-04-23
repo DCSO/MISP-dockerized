@@ -2,7 +2,8 @@
 #description     :This script build the configuration for the MISP Container and their content.
 #==============================================================================
 STARTMSG="[build_config.sh]"
-set -exv
+set -e
+
 # Available Parameters from outside:
 # export CI=true
 # export DEV=true
