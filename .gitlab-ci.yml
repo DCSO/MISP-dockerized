@@ -57,6 +57,7 @@ before_script:
   only:
   - dev
   - 1.2.0
+  - bug/MDD-200
   allow_failure: true
   script:
     # Test
@@ -78,6 +79,7 @@ before_script:
   only:
   - dev
   - 1.2.0
+  - bug/MDD-200
   script:
     # Test
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
