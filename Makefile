@@ -34,3 +34,6 @@ change-smime:
 
 change-pgp:
 	-make -C current change-pgp
+
+backup:
+	make -C current backup-all
