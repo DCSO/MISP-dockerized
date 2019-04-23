@@ -9,43 +9,45 @@ help:
 	@echo "Please use one of the following options:\n \
 	General: \n \
 	       make install			| Initial Command for: requirements, build-config, deploy\n \
-	       make requirements	 	| check if server fullfill all requirements\n \
-	       make build-config	 	| build configuration\n \
-	       make deploy 			| deploy docker container\n \
-		make upgrade 			| upgrade MISP-dockerized\n \
-		make update 			| update MISP-dockerized same as make install\n \
-	       make delete 			| delete all docker container, volumes and images for MISP\n \
-	       make delete-unused 		| delete all unused docker container, volumes and images \n \
-	       make security	 		| check docker security via misp-robot\n \
-		   make test	 		| test if MISP-environment is ready.\n \
-	Control Docker Instances\n\
-		make start-all			| start all docker container\n \
-		make stop-all			| stop all docker container \n \
-		make restart-all		| restart all docker container \n \
-	Configure: \n \
-	       make change-ssl			| change ssl cert\n \
-	       make configure 			| configure docker container via misp-robot\n \
-	       make config-db 			| configure misp-db via misp-robot\n \
-	       make config-server		| configure misp-server via misp-robot\n \
-	       make config-proxy 		| configure misp-proxy via misp-robot\n \
-	Maintenance: \n \
-	    	make enable-maintenance		| enable maintenance mode \n \
-	    	make disable-maintenance	| disable maintenance mode \n \
-	Backup: \n \
-	       make backup-all 		| backup all misp volumes via misp-robot\n \
-	       make backup-server		| backup misp-server volumes via misp-robot\n \
-	       make backup-redis		| backup misp-redis volumes via misp-robot\n \
-	       make backup-db			| backup misp-db volumes via misp-robot\n \
-	       make backup-proxy		| backup misp-proxy volumes via misp-robot\n \
-	       make backup-robot		| backup misp-robot volumes via misp-robot\n \
-	       make restore-all			| restore volumes via misp-robot\n \
-		   make restore-server		| restore misp-server volumes via misp-robot\n \
-	       make restore-redis		| restore misp-redis volumes via misp-robot\n \
-	       make restore-db			| restore misp-db volumes via misp-robot\n \
-	       make restore-proxy		| restore misp-proxy volumes via misp-robot\n \
-	       make restore-robot		| restore misp-robot volumes via misp-robot\n \
-	Help: \n \
-	       make help	 		| show help\n"
+	       make requirements	 	| Check if server fullfill all requirements\n \
+	       make deploy 			| Deploy Docker container\n \
+		make upgrade 			| Upgrade MISP-dockerized\n \
+		make update 			| Update MISP-dockerized same as make install\n \
+	       make delete 			| Delete all docker container, volumes and images for MISP\n \
+	       make delete-unused 		| Delete all unused docker container, volumes and images \n \
+	       make security	 		| Check docker security via misp-robot\n \
+		make test	 		| Test if MISP-environment is ready.\n \
+		\n \
+		make build-config REPOURL=<Custom Docker Registry URL>	 	| Build configuration\n \
+		\n \
+	\n Control Docker Instances\n\
+		make start-all			| Start all docker container\n \
+		make stop-all			| Stop all docker container \n \
+		make restart-all		| Restart all docker container \n \
+	\n Configure: \n \
+	       make change-ssl			| Change ssl certificate and key\n \
+		make change-smime		| Change S/MIME certificate and key\n \
+		make change-pgp			| Change PGP keys\n \
+		make change-all 		| Change SSL, S/MIME and PGP Keys \n \
+	\n Maintenance: \n \
+	    	make enable-maintenance		| Enable maintenance mode \n \
+	    	make disable-maintenance	| Disable maintenance mode \n \
+	\n Backup: \n \
+	       make backup-all 		| Backup all misp volumes via misp-robot\n \
+	       make backup-server		| Backup misp-server volumes via misp-robot\n \
+	       make backup-redis		| Backup misp-redis volumes via misp-robot\n \
+	       make backup-db			| Backup misp-db volumes via misp-robot\n \
+	       make backup-proxy		| Backup misp-proxy volumes via misp-robot\n \
+	       make backup-robot		| Backup misp-robot volumes via misp-robot\n \
+	       \n \
+		make restore-all		| Restore all via misp-robot\n \
+		make restore-server		| Restore misp-server volumes via misp-robot\n \
+	       make restore-redis		| Restore misp-redis volumes via misp-robot\n \
+	       make restore-db			| Restore misp-db volumes via misp-robot\n \
+	       make restore-proxy		| Restore misp-proxy volumes via misp-robot\n \
+	       make restore-robot		| Restore misp-robot volumes via misp-robot\n \
+	\n Help: \n \
+	       make help	 		| Show help\n"
 
 # Start
 install: requirements build-config pull deploy
@@ -56,9 +58,9 @@ install: requirements build-config pull deploy
 	@echo "      Username: admin@admin.test"
 	@echo "      Password: admin"
 	@echo
-	@echo "Do not forget to change your SSL certificate with:    'make copy-ssl' or 'make -C current copy-ssl'"
-	@echo "Do not forget to change your S/MIME certificate with:    'make copy-ssl' or 'make -C current copy-ssl'"
-	@echo "Do not forget to change your PGP certificate with:    'make copy-ssl' or 'make -C current copy-ssl'"
+	@echo "Do not forget to change your SSL certificate with:    make change-ssl"
+	@echo "Do not forget to change your S/MIME certificate with:    make change-smime"
+	@echo "Do not forget to change your PGP certificate with:    make change-pgp'"
 	@echo " ##########################################################"
 	@echo
 

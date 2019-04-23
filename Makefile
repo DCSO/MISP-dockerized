@@ -25,3 +25,12 @@ delete:
 
 support:
 	bash .scripts/support.sh
+
+change-ssl:
+	-make -C current change-ssl
+
+change-smime:
+	-make -C current change-smime
+
+change-pgp:
+	-make -C current change-pgp
