@@ -105,7 +105,6 @@ before_script:
   only: 
   - master
   - schedules
-  - bug/MDD-200
   script:
   # Check internal Registry
     # Test
@@ -174,10 +173,10 @@ include:
   #- '0.3.1/.gitlab-ci.yml'
   #- '0.3.2/.gitlab-ci.yml'
   #- '0.3.3/.gitlab-ci.yml'
-  #- '0.3.4/.gitlab-ci.yml'
+  - '0.3.4/.gitlab-ci.yml'
   #- '1.0.0/.gitlab-ci.yml'
   #- '1.0.1/.gitlab-ci.yml'
   #- '1.0.2/.gitlab-ci.yml'
-  #- '1.0.3/.gitlab-ci.yml'
+  - '1.0.3/.gitlab-ci.yml'
   #- '1.1.0/.gitlab-ci.yml'
   - '1.1.1/.gitlab-ci.yml'
