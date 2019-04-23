@@ -1,4 +1,6 @@
 #!/bin/sh
+set -e 
+
 STARTMSG="[02_script]"
 
 # change directory for make usage
