@@ -67,6 +67,9 @@ requirements:
 	@scripts/requirements.sh
 	@sleep 2
 
+support:
+	make -C ../ support
+
 # Build Configuration
 build-config:
 	@echo " ###########	Build Configuration	###########"
@@ -96,10 +99,10 @@ deploy:
 		-v ~/.docker:/root/.docker:ro \
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
 		$(shell cat $(CURDIR)/config/config.env|grep DOCKER_REGISTRY|cut -d = -f 2)/misp-dockerized-robot:$(shell cat $(CURDIR)/config/config.env|grep ROBOT_CONTAINER_TAG|cut -d = -f 2) bash -c "docker-compose -f /srv/MISP-dockerized/docker-compose.yml -f /srv/MISP-dockerized/docker-compose.override.yml up -d "
-	docker cp $(CURDIR)/config/ssl/. misp-proxy:/etc/nginx/ssl/
+	make copy-ssl
 
 # delete all misp container, volumes and images
-delete:
+delete: copy-ssl
 	scripts/delete_all_misp_from_host.sh
 
 # stop all misp docker container
@@ -144,10 +147,10 @@ DOCKER_EXEC=docker exec -ti
 
 # logging on whole service if syslog is deactivated
 log:
-	$(DOCKER_EXEC) misp-robot docker-compose -f /srv/MISP-dockerized/current/docker-compose.yml logs
+	$(DOCKER_EXEC) misp-robot docker-compose -f /srv/MISP-dockerized/docker-compose.yml logs
 
 log-f:
-	$(DOCKER_EXEC) misp-robot docker-compose -f /srv/MISP-dockerized/current/docker-compose.yml logs -f
+	$(DOCKER_EXEC) misp-robot docker-compose -f /srv/MISP-dockerized/docker-compose.yml logs -f
 
 # configure
 configure:
@@ -156,12 +159,15 @@ configure:
 	make config-smime
 	make config-pgp
 
-config-ssl:
-	docker cp $(CURDIR)/config/ssl/. misp-proxy:/etc/nginx/ssl/
-	docker cp misp-proxy:/etc/nginx/ssl/. $(CURDIR)/config/ssl/
-	-rm $(CURDIR)/config/ssl/misp-dockerized*
+config-ssl: copy-ssl
 	docker restart misp-server
 	docker restart misp-proxy
+
+copy-ssl:
+	-docker cp $(CURDIR)/config/ssl/cert.pem misp-proxy:/etc/nginx/ssl/
+	-docker cp $(CURDIR)/config/ssl/key.pem misp-proxy:/etc/nginx/ssl/
+	-docker cp misp-proxy:/etc/nginx/ssl/cert.pem $(CURDIR)/config/ssl/
+	-docker cp misp-proxy:/etc/nginx/ssl/key.pem $(CURDIR)/config/ssl/
 
 config-smime:
 	#$(DOCKER_EXEC) misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t smime /etc/ansible/playbooks/robot-playbook/site.yml"

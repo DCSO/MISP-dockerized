@@ -25,9 +25,9 @@ DOCKER_SOCK="/var/run/docker.sock"
     if [ -z "$(which docker)" ] 
         then
             STATUS="FAIL"
-            echo "[FAIL] Docker is not installed. \tPlease install it first!" 
+            echo "[FAIL] Docker is not Installed. \tPlease install it first!" 
         else
-            echo "[OK] Docker is installed. \t\tOutput: $(docker -v)"   
+            echo "[OK] Docker is Installed. \t\tOutput: $(docker -v)"   
     fi
 
 #
@@ -36,9 +36,9 @@ DOCKER_SOCK="/var/run/docker.sock"
     if [ -z "$(which git)" ] 
         then
             STATUS="FAIL"
-            echo -e "[FAIL] Git is not installed. \t\t\tPlease install it first!"
+            echo -e "[FAIL] Git is not Installed. \t\t\tPlease install it first!"
         else
-            echo -e "[OK] Git is installed. \t\t\tOutput: $(git --version)"
+            echo -e "[OK] Git is Installed. \t\t\tOutput: $(git --version)"
     fi
 
 #
@@ -77,18 +77,18 @@ echo "" # Empty Line for a better overview.
 #
     if [ $(whoami) != "root" ]
         then
-            # if user is not root then check if it is in docker group
+            # if user is not root then check if it is in dokcer group
             if [ -z "$(cat /etc/group|grep docker|grep `whoami`)" ]
                 then
                     STATUS="FAIL"
                     # user not part of docker group
-                    echo "[FAIL] User '$(whoami)' is not part of the 'docker' group. -> Try: sudo usermod -aG docker $(whoami)"
+                    echo "[FAIL] User '$(whoami)' isn't part of the docker group. -> Try: sudo usermod -aG docker $(whoami)"
                 else
                     # user is in docker group
-                    echo "[OK] User '$(whoami)' is part of the 'docker' group."
+                    echo "[OK] User '$(whoami)' is part of the docker group."
             fi
         else
-            echo "[OK] User '$(whoami)' is root."
+            echo "[OK] User '$(whoami)' has root rights."
     fi
 #
 #   Check docker.sock
@@ -96,10 +96,10 @@ echo "" # Empty Line for a better overview.
     if [ ! -z "$(docker ps 2>&1|grep 'permission denied')" ]
         then
             STATUS="FAIL"
-            echo "[FAIL] User '$(whoami)' has not access to Docker daemon."
+            echo "[FAIL] User '$(whoami)' hasn't access to Docker."
         else
             # user is in docker group
-            echo "[OK] User '$(whoami)' has access to Docker daemon."
+            echo "[OK] User '$(whoami)' has access to Docker."
     fi
 
 ###############################  FILE CHECKS    #########################
@@ -108,17 +108,17 @@ echo "" # Empty Line for a better overview.
 #   Check Write permissions
 #
 echo
-[ ! -d ./config/ssl ]     && echo -n "Create config and config/ssl directory..." && mkdir -p ./config/ssl  && echo "finished." 
-[ ! -d ./config/smime ]   && echo -n "Create config/smime directory..."          && mkdir ./config/smime         && echo "finished."
-[ ! -d ./config/pgp ]     && echo -n "Create config/pgp directory..."            && mkdir ./config/pgp         && echo "finished."
-[ ! -d ./backup ]         && echo -n "Create backup directory..."                && mkdir ./backup         && echo "finished."
+[ ! -d ./config/ssl ]     && echo -n "create config and config/ssl directory..." && mkdir -p ./config/ssl  && echo "finished." 
+[ ! -d ./config/smime ]   && echo -n "create config/smime directory..."          && mkdir ./config/smime         && echo "finished."
+[ ! -d ./config/pgp ]     && echo -n "create config/pgp directory..."            && mkdir ./config/pgp         && echo "finished."
+[ ! -d ./backup ]         && echo -n "create backup directory..."                && mkdir ./backup         && echo "finished."
 
 function check_folder(){
     FOLDER="$1"
     if [ ! -e "$FOLDER" ]
             then
                 STATUS="FAIL"
-                echo "[FAIL] Can not create '$FOLDER' folder."
+                echo "[FAIL] Can't create '$FOLDER' Folder."
             else
                 # user is in docker group
                 echo "[OK] Folder $FOLDER exists."
@@ -146,10 +146,10 @@ check_folder "backup"
 echo
 if [ ! -f ./config/ssl/key.pem -a ! -f ./config/ssl/cert.pem ]; then
     echo "[WARN] No SSL certificate found. We create a self-signed certificate in the volume."
-    echo "     To change: "
-    echo "     1. Please save your certificate in:      $PWD/config/ssl/cert.pem"
-    echo "     2. Please save your private keyfile in:  $PWD/config/ssl/key.pem"
-    echo "     3. do:                         make -C current config-ssl"
+    echo "     To change the SSL certificate and private key later: "
+    echo "     1. save certificate into:      $PWD/config/ssl/cert.pem"
+    echo "     2. save private keyfile into:  $PWD/config/ssl/key.pem"
+    echo "     3. do:                         make configure"
     echo
     echo
 fi
@@ -158,10 +158,9 @@ fi
 echo
 if [ ! -f ./config/smime/key.pem -a ! -f ./config/smime/cert.pem ]; then
     echo "[WARN] No S/MIME certificate found."
-    echo "     To change: "
-    echo "     1. Please save your certificate in:  $PWD/config/smime/cert.pem" 
-    echo "     2. Please save your private key  in:  $PWD/config/smime/key.pem"
-    echo "     3. Do:                        make -C current config-smime"
+    echo "     1. Please save your cert at:  $PWD/config/smime/cert.pem" 
+    echo "     2. Please save your key  at:  $PWD/config/smime/key.pem"
+    echo "     3. do:                        make config-server"
     echo
 fi
 
@@ -169,10 +168,10 @@ fi
 echo
 if [ ! -f ./config/pgp/private.key -a ! -f ./config/pgp/public.key ]; then
     echo "[WARN] No PGP key found."
-    echo "     To change: "
-    echo "     1. Please save your public key in:      $PWD/config/pgp/public.key"
-    echo "     2. Please save your private key in:  $PWD/config/pgp/private.key"
-    echo "     3. Do:                         make -C current config-pgp"
+    echo "     To replace the PGP public and private file later: "
+    echo "     1. save public key into:      $PWD/config/pgp/public.key"
+    echo "     2. save private key into:  $PWD/config/pgp/private.key"
+    echo "     3. do:                         make config-server"
     echo
     echo
 fi
@@ -181,11 +180,11 @@ fi
 echo "End result:"
 if [ $STATUS == "FAIL" ]
     then
-        echo "[$STATUS] At least one error is occured."
+        echo "[$STATUS] at least one Error is occured."
         echo
         exit 1
     else
-        echo "[$STATUS] No error is occured."
+        echo "[$STATUS] no Error is occured."
         echo
         exit 0
 fi
