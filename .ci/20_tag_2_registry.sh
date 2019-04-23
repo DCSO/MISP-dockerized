@@ -3,6 +3,12 @@ set -e
 
 STARTMSG="[tag]"
 
+# first_version=5.100.2
+# second_version=5.1.2
+# if version_gt $first_version $second_version; then
+#      echo "$first_version is greater than $second_version !"
+# fi'
+version_gt() { test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; }
 
 func_tag() {
     DOCKER_REPO="$1"
@@ -62,8 +68,10 @@ if [ ! -z "$DOCKER_LOGIN_STATE" ]; then
         func_tag "$REGISTRY_URL/misp-dockerized-proxy" "$PROXY_TAG"
         func_tag "$REGISTRY_URL/misp-dockerized-robot" "$ROBOT_TAG"
         func_tag "$REGISTRY_URL/misp-dockerized-misp-modules" "$MODULES_TAG"
+        if $version_gt "$VERSION" 1.1.0 ; then
+            func_tag "$REGISTRY_URL/misp-dockerized-redis" "$REDIS_TAG"
+        fi
         #func_tag "$REGISTRY_URL/misp-dockerized-db" "$DB_TAG"
-        func_tag "$REGISTRY_URL/misp-dockerized-redis" "$REDIS_TAG"
         echo "###########################################" && docker images && echo "###########################################"
 else
     echo "$DOCKER_LOGIN_OUTPUT"
