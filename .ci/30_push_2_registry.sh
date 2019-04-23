@@ -31,6 +31,7 @@ MODULES_TAGS="$(docker images --no-trunc --format '{{.Tag}}={{.ID}}' | grep $(do
 REDIS_TAGS="$(docker images --no-trunc --format '{{.Tag}}={{.ID}}' | grep $(docker inspect misp-redis -f '{{.Image}}')|cut -d = -f 1)"
 
 
+
 # Login to Docker registry
 [ "$REGISTRY_URL" != "dcso" ] && DOCKER_LOGIN_OUTPUT="$(echo "$REGISTRY_PW" | docker login -u "$REGISTRY_USER" "$REGISTRY_URL" --password-stdin)"
 [ "$REGISTRY_URL" = "dcso" ] && DOCKER_LOGIN_OUTPUT="$(echo "$REGISTRY_PW" | docker login -u "$REGISTRY_USER" --password-stdin)"
