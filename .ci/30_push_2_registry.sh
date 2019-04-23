@@ -62,7 +62,7 @@ if [ ! -z "$DOCKER_LOGIN_STATE" ]; then
         func_push "$REGISTRY_URL/misp-dockerized-proxy" "$PROXY_TAGS"
         func_push "$REGISTRY_URL/misp-dockerized-robot" "$ROBOT_TAGS"
         func_push "$REGISTRY_URL/misp-dockerized-misp-modules" "$MODULES_TAGS"
-        if $version_gt "$VERSION" 1.1.0 ; then
+        if version_gt "$VERSION" "1.1.0" ; then
             func_push "$REGISTRY_URL/misp-dockerized-redis" "$REDIS_TAGS"
         fi
         #func_push "$REGISTRY_URL/misp-dockerized-db" "$DB_TAGS"
