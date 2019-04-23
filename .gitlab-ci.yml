@@ -5,6 +5,7 @@ services:
 
 stages:
 - build
+- test
 - scan
 - deploy
 
@@ -57,7 +58,7 @@ before_script:
   
 # On dev Branch: Build Environment and Test it with our own Test Framework
 .long_test:
-  stage: build
+  stage: test
   only:
   - dev
   - 1.2.0
@@ -79,7 +80,7 @@ before_script:
 
 # On dev Branch: Build Environment and Test it with our own Test Framework
 .long_test_hub.docker.com:
-  stage: build
+  stage: test
   only:
   - dev
   - 1.2.0
@@ -144,15 +145,10 @@ before_script:
     - ./.ci/reports/*.xml
     reports:
       junit: ./.ci/reports/*.xml
-      
-      
-      
-# https://docs.gitlab.com/ee/ci/examples/container_scanning.html
-# https://docs.gitlab.com/ee/ci/yaml/README.html#artifactsreportscontainer_scanning
-# https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html
-# https://docs.gitlab.com/ee/ci/yaml/#artifactsreportscontainer_scanning-ultimate
+
+
+
 .container_scanning:
-  # deactivated:
   # https://docs.gitlab.com/ee/ci/examples/container_scanning.html
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifactsreportscontainer_scanning
   # https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html
