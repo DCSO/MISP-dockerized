@@ -5,7 +5,6 @@ STARTMSG="[tag]"
 
 
 func_tag() {
-    set -xv
     DOCKER_REPO="$1"
     TAG="$2"
     
@@ -21,7 +20,6 @@ func_tag() {
         echo "$STARTMSG Remove: $DOCKER_REPO:$i"
         docker image rm "$DOCKER_REPO:$i"
     done
-    set +xv
 }
 
 
