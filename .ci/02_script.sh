@@ -1,5 +1,5 @@
 #!/bin/sh
-set -exv
+set -e
 
 STARTMSG="[02_script]"
 
