@@ -34,7 +34,7 @@ echo "$DOCKER_LOGIN_OUTPUT"
 
 # Build config and deploy environent
     echo "$STARTMSG Build Configuration..." && $makefile_main build-config REPOURL="$REGISTRY_URL"
-    echo "$STARTMSG Pull Images..." && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml pull
+    echo "$STARTMSG Pull Images..." && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml pull -q
     echo "$STARTMSG Start Environment..." && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml up -d
     ###########################################################
     #       ATTENTION   ATTENTION   ATTENTION
