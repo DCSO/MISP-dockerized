@@ -127,7 +127,6 @@ before_script:
   only: 
   - master
   - schedules
-  - bug/MDD-201
   script:
   # Check hub.docker.com Registry
     # Test
@@ -180,5 +179,4 @@ include:
   #- '1.0.2/.gitlab-ci.yml'
   - '1.0.3/.gitlab-ci.yml'
   #- '1.1.0/.gitlab-ci.yml'
-  #- '1.1.1/.gitlab-ci.yml'
-  - '1.1.2/.gitlab-ci.yml'
+  - '1.1.1/.gitlab-ci.yml'
