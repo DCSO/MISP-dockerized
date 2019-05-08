@@ -171,21 +171,16 @@ copy-ssl:
 change-smime: copy-smime
 copy-smime:
 	#$(DOCKER_EXEC) misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t smime /etc/ansible/playbooks/robot-playbook/site.yml"
-	docker cp $(CURDIR)/config/smime/. misp-server:/var/www/MISP/.smime
+	docker cp $(CURDIR)/config/smime/cert.pem misp-server:/var/www/MISP/.smime/
+	docker cp $(CURDIR)/config/smime/key.pem misp-server:/var/www/MISP/.smime/
 
 # GnuPGP
 change-pgp: copy-pgp
 copy-pgp:
 	#$(DOCKER_EXEC) misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t pgp /etc/ansible/playbooks/robot-playbook/site.yml"
-	docker cp $(CURDIR)/config/pgp/. misp-server:/var/www/MISP/.pgp
-
-# maintainence
-enable-maintenance:
-	$(DOCKER_EXEC) misp-proxy /entrypoint_nginx.sh enable-maintenance
-	docker restart misp-proxy
-disable-maintenance:
-	$(DOCKER_EXEC) misp-proxy /entrypoint_nginx.sh disable-maintenance
-	docker restart misp-proxy
+	docker cp $(CURDIR)/config/pgp/public.key misp-server:/var/www/MISP/.pgp/
+	docker cp $(CURDIR)/config/pgp/private.key misp-server:/var/www/MISP/.pgp/
+	docker exec -ti misp-server change-pgp
 
 # backup all services
 backup-all:
