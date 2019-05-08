@@ -2,7 +2,6 @@
 #description     :This script remove all misp docker container, their volumes and the /opt/misp path.
 #==============================================================================
 STARTMSG="[DELETE]"
-#set -
 
 DELETE_CONTAINER="no"
 DELETE_IMAGES="no"
@@ -35,7 +34,7 @@ for i in $*
     done
 
 
-echo "$STARTMSG This will remove container=$DELETE_CONTAINER, volumes=$DELETE_VOLUMES, network=$DELETE_NETWORK, images=$DELETE_IMAGES and dangling images=$DELETE_PRUNE ."
+echo "$STARTMSG This will remove MISP-dockerized container=$DELETE_CONTAINER, volumes=$DELETE_VOLUMES, network=$DELETE_NETWORK, images=$DELETE_IMAGES and dangling images=$DELETE_PRUNE?"
 [ CI == "true" ] || read -p "Are you sure? (y): " USER_GO
 [ CI == "true" ] && USER_GO="y"
 if [ "$USER_GO" == "y" ]; then
