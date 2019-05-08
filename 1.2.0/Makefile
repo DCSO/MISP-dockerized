@@ -106,7 +106,13 @@ deploy:
 
 # delete all misp container, volumes and images
 delete: copy-ssl
-	scripts/delete_all_misp_from_host.sh
+	scripts/delete_all_misp_from_host.sh --container --network
+
+delete-volumes:
+	scripts/delete_all_misp_from_host.sh --volumes
+
+delete-all:
+	scripts/delete_all_misp_from_host.sh --images --container --network --volumes --prune
 
 # stop all misp docker container
 stop-all:
