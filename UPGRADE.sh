@@ -1,20 +1,13 @@
 #!/bin/bash
-
+set -evx
 # check if user has currently a installed version
     # This function checks the current version on misp-server version from docker ps
     # https://forums.docker.com/t/docker-ps-a-command-to-publish-only-container-names/8483/2
-    CURRENT_CONTAINER="$(docker ps --format '{{.Image}}'|grep server|cut -d : -f 2|cut -d - -f 1)"
+    CURRENT_CONTAINER="$(docker ps --format '{{.Image}}'|grep misp-dockerized-server|cut -d : -f 2|cut -d - -f 1)"
     [ -z "$CURRENT_CONTAINER" ] && echo "Sorry, no Upgrade is possible. The reason is there is no running misp-server. I exit now." && docker ps && exit
 
-
+exit
 ##################      MAIN        #########################
-
-echo "#############################################################################"
-echo "Please Backup your full server and your storage for all critical MISP data!!!"
-echo "If the backup is already done press enter now"
-echo "#############################################################################"
-read -r
-
 
 
 # If the UPGRADE_STEP_1 File exists then check if the 'current' directory exists
@@ -33,7 +26,12 @@ then
 
 
     # [2] make a backup
-    echo "We do now a full backup, this can be take a long time."
+    # echo "#############################################################################"
+    # echo "Please Backup your full server and your storage for all critical MISP data!!!"
+    # echo "If the backup is already done press enter now"
+    # echo "#############################################################################"
+    # read -r
+    echo "We do now a full backup, this can be take a long time...." && sleep 2
     make -C current/ backup-all
     
     # [3] choose a new version

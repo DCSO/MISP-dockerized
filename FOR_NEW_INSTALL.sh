@@ -16,7 +16,8 @@ CURRENT_VERSION=""
     function check_version_legacy (){
         # This function checks the current version on misp-server version from docker ps
         # https://forums.docker.com/t/docker-ps-a-command-to-publish-only-container-names/8483/2
-        CURRENT_CONTAINER=$(docker ps --format '{{.Image}}'|grep server|cut -d : -f 2|cut -d - -f 1)
+        CURRENT_CONTAINER=$(docker ps --format '{{.Image}}'|grep misp-dockerized-server|cut -d : -f 2|cut -d - -f 1)
+        [ "$CURRENT_CONTAINER" == "2.4.99" ] && CURRENT_VERSION="1.0.3" && return
         [ "$CURRENT_CONTAINER" == "2.4.94" ] && CURRENT_VERSION="0.3.4" && return
         [ "$CURRENT_CONTAINER" == "2.4.92" ] && CURRENT_VERSION="0.2.0" && return
         [ "$CURRENT_CONTAINER" == "2.4.88" ] && CURRENT_VERSION="0.1.2" && return
@@ -62,6 +63,10 @@ CURRENT_VERSION=""
             [ "${FOLDER[$i-1]}" == "current" ] && continue
             [ "${FOLDER[$i-1]}" == ".travis" ] && continue
             [[ "${FOLDER[$i-1]}" == "0."* ]] && continue
+            [[ "${FOLDER[$i-1]}" == "1.0.0"* ]] && continue
+            [[ "${FOLDER[$i-1]}" == "1.0.1"* ]] && continue
+            [[ "${FOLDER[$i-1]}" == "1.0.2"* ]] && continue
+            [[ "${FOLDER[$i-1]}" == "1.1.0"* ]] && continue
             [ "${FOLDER[$i-1]}" == "$CURRENT_VERSION" ] || echo "[ ${i} ] - ${FOLDER[$i-1]}"
             [ "${FOLDER[$i-1]}" == "$CURRENT_VERSION" ] && echo "[ ${i} ] - ${FOLDER[$i-1]} (currently installed)"
         done
