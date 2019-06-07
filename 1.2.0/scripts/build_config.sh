@@ -90,7 +90,7 @@ func_check_if_vars_exists() {
   # END DEPRECATED
   # MISP
   [ -z "${MISP_FQDN+x}" ]                     && MISP_FQDN="$(hostname -f)" && QUERY_myHOSTNAME="yes"
-  [ -z "${MISP_BASEURL+x}" ]                  && MISP_BASEURL="https://${MISP_FQDN}" && QUERY_myHOSTNAME="yes"
+  [ -z "${MISP_BASEURL+x}" ]                  && QUERY_myHOSTNAME="yes" # It will be defined in myHOSTNAME MISP_BASEURL="https://${MISP_FQDN}"
   # if [ -z ${var+x} ]; then echo "var is unset"; else echo "var is set to '$var'"; fi
   [ -z "${MISP_PREFIX+x}" ]                  && MISP_PREFIX="" && QUERY_MISP="yes"
   [ -z "${MISP_ENCODING+x}" ]                 && MISP_ENCODING="utf8" && QUERY_MISP="yes"
