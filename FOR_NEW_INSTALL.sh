@@ -42,8 +42,8 @@ CURRENT_VERSION=""
 
 
 # check requirements
-    "$SCRIPTPATH/.scripts/requirements.sh"
-    echo "### Requirements check...finished"
+    # "$SCRIPTPATH/.scripts/requirements.sh"
+    # echo "### Requirements check...finished"
 
 # check if this execution is automatic from gitlab-ci or travis-ci
     if [ "$CI" != true ]
