@@ -13,27 +13,22 @@ networks:
 services:
   # ### MISP Database ###
   # # LINK: https://hub.docker.com/_/mariadb/
-  # misp-db:
-  #   image: mariadb:10.3.10-bionic
-  #   container_name: misp-db
-  #   restart: unless-stopped
-  #   volumes:
-  #   - misp-vol-db-data:/var/lib/mysql/"
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "mysql -u $MYSQL_USER -p$MYSQL_PASSWORD -h misp-db --execute 'show databases;'"]
-  #     interval: 1m
-  #     timeout: 15s
-  #     retries: 5
-  #   networks:
-  #     misp-backend:
-  #       aliases:
-  #       - misp-db 
+  misp-db:
+    image: dcso/misp-dockerized-db:10.4.5-bionic
+    container_name: misp-db
+    restart: unless-stopped
+    volumes:
+    - misp-vol-db-data:/var/lib/mysql
+    networks:
+      misp-backend:
+        aliases:
+        - misp-db 
 
   ### MISP Redis Server ###
   # LINK: https://docs.docker.com/samples/library/redis/
   # LINK: https://github.com/docker-library/docs/tree/master/redis
   misp-redis:
-    image: dockerhub.dcso.de/misp-dockerized-redis:5-alpine3.9
+    image: dcso/misp-dockerized-redis:5-alpine3.9
     restart: unless-stopped
     container_name: misp-redis
     command: ["redis-server", "--appendonly", "yes"] #For Data persistence
@@ -43,7 +38,7 @@ services:
       timeout: 15s
       retries: 3
     volumes:
-    - misp-vol-redis-data:/data/
+    - misp-vol-redis-data:/data
     networks:
       misp-backend:
         aliases:
@@ -51,7 +46,7 @@ services:
   
   ### MISP Modules ###
   misp-modules:
-    image: dockerhub.dcso.de/misp-dockerized-misp-modules:2
+    image: dcso/misp-dockerized-misp-modules:3
     container_name: misp-modules
     restart: unless-stopped
     networks:
@@ -62,7 +57,7 @@ services:
 
   ### MISP Apache Server ###    
   misp-server:
-    image: dockerhub.dcso.de/misp-dockerized-server:2.4.103-debian
+    image: dcso/misp-dockerized-server:2.4.108-debian
     container_name: misp-server
     restart: unless-stopped
     volumes:
@@ -82,8 +77,6 @@ services:
     - misp-vol-server-MISP-cakeresque-config:/var/www/MISP/app/Plugin/CakeResque/Config
     - misp-vol-server-MISP-tmp:/var/www/MISP/app/tmp
     - misp-vol-server-MISP-attachments:/var/www/MISP/app/files
-    ###### misp-db ######
-    - misp-vol-db-data:/var/lib/mysql
     networks:
       misp-backend:
         aliases:
@@ -91,7 +84,7 @@ services:
 
   ### Reverse Proxy ###
   misp-proxy:
-    image: dockerhub.dcso.de/misp-dockerized-proxy:1
+    image: dcso/misp-dockerized-proxy:1
     container_name: misp-proxy
     restart: unless-stopped
     ports:
@@ -114,7 +107,7 @@ services:
 
   ### Robot ###
   misp-robot:
-    image: dockerhub.dcso.de/misp-dockerized-robot:2
+    image: dcso/misp-dockerized-robot:2
     container_name: misp-robot
     restart: unless-stopped
     tty: true
