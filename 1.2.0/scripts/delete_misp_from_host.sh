@@ -1,7 +1,12 @@
-#!/bin/bash
+#!/bin/sh
 #description     :This script remove all misp docker container, their volumes and the /opt/misp path.
 #==============================================================================
-STARTMSG="[DELETE]"
+set -eu
+
+# Variables
+NC='\033[0m' # No Color
+Light_Green='\033[1;32m'  
+STARTMSG="${Light_Green}[DELETE]${NC}"
 
 DELETE_CONTAINER="no"
 DELETE_IMAGES="no"
@@ -9,6 +14,17 @@ DELETE_NETWORK="no"
 DELETE_NETWORK="no"
 DELETE_PRUNE="no"
 DELETE_VOLUMES="no"
+
+
+# Functions
+echo (){
+    command echo "$STARTMSG $*"
+}
+
+
+#
+#   MAIN
+#
 
 # https://jonalmeida.com/posts/2013/05/26/different-ways-to-implement-flags-in-bash/
 while [ ! $# -eq 0 ]
