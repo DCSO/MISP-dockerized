@@ -9,7 +9,22 @@
 # check if user has an installed version
 [ ! -L ./current ] && echo "Sorry, no Update is possible. The reason is no 'current' directory exists. I exit now." && exit
 
+echo "This will destroy your container "
 
-###### UPDATE
-make -C current pull
-make -C current install
+
+# User Warning
+echo "This will remove your MISP-dockerized container, pull the new images and deploy the new container."
+echo "All persistent data is stored in volumes and will not be lost."
+echo "However, if changes have been made to the containers itself, they will be lost."
+
+# CI Section
+[ "${CI-}" != "true" ] && echo "Do you want to continue? (y): " && read -r USER_GO
+[ "${CI-}" = "true" ]  && USER_GO="y"
+
+
+
+if [ "$USER_GO" = "y" ]; then
+    ###### UPDATE
+    make -C current pull
+    make -C current deploy
+fi
