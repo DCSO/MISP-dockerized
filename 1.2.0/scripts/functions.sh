@@ -213,7 +213,7 @@ func_query_timezone(){
   fi
 
   [ -z "${TZ-}" ] && TZ="Europe/Berlin"
-  read -rp "Should the container use this timezone: [Default: Europe/Berlin] " -ei "${TZ}" TZ
+  read -rp "Which timezone should the contaner use: [Default: $TZ] " -ei "${TZ}" TZ
 
 }
 
