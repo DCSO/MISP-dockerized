@@ -56,8 +56,8 @@ do
 done
 
 echo "This will remove MISP-dockerized container=$DELETE_CONTAINER, volumes=$DELETE_VOLUMES, network=$DELETE_NETWORK, images=$DELETE_IMAGES and dangling images=$DELETE_PRUNE?"
-[ "$CI" = "true" ] || read -r "Are you sure? (y): " USER_GO
-[ "$CI" = "true" ] && USER_GO="y"
+[ "${CI-}" = "true" ] || read -r "Are you sure? (y): " USER_GO
+[ "${CI-}" = "true" ] && USER_GO="y"
 if [ "$USER_GO" = "y" ]; then
     
     [ "$DELETE_CONTAINER" = "yes" ] && echo "$STARTMSG Stop and remove all misp-dockerized container"
