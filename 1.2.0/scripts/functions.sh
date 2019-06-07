@@ -304,8 +304,6 @@ func_query_reverse_proxy_settings(){
   # deactivate because MISP does not allow redirection of port:
   #read -p "Which HTTPS Port should we expose [DEFAULT: $HTTPS_PORT]: " -ei "$HTTPS_PORT" HTTPS_PORT
   #read -p "Which HTTP Port should we expose [DEFAULT: $HTTP_PORT]: " -ei "$HTTP_PORT" HTTP_PORT
-  
-  read -rp "$STARTMSG Which contact mailadress should we use [DEFAULT: $MAIL_CONTACT_ADDRESS]: " -ei "$MAIL_CONTACT_ADDRESS" MAIL_CONTACT_ADDRESS
 
   while (true)
   do
@@ -359,6 +357,8 @@ func_query_mail_settings(){
         read -rp "$STARTMSG Which relay user password we should use [DEFAULT: generated]: " -ei "$MAIL_RELAY_PASSWORD" MAIL_RELAY_PASSWORD
         #read -rp "$STARTMSG Which sender address we should use [MAIL]:" -ei "$MAIL_SENDER_ADDRESS" MAIL_SENDER_ADDRESS
         read -rp "$STARTMSG Which sender mailadress should MISP use [DEFAULT: $MAIL_SENDER_ADDRESS]: " -ei "$MAIL_SENDER_ADDRESS" MAIL_SENDER_ADDRESS
+        read -rp "$STARTMSG Which contact mailadress should we use [DEFAULT: $MAIL_CONTACT_ADDRESS]: " -ei "$MAIL_CONTACT_ADDRESS" MAIL_CONTACT_ADDRESS
+        
         while (true)
         do
           read -rp"$STARTMSG Should we enable debugging options for a special peer? [y/n]: " -ei "$MAIL_QUESTION_DEBUG_PEERS" MAIL_QUESTION_DEBUG_PEERS
