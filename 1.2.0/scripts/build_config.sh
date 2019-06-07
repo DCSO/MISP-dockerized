@@ -141,8 +141,8 @@ func_check_if_vars_exists() {
   [ -n "${USE_SMIME+x}" ] && SMIME_ENABLE="$USE_SMIME"
   # END DEPRECATED
   # SMIME / PGP
-  [ -z "${PGP_ENABLE+x}" ]   && QUERY_PGP="yes"
-  [ -z "${SMIME_ENABLE+x}" ] && QUERY_SMIME="yes"
+  [ -z "${PGP_ENABLE+x}" ]   && PGP_ENABLE="no" && QUERY_PGP="yes"
+  [ -z "${SMIME_ENABLE+x}" ] && SMIME_ENABLE="no" && QUERY_SMIME="yes"
   
   # DEPRECATED: Redis
   #[ -z "${USE_EXTERNAL_REDIS}" ] && USE_EXTERNAL_REDIS="yes" && QUERY_REDIS="yes"
