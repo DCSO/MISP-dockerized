@@ -52,16 +52,11 @@ help:
 # Start
 install: requirements build-config pull deploy
 	@echo
-	@echo " ###########	MISP environment is ready	###########"
-	@echo "Please go to: $(shell cat config/config.env|grep HOSTNAME|cut -d = -f 2)"
-	@echo "Login credentials:"
-	@echo "      Username: admin@admin.test"
-	@echo "      Password: admin"
+	@echo "To improve your performance please execute and add the following to /etc/rc.local:
+	@echo echo never > /sys/kernel/mm/transparent_hugepage/enabled
+	@echo echo 1024 > /proc/sys/net/core/somaxconn
+	@echo sysctl vm.overcommit_memory=1
 	@echo
-	@echo "Do not forget to change your SSL certificate with:    make change-ssl"
-	@echo "Do not forget to change your S/MIME certificate with:    make change-smime"
-	@echo "Do not forget to change your PGP certificate with:    make change-pgp'"
-	@echo " ##########################################################"
 	@echo
 
 ####################	used as host	####################
@@ -71,8 +66,13 @@ requirements:
 	@scripts/requirements.sh
 	@sleep 2
 
+# Create Support Package
 support:
 	make -C ../ support
+
+# Show MISP Information
+version:
+	docker exec misp-server 
 
 # Build Configuration
 build-config:
@@ -91,7 +91,7 @@ pull:
     	-v $(CURDIR)/scripts:/srv/scripts:ro \
 		-v ~/.docker:/root/.docker:ro \
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
-		$(shell cat $(CURDIR)/config/config.env|grep DOCKER_REGISTRY|cut -d = -f 2)/misp-dockerized-robot:$(shell cat $(CURDIR)/config/config.env|grep ROBOT_CONTAINER_TAG|cut -d = -f 2) bash -c "docker-compose -f /srv/MISP-dockerized/docker-compose.yml -f /srv/MISP-dockerized/docker-compose.override.yml pull "
+		$(shell cat $(CURDIR)/config/config.env|grep DOCKER_REGISTRY|cut -d = -f 2)/misp-dockerized-robot:$(shell cat $(CURDIR)/config/config.env|grep ROBOT_CONTAINER_TAG|cut -d = -f 2) sh -c "docker-compose -f /srv/MISP-dockerized/docker-compose.yml -f /srv/MISP-dockerized/docker-compose.override.yml pull "
 deploy: 
 	@echo " ###########	Deploy Environment	###########"
 	docker run \
@@ -102,17 +102,35 @@ deploy:
     	-v $(CURDIR)/scripts:/srv/scripts:ro \
 		-v ~/.docker:/root/.docker:ro \
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
-		$(shell cat $(CURDIR)/config/config.env|grep DOCKER_REGISTRY|cut -d = -f 2)/misp-dockerized-robot:$(shell cat $(CURDIR)/config/config.env|grep ROBOT_CONTAINER_TAG|cut -d = -f 2) bash -c "docker-compose -f /srv/MISP-dockerized/docker-compose.yml -f /srv/MISP-dockerized/docker-compose.override.yml up -d "
+		$(shell cat $(CURDIR)/config/config.env|grep DOCKER_REGISTRY|cut -d = -f 2)/misp-dockerized-robot:$(shell cat $(CURDIR)/config/config.env|grep ROBOT_CONTAINER_TAG|cut -d = -f 2) sh -c "docker-compose -f /srv/MISP-dockerized/docker-compose.yml -f /srv/MISP-dockerized/docker-compose.override.yml up -d "
+	@make copy-ssl
+	@echo " ###########	MISP environment is ready	###########"
+	@echo "Please go to: https://$(shell cat config/config.env|grep MISP_FQDN|cut -d = -f 2)"
+	@echo "Login credentials:"
+	@echo "      Username: admin@admin.test"
+	@echo "      Password: admin"
+	@echo
+	@echo "Do not forget to change your SSL certificate with:    make change-ssl"
+	@echo "Do not forget to change your S/MIME certificate with:    make change-smime"
+	@echo "Do not forget to change your PGP certificate with:    make change-pgp'"
+	@echo " ##########################################################"
+	@echo 
 
 # delete all misp container, volumes and images
+	# Delete Container, Network
 delete: copy-ssl
-	scripts/delete_all_misp_from_host.sh --container --network
+	scripts/delete_misp_from_host.sh --container --network
 
-delete-volumes:
-	scripts/delete_all_misp_from_host.sh --volumes
+delete-volumes: copy-ssl
+	scripts/delete_misp_from_host.sh --volumes
 
-delete-all:
-	scripts/delete_all_misp_from_host.sh --images --container --network --volumes --prune
+delete-images: copy-ssl
+	scripts/delete_misp_from_host.sh --images
+
+delete-all: copy-ssl
+	@scripts/delete_misp_from_host.sh --images --container --network --volumes --prune
+
+
 
 # stop all misp docker container
 stop-all:
@@ -138,7 +156,7 @@ upgrade:
 	@UPGRADE.sh
 
 # Update current MISP to all new functions in this Version without a new version
-update: install
+update: pull deploy
 
 
 test:
@@ -160,18 +178,16 @@ configure:
 	make copy-pgp
 	make config-ssl
 
-
+# x509 SSL Certificate
 change-ssl: config-ssl
 config-ssl: copy-ssl
 	docker restart misp-server
 	docker restart misp-proxy
-
-# x509 SSL Certificate
 copy-ssl:
 	-docker cp $(CURDIR)/config/ssl/cert.pem misp-proxy:/etc/nginx/ssl/
 	-docker cp $(CURDIR)/config/ssl/key.pem misp-proxy:/etc/nginx/ssl/
-	-docker cp misp-proxy:/etc/nginx/ssl/cert.pem $(CURDIR)/config/ssl/
-	-docker cp misp-proxy:/etc/nginx/ssl/key.pem $(CURDIR)/config/ssl/
+	docker cp misp-proxy:/etc/nginx/ssl/cert.pem $(CURDIR)/config/ssl/
+	docker cp misp-proxy:/etc/nginx/ssl/key.pem $(CURDIR)/config/ssl/
 
 # S/MIME
 change-smime: copy-smime
@@ -217,3 +233,11 @@ restore-proxy:
 restore-robot:
 	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh restore robot"
 
+##############################
+#	Performance Section
+#
+mysql-report:
+	@docker exec -ti misp-db sh -c "mysqlreport --user $(shell cat $(CURDIR)/config/config.env|grep DB_USER|cut -d = -f 2) --password $(shell cat $(CURDIR)/config/config.env|grep DB_PASSWORD|cut -d = -f 2)"
+
+mysql-performance-test:
+	docker exec -ti misp-robot sh -c "/scripts/test_mysql_performance.sh"

@@ -10,10 +10,15 @@ DELETE_NETWORK="no"
 DELETE_PRUNE="no"
 DELETE_VOLUMES="no"
 
-for i in $*
-    do
-        case "$i" in 
-            "--network")
+# https://jonalmeida.com/posts/2013/05/26/different-ways-to-implement-flags-in-bash/
+while [ ! $# -eq 0 ]
+do
+	case "$1" in
+		"--help" | -h)
+			usage
+			exit
+			;;
+        "--network")
                 DELETE_NETWORK="yes"
                 ;;
             "--volumes")
@@ -30,14 +35,14 @@ for i in $*
                 ;;
             *)
             echo "$STARTMSG False Parameter."
-        esac
-    done
+	esac
+	shift
+done
 
-
-echo "$STARTMSG This will remove MISP-dockerized container=$DELETE_CONTAINER, volumes=$DELETE_VOLUMES, network=$DELETE_NETWORK, images=$DELETE_IMAGES and dangling images=$DELETE_PRUNE?"
-[ CI == "true" ] || read -p "Are you sure? (y): " USER_GO
-[ CI == "true" ] && USER_GO="y"
-if [ "$USER_GO" == "y" ]; then
+echo "This will remove MISP-dockerized container=$DELETE_CONTAINER, volumes=$DELETE_VOLUMES, network=$DELETE_NETWORK, images=$DELETE_IMAGES and dangling images=$DELETE_PRUNE?"
+[ "$CI" = "true" ] || read -r "Are you sure? (y): " USER_GO
+[ "$CI" = "true" ] && USER_GO="y"
+if [ "$USER_GO" = "y" ]; then
     
     [ "$DELETE_CONTAINER" = "yes" ] && echo "$STARTMSG Stop and remove all misp-dockerized container"
     [ "$DELETE_CONTAINER" = "yes" ] && docker rm -f $(docker ps -aqf name=misp-*)
