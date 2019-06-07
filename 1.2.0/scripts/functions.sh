@@ -230,8 +230,8 @@ func_query_hostname(){
 func_query_network_settings(){
   info "Check network settings ..."
   echo "Network settings..."
-  read -rp "$STARTMSG Which MISP Network should we use [DEFAULT: $DOCKER_NETWORK]: " -ei $DOCKER_NETWORK DOCKER_NETWORK
-  read -rp "$STARTMSG Which MISP Network BRIDGE Interface Name should we use [DEFAULT: $BRIDGE_NAME]: " -ei $BRIDGE_NAME BRIDGE_NAME
+  read -rp "$STARTMSG Which MISP Network should we use [DEFAULT: $DOCKER_NETWORK]: " -ei "$DOCKER_NETWORK" DOCKER_NETWORK
+  read -rp "$STARTMSG Which MISP Network BRIDGE Interface Name should we use [DEFAULT: $BRIDGE_NAME]: " -ei "$BRIDGE_NAME" BRIDGE_NAME
 }
 
 # Questions for System Proxy Settings
