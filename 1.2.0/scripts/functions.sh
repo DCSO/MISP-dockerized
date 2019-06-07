@@ -156,8 +156,6 @@ check_folder_write(){
 # Function for the Container Versions
 func_default_container_version() {
   info_same_line "Check container version ..."
-  # MISP Tag
-  [ -n "${MISP_CONTAINER_TAG-}" ] && MISP_TAG="$(echo "$MISP_CONTAINER_TAG"|cut -d - -f 1)"
   # Container Tags
   MISP_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE"|grep server|cut -d : -f 3)"
   PROXY_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep proxy|cut -d : -f 3)"
