@@ -156,8 +156,8 @@ func_check_if_vars_exists() {
   [ -n "${USE_SYSLOG+x}" ] && SYSLOG_QUESTION_USE_SYSLOG="$USE_SYSLOG"
   # END DEPRECATED
   # LOG_SETTINGS
-  [ -z "${SYSLOG_QUESTION_USE_SYSLOG+x}" ]      && [ -z "${SYSLOG_REMOTE_HOST+x}" ] && SYSLOG_REMOTE_HOST="127.0.0.1" && QUERY_LOG_SETTINGS="yes"
-  [ "${SYSLOG_QUESTION_USE_SYSLOG+x}" = "yes" ] && [ -z "${SYSLOG_REMOTE_HOST+x}" ] && SYSLOG_REMOTE_HOST="127.0.0.1" && QUERY_LOG_SETTINGS="yes"
+  [ -z "${SYSLOG_QUESTION_USE_SYSLOG+x}" ]      && SYSLOG_QUESTION_USE_SYSLOG="no" && QUERY_LOG_SETTINGS="yes"
+  [ -z "${SYSLOG_REMOTE_HOST+x}" ]              && SYSLOG_REMOTE_HOST="127.0.0.1" && QUERY_LOG_SETTINGS="yes"
   
   # Cron
   [ -z "${CRON_INTERVAL+x}" ] && CRON_INTERVAL=3600 && QUERY_CRON="yes"
