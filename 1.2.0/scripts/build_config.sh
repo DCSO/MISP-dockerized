@@ -476,6 +476,11 @@ MISP_SALT="${MISP_SALT}"
 MISP_ADD_EVENT_ANALYZE_COLUMN="${MISP_ADD_EVENT_ANALYZE_COLUMN}"
 
 # ------------------------------
+# MISP-Modules
+# ------------------------------
+MISP_MODULES_DEBUG="${MISP_MODULES_DEBUG}"
+
+# ------------------------------
 # Redis
 # ------------------------------
 REDIS_FQDN="${REDIS_FQDN}"
