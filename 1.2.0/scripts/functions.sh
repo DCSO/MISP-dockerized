@@ -271,16 +271,17 @@ func_query_db_settings(){
       case $DB_QUESTION_OWN_DB in
         [yY][eE][sS]|[yY])
           DB_QUESTION_OWN_DB="yes"
-          read -rp "$STARTMSG Which DB host should we use for DB connection [DEFAULT: $DB_HOST]: " -ei "$DB_HOST" DB_HOST
-          read -rp "$STARTMSG Which DB port should we use for DB connection [DEFAULT: $DB_PORT]: " -ei "$DB_PORT" DB_PORT
+          read -rp "$STARTMSG Which database host should we use for the connection [DEFAULT: $DB_HOST]: " -ei "$DB_HOST" DB_HOST
+          read -rp "$STARTMSG Which database host port should we use for the connection [DEFAULT: $DB_PORT]: " -ei "$DB_PORT" DB_PORT
+          [ "$DB_HOST" = "misp-db" ] && read -rp "$STARTMSG Which database root password should we use for the connection [DEFAULT: generated]: " -ei "$DB_ROOT_PASSWORD" DB_ROOT_PASSWORD
           break;
           ;;
         [nN][oO]|[nN])
           QUESTION_OWN_DB="no"
           # Set MISP_host to DB Container Name and Port
-          echo "$STARTMSG Set DB Host to docker default: $DB_HOST"
-          echo "$STARTMSG Set DB Host Port to docker default: $DB_PORT"
-          read -rp "$STARTMSG Which DB Root Password should we use for DB Connection [DEFAULT: generated]: " -ei "$DB_ROOT_PASSWORD" DB_ROOT_PASSWORD
+          echo "$STARTMSG Set database host to docker default: $DB_HOST"
+          echo "$STARTMSG Set database host port to docker default: $DB_PORT"
+          read -rp "$STARTMSG Which database root password should we use for the connection [DEFAULT: generated]: " -ei "$DB_ROOT_PASSWORD" DB_ROOT_PASSWORD
           break;
           ;;
         [eE][xX][iI][tT])
@@ -290,9 +291,9 @@ func_query_db_settings(){
           echo -e "\n$STARTMSG Please only choose [y|n] for the question!\n"
       esac
     done
-  read -rp "$STARTMSG Which DB name should we use for DB connection [DEFAULT: $DB_DATABASE]: " -ei "$DB_DATABASE" DB_DATABASE
-  read -rp "$STARTMSG Which DB user should we use for DB connection [DEFAULT: $DB_USER]: " -ei "$DB_USER" DB_USER
-  read -rp "$STARTMSG Which DB user password should we use for DB connection [DEFAULT: generated]: " -ei "$DB_PASSWORD" DB_PASSWORD
+  read -rp "$STARTMSG Which database name should we use for the connection [DEFAULT: $DB_DATABASE]: " -ei "$DB_DATABASE" DB_DATABASE
+  read -rp "$STARTMSG Which database user should we use for the connection [DEFAULT: $DB_USER]: " -ei "$DB_USER" DB_USER
+  read -rp "$STARTMSG Which database user password should we use for the connection [DEFAULT: generated]: " -ei "$DB_PASSWORD" DB_PASSWORD
 
 }
 
