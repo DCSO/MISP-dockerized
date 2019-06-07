@@ -463,7 +463,7 @@ func_query_smime_settings(){
 # Questions for Docker Registry
 func_query_docker_registry() { 
   info_same_line "Check Docker registry settings ..."
-  if [ -z "$DOCKER_REGISTRY" ]; then
+  if [ -z "${DOCKER_REGISTRY+x}" ]; then
     # Default use hub.docker.com
     DOCKER_REGISTRY="dcso"
     ############## FILE exists ##############

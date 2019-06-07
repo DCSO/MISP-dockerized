@@ -45,6 +45,8 @@ func_check_if_vars_exists() {
   #
   # Default Variables for the config
   #
+  # Docker Registry
+  [ -z "${DOCKER_REGISTRY+x}" ] && DOCKER_REGISTRY="dcso" && QUERY_DOCKER_REGISTRY="yes" 
   # Docker Network
   [ -z "${DOCKER_NETWORK+x}" ] && DOCKER_NETWORK="192.168.47.0/28" && QUERY_NETWORK="yes" 
   [ -z "${BRIDGE_NAME+x}" ]    && BRIDGE_NAME="mispbr0" && QUERY_NETWORK="yes"
