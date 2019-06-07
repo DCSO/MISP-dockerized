@@ -222,7 +222,7 @@ func_query_hostname(){
   info "Check hostname ..."
   # read Hostname for MISP Instance
   read -rp "$STARTMSG Hostname (FQDN - example.org is not a valid FQDN) [DEFAULT: $MISP_FQDN]: " -ei "$MISP_FQDN" MISP_FQDN
-  [ -z "${MISP_BASEURL-}" ] && MISP_BASEURL="$MISP_FQDN"
+  [ -z "${MISP_BASEURL-}" ] && MISP_BASEURL="https://$MISP_FQDN"
   read -rp "$STARTMSG Your MISP baseurl [DEFAULT: https://$MISP_FQDN]: " -ei "$MISP_BASEURL" MISP_BASEURL
 }
 
