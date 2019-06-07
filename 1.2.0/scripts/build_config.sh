@@ -127,9 +127,9 @@ func_check_if_vars_exists() {
   [ -n "${QUESTION_DEBUG_PEERS+x}" ] && MAIL_QUESTION_DEBUG_PEERS="$QUESTION_DEBUG_PEERS"
   # END DEPRECATED
   # Mail: misp-server & misp-postfix
-  [ -z "${MAIL_SENDER_ADDRESS+x}" ]       && MAIL_SENDER_ADDRESS="admin@${MISP_FQDN}" && QUERY_MAIL="yes"
-  [ -z "${MAIL_CONTACT_ADDRESS+x}" ]      && MAIL_CONTACT_ADDRESS="admin@${MISP_FQDN}" && QUERY_MAIL="yes"
   [ -z "${MAIL_DOMAIN+x}" ]               && MAIL_DOMAIN="example.com" && QUERY_MAIL="yes"
+  [ -z "${MAIL_SENDER_ADDRESS+x}" ]       && MAIL_SENDER_ADDRESS="no-reply@${MAIL_DOMAIN}" && QUERY_MAIL="yes"
+  [ -z "${MAIL_CONTACT_ADDRESS+x}" ]      && MAIL_CONTACT_ADDRESS="support.misp@${MAIL_DOMAIN}" && QUERY_MAIL="yes"
   [ -z "${MAIL_RELAY_USER+x}" ]           && MAIL_RELAY_USER="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 10)" && QUERY_MAIL="yes"
   [ -z "${MAIL_RELAY_PASSWORD+x}" ]       && MAIL_RELAY_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)" && QUERY_MAIL="yes"
   [ -z "${MAIL_RELAYHOST+x}" ]            && MAIL_RELAYHOST="mail.example.com" && QUERY_MAIL="yes"
