@@ -92,10 +92,11 @@ func_check_if_vars_exists() {
   [ -z "${MISP_FQDN+x}" ]                     && MISP_FQDN="$(hostname -f)" && QUERY_myHOSTNAME="yes"
   [ -z "${MISP_BASEURL+x}" ]                  && QUERY_myHOSTNAME="yes" # It will be defined in myHOSTNAME MISP_BASEURL="https://${MISP_FQDN}"
   # if [ -z ${var+x} ]; then echo "var is unset"; else echo "var is set to '$var'"; fi
-  [ -z "${MISP_PREFIX+x}" ]                  && MISP_PREFIX="" && QUERY_MISP="yes"
+  [ -z "${MISP_PREFIX+x}" ]                   && MISP_PREFIX="" && QUERY_MISP="yes"
   [ -z "${MISP_ENCODING+x}" ]                 && MISP_ENCODING="utf8" && QUERY_MISP="yes"
   [ -z "${MISP_SALT+x}" ]                     && MISP_SALT="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 50)" && QUERY_MISP="yes"
   [ -z "${MISP_ADD_EVENT_ANALYZE_COLUMN+x}" ] && MISP_ADD_EVENT_ANALYZE_COLUMN="no" && QUERY_MISP="yes"
+  [ -z "${MISP_HTTPS_PORT:+x}" ]              && MISP_HTTPS_PORT:="443" && QUERY_MISP="yes"
 
   # PHP
   [ -z "${PHP_MEMORY_LIMIT+x}" ]        && PHP_MEMORY_LIMIT="512M" && QUERY_PHP="yes"
