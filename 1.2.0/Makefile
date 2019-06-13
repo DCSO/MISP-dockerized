@@ -122,10 +122,10 @@ delete: copy-ssl
 	scripts/delete_misp_from_host.sh --container --network
 
 delete-volumes: copy-ssl
-	scripts/delete_misp_from_host.sh --volumes
+	scripts/delete_misp_from_host.sh --volumes --container --network
 
 delete-images: copy-ssl
-	scripts/delete_misp_from_host.sh --images
+	scripts/delete_misp_from_host.sh --images --container --network
 
 delete-all: copy-ssl
 	@scripts/delete_misp_from_host.sh --images --container --network --volumes --prune
