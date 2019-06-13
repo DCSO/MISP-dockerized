@@ -13,8 +13,10 @@ help:
 	       make deploy 			| Deploy Docker container\n \
 		make upgrade 			| Upgrade MISP-dockerized\n \
 		make update 			| Update MISP-dockerized same as make install\n \
-	       make delete 			| Delete all docker container, volumes and images for MISP\n \
-	       make delete-unused 		| Delete all unused docker container, volumes and images \n \
+	       make delete 			| Delete all docker container and networks for MISP\n \
+	       make delete-volumes 		| Delete all docker container, networks and volumes \n \
+		   make delete-images 		| Delete all docker container, networks and images \n \
+		   make delete-all 		| Delete all docker container, networks, volumes and images \n \
 	       make security	 		| Check docker security via misp-robot\n \
 		make test	 		| Test if MISP-environment is ready.\n \
 		\n \
@@ -51,12 +53,13 @@ help:
 
 # Start
 install: requirements build-config pull deploy
-	@echo
-	@echo "To improve your performance please execute and add the following to /etc/rc.local:
-	@echo echo never > /sys/kernel/mm/transparent_hugepage/enabled
-	@echo echo 1024 > /proc/sys/net/core/somaxconn
-	@echo sysctl vm.overcommit_memory=1
-	@echo
+	@echo " ###########	Improve Environment	###########"
+	@echo "To improve your performance please execute and add the following to /etc/rc.local:"
+	@echo "echo never > /sys/kernel/mm/transparent_hugepage/enabled"
+	@echo "echo 1024 > /proc/sys/net/core/somaxconn"
+	@echo "sysctl vm.overcommit_memory=1"
+	@echo " ##################################################"
+	@echo 
 	@echo
 
 ####################	used as host	####################
@@ -113,11 +116,9 @@ deploy:
 	@echo "Do not forget to change your SSL certificate with:    make change-ssl"
 	@echo "Do not forget to change your S/MIME certificate with:    make change-smime"
 	@echo "Do not forget to change your PGP certificate with:    make change-pgp'"
-	@echo " ##########################################################"
-	@echo 
+
 
 # delete all misp container, volumes and images
-	# Delete Container, Network
 delete: copy-ssl
 	scripts/delete_misp_from_host.sh --container --network
 
