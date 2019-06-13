@@ -141,6 +141,27 @@ services:
         aliases:
           - misp-robot
 
+  ### Monitoring ###
+  misp-monitoring:
+    image: dcso/misp-dockerized-monitoring:v1.15.0
+    container_name: misp-monitoring
+    # ports:
+    #   - 19999:19999
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - misp-vol-netdata-cache:/var/cache/netdata
+    networks:
+      misp-backend:
+        aliases:
+          - misp-monitoring
+
+
 
 ### VOLUMES ###
 volumes:
@@ -155,3 +176,4 @@ volumes:
   misp-vol-server-MISP-tmp:
   misp-vol-server-MISP-attachments:
   misp-vol-proxy-conf:
+  misp-vol-netdata-cache:
