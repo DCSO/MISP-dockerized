@@ -177,6 +177,12 @@ func_check_if_vars_exists() {
   # MISP-Modules
   [ -z "${MISP_MODULES_DEBUG+x}" ] && MISP_MODULES_DEBUG="false" && QUERY_MISP_MODULES="yes"
   
+  # SSL
+  [ -z "${SSL_PASSPHRASE_ENABLE+x}" ] && SSL_PASSPHRASE_ENABLE="no" && QUERY_SSL="yes"
+  [ -z "${SSL_PASSPHRASE+x}" ] && SSL_PASSPHRASE="" && QUERY_SSL="yes"
+  # [ -z "${SSL_PASSPHRASE_NGINX_CUSTOM_FILE+x}" ] && SSL_PASSPHRASE_NGINX_CUSTOM_FILE="ssl.passphrase" && QUERY_SSL="yes"
+
+
   #
   echo "...done"
 }
@@ -237,6 +243,8 @@ if [ "${AUTOMATE_BUILD-}" = "true" ]
     [ "${QUERY_TIMEZONE-}" = "yes" ] && func_query_timezone
     # MISP MODULES
     [ "${QUERY_MISP_MODULES-}" = "yes" ] && func_query_misp_modules
+    # Timezone
+    [ "${QUERY_SSL-}" = "yes" ] && func_query_ssl
     # Latest, but unsupported MISP-Server
     [ "${QUERY_LATEST_MISP_SERVER-}" = "yes" ] && func_query_latest_misp_server
 fi
@@ -357,6 +365,9 @@ services:
       PHP_UPLOAD_MAX_FILESIZE: "${PHP_UPLOAD_MAX_FILESIZE}"
       # Timezone
       TZ: "${TZ-}"
+      # SSL
+      SSL_PASSPHRASE_ENABLE: "${SSL_PASSPHRASE_ENABLE}"
+      SSL_PASSPHRASE: "${SSL_PASSPHRASE}"
     ${LOG_SETTINGS-}
 
   misp-proxy:
@@ -376,6 +387,9 @@ services:
       PROXY_BASIC_AUTH_PASSWORD: "${PROXY_BASIC_AUTH_PASSWORD}"
       # Timezone
       TZ: "${TZ-}"
+      # SSL
+      SSL_PASSPHRASE_ENABLE: "${SSL_PASSPHRASE_ENABLE}"
+      SSL_PASSPHRASE: "${SSL_PASSPHRASE}"
     ${LOG_SETTINGS-}
 
   misp-robot:
@@ -551,6 +565,13 @@ PHP_UPLOAD_MAX_FILESIZE="${PHP_UPLOAD_MAX_FILESIZE}"
 # Timezone
 # ------------------------------
 TZ="${TZ}"
+
+# ------------------------------
+# Timezone
+# ------------------------------
+SSL_PASSPHRASE_ENABLE="${SSL_PASSPHRASE_ENABLE}"
+SSL_PASSPHRASE="${SSL_PASSPHRASE}"
+
 ##################################################################
 
 EOF

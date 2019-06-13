@@ -247,7 +247,7 @@ func_query_system_proxy_settings(){
         CONTAINER_SYSTEM_QUESTION_USE_PROXY="yes"
         read -rp "$STARTMSG Which proxy the container should use for HTTPS connections (for example: http://proxy.example.com:8080) [DEFAULT: $CONTAINER_SYSTEM_HTTPS_PROXY]: " -ei "$CONTAINER_SYSTEM_HTTPS_PROXY" CONTAINER_SYSTEM_HTTPS_PROXY
         read -rp "$STARTMSG Which proxy the container should use for HTTP  connections (for example: http://proxy.example.com:8080) [DEFAULT: $CONTAINER_SYSTEM_HTTP_PROXY]: " -ei "$CONTAINER_SYSTEM_HTTP_PROXY" CONTAINER_SYSTEM_HTTP_PROXY
-        read -rp "$STARTMSG For which site(s) the container should not use a proxy (for example: localhost,127.0.0.0/8,docker-registry.somecorporation.com) [DEFAULT: $CONTAINER_SYSTEM_NO_PROXY]: " -ei $CONTAINER_SYSTEM_NO_PROXY CONTAINER_SYSTEM_NO_PROXY
+        read -rp "$STARTMSG For which site(s) the container should not use a proxy (for example: localhost,127.0.0.0/8,docker-registry.somecorporation.com) [DEFAULT: $CONTAINER_SYSTEM_NO_PROXY]: " -ei "$CONTAINER_SYSTEM_NO_PROXY" CONTAINER_SYSTEM_NO_PROXY
         break
         ;;
       [nN][oO]|[nN])
@@ -486,10 +486,10 @@ func_query_log_settings(){
   read -rp "$STARTMSG Would you enable Syslog logging? [y/n] " -ei "$SYSLOG_QUESTION_USE_SYSLOG" response
   case $response in
   [yY][eE][sS]|[yY])
-    read -rp"$STARTMSG Do you require syslog logging to an remote host if yes, please enter Hostname, DNS or IP? [DEFAULT: $SYSLOG_REMOTE_HOST]: " -ei $SYSLOG_REMOTE_HOST  SYSLOG_REMOTE_HOST
+    read -rp"$STARTMSG Do you require syslog logging to an remote host if yes, please enter Hostname, DNS or IP? [DEFAULT: $SYSLOG_REMOTE_HOST]: " -ei "$SYSLOG_REMOTE_HOST"  SYSLOG_REMOTE_HOST
     #syslog-address: "unix:///dev/log"
          #syslog-address: "unix:///tmp/syslog.sock"
-    [ ! $SYSLOG_REMOTE_HOST == "no" ] && SYSLOG_REMOTE_LINE="syslog-address: tcp://$SYSLOG_REMOTE_HOST"
+    [ ! "$SYSLOG_REMOTE_HOST" = "no" ] && SYSLOG_REMOTE_LINE="syslog-address: tcp://$SYSLOG_REMOTE_HOST"
 
     LOG_SETTINGS='### LOG DRIVER ###
     # for more Information: https://docs.docker.com/compose/compose-file/#logging + https://docs.docker.com/config/containers/logging/syslog/
@@ -552,6 +552,26 @@ func_query_latest_misp_server() {
   esac
 }
 
+func_query_ssl() {
+  info "Check SSL configuration ..."
+  read -rp "Do you want to enable SSL passphrase capabilities? [ Default: $SSL_PASSPHRASE_ENABLE ]: " -ei "$SSL_PASSPHRASE_ENABLE"  SSL_PASSPHRASE_ENABLE
+  case $SSL_PASSPHRASE_ENABLE in
+  [yY][eE][sS]|[yY])
+    SSL_PASSPHRASE_ENABLE="yes"
+    read -rp "Which SSL passphrase should we set? (You can leave it empty and we files.) : " -ei "$SSL_PASSPHRASE"  SSL_PASSPHRASE
+    if [ -z "$SSL_PASSPHRASE" ]
+    then
+      # read -rp "Name of SSL passphrase file NGINX ? [ Default: $SSL_PASSPHRASE_NGINX_CUSTOM_FILE ]: " -ei "$SSL_PASSPHRASE_NGINX_CUSTOM_FILE"  SSL_PASSPHRASE_NGINX_CUSTOM_FILE
+      echo "We search the NGINX and Apache2 files in $PWD/config/ssl/"
+      echo "NGINX File: $SSL_PASSPHRASE_NGINX_CUSTOM_FILE"
+      command echo
+    fi
+    ;;
+  *)
+    echo "We disabled the SSL passphrase capabilites. (Default)"
+    ;;
+  esac
+}
 
 #
 # END Build Configuration

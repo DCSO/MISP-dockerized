@@ -187,8 +187,10 @@ config-ssl: copy-ssl
 copy-ssl:
 	-docker cp $(CURDIR)/config/ssl/cert.pem misp-proxy:/etc/nginx/ssl/
 	-docker cp $(CURDIR)/config/ssl/key.pem misp-proxy:/etc/nginx/ssl/
+	-docker cp $(CURDIR)/config/ssl/ssl.passphrase misp-proxy:/etc/nginx/ssl/
 	docker cp misp-proxy:/etc/nginx/ssl/cert.pem $(CURDIR)/config/ssl/
 	docker cp misp-proxy:/etc/nginx/ssl/key.pem $(CURDIR)/config/ssl/
+	-docker cp misp-proxy:/etc/nginx/ssl/ssl.passphrase $(CURDIR)/config/ssl/
 
 # S/MIME
 change-smime: copy-smime
