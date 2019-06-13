@@ -97,6 +97,10 @@ func_check_if_vars_exists() {
   [ -z "${MISP_SALT+x}" ]                     && MISP_SALT="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 50)" && QUERY_MISP="yes"
   [ -z "${MISP_ADD_EVENT_ANALYZE_COLUMN+x}" ] && MISP_ADD_EVENT_ANALYZE_COLUMN="no" && QUERY_MISP="yes"
   [ -z "${MISP_HTTPS_PORT:+x}" ]              && MISP_HTTPS_PORT="443" && QUERY_MISP="yes"
+  
+  # MISP Container
+  [ -z "${MISP_QUESTION_USE_NIGHTLY_BUILD:+x}" ] && MISP_QUESTION_USE_NIGHTLY_BUILD="no" && QUERY_LATEST_MISP_SERVER="yes"
+  [ -z "${MISP_NIGHTLY_TAG:+x}" ] && MISP_NIGHTLY_TAG="2.4.nightly-debian"
 
   # PHP
   [ -z "${PHP_MEMORY_LIMIT+x}" ]        && PHP_MEMORY_LIMIT="512M" && QUERY_PHP="yes"
@@ -118,7 +122,10 @@ func_check_if_vars_exists() {
   [ -z "${PROXY_QUESTION_USE_IP_RESTRICTION+x}" ] && PROXY_QUESTION_USE_IP_RESTRICTION="yes" && QUERY_HTTP="yes"
   [ -z "${PROXY_CLIENT_MAX_BODY_SIZE+x}" ]        && PROXY_CLIENT_MAX_BODY_SIZE="$PHP_UPLOAD_MAX_FILESIZE" && QUERY_HTTP="yes"
   [ -z "${PROXY_IP_RESTRICTION+x}" ]              && PROXY_IP_RESTRICTION="all" && QUERY_HTTP="yes"
+  [ -z "${PROXY_BASIC_AUTH_USER+x}" ]             && PROXY_BASIC_AUTH_USER="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 10)" && QUERY_HTTP="yes"
+  [ -z "${PROXY_BASIC_AUTH_PASSWORD+x}" ]         && PROXY_BASIC_AUTH_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)" && QUERY_HTTP="yes"
   
+
   # DEPRECATED Postfix
   [ -n "${SENDER_ADDRESS+x}" ]       && MAIL_SENDER_ADDRESS="$SENDER_ADDRESS"
   [ -n "${DOMAIN+x}" ]               && MAIL_DOMAIN="$DOMAIN"
@@ -230,7 +237,11 @@ if [ "${AUTOMATE_BUILD-}" = "true" ]
     [ "${QUERY_TIMEZONE-}" = "yes" ] && func_query_timezone
     # MISP MODULES
     [ "${QUERY_MISP_MODULES-}" = "yes" ] && func_query_misp_modules
+    # Latest, but unsupported MISP-Server
+    [ "${QUERY_LATEST_MISP_SERVER-}" = "yes" ] && func_query_latest_misp_server
 fi
+
+[ "$MISP_QUESTION_USE_NIGHTLY_BUILD" = "yes" ] && MISP_CONTAINER_TAG=$MISP_NIGHTLY_TAG
 
 if [ "${DEV_MODE-}" = "true" ] || [ "${DOCKER_REGISTRY-}" != "dcso" ] ; 
 then
@@ -241,6 +252,7 @@ then
   IMAGE_MISP_REDIS="image: ${DOCKER_REGISTRY}/misp-dockerized-redis:${REDIS_CONTAINER_TAG}"
   IMAGE_MISP_POSTFIX="image: ${DOCKER_REGISTRY}/misp-dockerized-postfix:${POSTFIX_CONTAINER_TAG}"
   IMAGE_MISP_DB="image: ${DOCKER_REGISTRY}/misp-dockerized-db:${DB_CONTAINER_TAG}"
+  IMAGE_MISP_MONITORING="image: ${DOCKER_REGISTRY}/misp-dockerized-monitoring:${MONITORING_CONTAINER_TAG}"
 fi
 
 ###################################
@@ -361,6 +373,8 @@ services:
       PROXY_HTTP_PORT: "${PROXY_HTTP_PORT}"
       PROXY_QUESTION_USE_IP_RESTRICTION: "${PROXY_QUESTION_USE_IP_RESTRICTION}"
       PROXY_CLIENT_MAX_BODY_SIZE: "${PROXY_CLIENT_MAX_BODY_SIZE}"
+      PROXY_BASIC_AUTH_USER: "${PROXY_BASIC_AUTH_USER}"
+      PROXY_BASIC_AUTH_PASSWORD: "${PROXY_BASIC_AUTH_PASSWORD}"
       # Timezone
       TZ: "${TZ-}"
     ${LOG_SETTINGS-}
@@ -380,6 +394,29 @@ services:
     volumes:
     # Github Repository
     - ${MISP_dockerized_repo}:/srv/MISP-dockerized
+    ${LOG_SETTINGS-}
+
+  misp-monitoring:
+    ${IMAGE_MISP_MONITORING-}
+    hostname: "${MISP_FQDN}"
+    environment:
+      # DB
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_HOST: ${DB_HOST}
+      MYSQL_PORT: ${DB_PORT}
+      # Redis
+      REDIS_FQDN: "${REDIS_FQDN}"
+      REDIS_PORT: "${REDIS_PORT}"
+      REDIS_PW: "${REDIS_PW}"
+      # Timezone
+      TZ: "${TZ-}"
+      # Netdata
+      PGID: $(grep docker /etc/group | cut -d ':' -f 3) # grep docker /etc/group | cut -d ':' -f 3 | 999
+      SEND_EMAIL: "yes"
+      EMAIL_SENDER: ${MAIL_SENDER_ADDRESS}
+      DEFAULT_RECIPIENT_EMAIL: ${MAIL_CONTACT_ADDRESS}
     ${LOG_SETTINGS-}
 
 EOF
@@ -476,6 +513,12 @@ MISP_SALT="${MISP_SALT}"
 MISP_ADD_EVENT_ANALYZE_COLUMN="${MISP_ADD_EVENT_ANALYZE_COLUMN}"
 
 # ------------------------------
+# MISP Container
+# ------------------------------
+MISP_NIGHTLY_TAG="${MISP_NIGHTLY_TAG}"
+MISP_QUESTION_USE_NIGHTLY_BUILD="${MISP_QUESTION_USE_NIGHTLY_BUILD}"
+
+# ------------------------------
 # MISP-Modules
 # ------------------------------
 MISP_MODULES_DEBUG="${MISP_MODULES_DEBUG}"
@@ -495,6 +538,8 @@ PROXY_HTTPS_PORT="${PROXY_HTTPS_PORT}"
 PROXY_CLIENT_MAX_BODY_SIZE="${PROXY_CLIENT_MAX_BODY_SIZE}"
 PROXY_IP_RESTRICTION="${PROXY_IP_RESTRICTION}"
 PROXY_QUESTION_USE_IP_RESTRICTION="${PROXY_QUESTION_USE_IP_RESTRICTION}"
+PROXY_BASIC_AUTH_USER="${PROXY_BASIC_AUTH_USER}"
+PROXY_BASIC_AUTH_PASSWORD="${PROXY_BASIC_AUTH_PASSWORD}"
 
 # ------------------------------
 # PHP

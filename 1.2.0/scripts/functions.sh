@@ -164,6 +164,7 @@ func_default_container_version() {
   POSTFIX_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep postfix|cut -d : -f 3)"
   REDIS_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep redis|cut -d : -f 3)"
   DB_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep db|cut -d : -f 3)"
+  MONITORING_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep monitoring|cut -d : -f 3)"
   if [ "${DEV_MODE-}" = true ]; then
     [ -z "$(echo "$POSTFIX_CONTAINER_TAG"|grep dev)" ] && POSTFIX_CONTAINER_TAG="$POSTFIX_CONTAINER_TAG-dev"
     [ -z "$(echo "$MISP_CONTAINER_TAG"|grep dev)" ] && MISP_CONTAINER_TAG="$MISP_CONTAINER_TAG-dev"
@@ -172,6 +173,8 @@ func_default_container_version() {
     [ -z "$(echo "$MISP_MODULES_CONTAINER_TAG"|grep dev)" ] && MISP_MODULES_CONTAINER_TAG="$MISP_MODULES_CONTAINER_TAG-dev"
     [ -z "$(echo "$REDIS_CONTAINER_TAG"|grep dev)" ] && REDIS_CONTAINER_TAG="$REDIS_CONTAINER_TAG-dev"
     [ -z "$(echo "$DB_CONTAINER_TAG"|grep dev)" ] && DB_CONTAINER_TAG="$DB_CONTAINER_TAG-dev"
+    [ -z "$(echo "$MONITORING_CONTAINER_TAG"|grep dev)" ] && MONITORING_CONTAINER_TAG="$MONITORING_CONTAINER_TAG-dev"
+    [ -z "$(echo "$MISP_NIGHTLY_TAG"|grep dev)" ] && MISP_NIGHTLY_TAG="$MISP_NIGHTLY_TAG-dev"
   fi
   echo "done"
 }
@@ -535,6 +538,20 @@ func_query_misp_modules() {
    info "Check MISP module settings ..."
    read -rp"Do you want to enable MISP-module debug mode? [ Default: $MISP_MODULES_DEBUG ]: " -ei "$MISP_MODULES_DEBUG"  MISP_MODULES_DEBUG
 }
+
+func_query_latest_misp_server() {
+  info "Check MISP server version ..."
+  read -rp"Do you want to enable nightly unsupported MISP server container? [ Default: $MISP_QUESTION_USE_NIGHTLY_BUILD ]: " -ei "$MISP_QUESTION_USE_NIGHTLY_BUILD"  MISP_QUESTION_USE_NIGHTLY_BUILD
+  case $MISP_QUESTION_USE_NIGHTLY_BUILD in
+  [yY][eE][sS]|[yY])
+    MISP_CONTAINER_TAG=$MISP_NIGHTLY_TAG
+    ;;
+  *)
+    echo
+    ;;
+  esac
+}
+
 
 #
 # END Build Configuration
