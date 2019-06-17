@@ -106,16 +106,15 @@ deploy:
 		-v ~/.docker:/root/.docker:ro \
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
 		$(shell cat $(CURDIR)/config/config.env|grep DOCKER_REGISTRY|cut -d = -f 2)/misp-dockerized-robot:$(shell cat $(CURDIR)/config/config.env|grep ROBOT_CONTAINER_TAG|cut -d = -f 2) sh -c "docker-compose -f /srv/MISP-dockerized/docker-compose.yml -f /srv/MISP-dockerized/docker-compose.override.yml up -d "
-	@make copy-ssl
 	@echo " ###########	MISP environment is ready	###########"
 	@echo "Please go to: https://$(shell cat config/config.env|grep MISP_FQDN|cut -d = -f 2)"
 	@echo "Login credentials:"
 	@echo "      Username: admin@admin.test"
 	@echo "      Password: admin"
 	@echo
-	@echo "Do not forget to change your SSL certificate with:    make change-ssl"
-	@echo "Do not forget to change your S/MIME certificate with:    make change-smime"
-	@echo "Do not forget to change your PGP certificate with:    make change-pgp'"
+	@echo "Do not forget to add / change your SSL certificate with:    make change-ssl"
+	@echo "Do not forget to add / change your S/MIME certificate with:    make change-smime"
+	@echo "Do not forget to add / change your PGP certificate with:    make change-pgp'"
 
 
 # delete all misp container, volumes and images
@@ -191,6 +190,11 @@ copy-ssl:
 	docker cp misp-proxy:/etc/nginx/ssl/cert.pem $(CURDIR)/config/ssl/
 	docker cp misp-proxy:/etc/nginx/ssl/key.pem $(CURDIR)/config/ssl/
 	-docker cp misp-proxy:/etc/nginx/ssl/ssl.passphrase $(CURDIR)/config/ssl/
+
+change-ssl-passphrase: copy-ssl-passphrase
+copy-ssl-passphrase:
+	docker cp $(CURDIR)/config/ssl/ssl.passphrase misp-proxy:/etc/nginx/ssl/
+	#docker cp misp-proxy:/etc/nginx/ssl/ssl.passphrase $(CURDIR)/config/ssl/
 
 # S/MIME
 change-smime: copy-smime
