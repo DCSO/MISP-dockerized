@@ -49,6 +49,8 @@ services:
     image: dcso/misp-dockerized-misp-modules:3
     container_name: misp-modules
     restart: unless-stopped
+    volumes:
+    - /etc/localtime:/etc/localtime:ro
     networks:
       misp-backend:
         aliases:
@@ -62,6 +64,7 @@ services:
     restart: unless-stopped
     volumes:
     ###### mips-server ######
+    - /etc/localtime:/etc/localtime:ro
     # Apache2 Configuration
     - misp-vol-server-apache2-config-sites-enabled:/etc/apache2/sites-enabled
     # Volume with Certificates
@@ -95,6 +98,7 @@ services:
       HTTPS_PROXY: ${HTTPS_PROXY}
       NO_PROXY: ${NO_PROXY}
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       # NGINX Configuration
       #- misp-vol-proxy-conf:/etc/nginx/conf.d
       # SSL 
@@ -103,7 +107,6 @@ services:
       misp-backend:
         aliases:
           - misp-nginx
-
 
   ### Robot ###
   misp-robot:
@@ -118,6 +121,7 @@ services:
     ######  GLOBAL VOLUMES  ######
     # Docker.sock File
     - /var/run/docker.sock:/var/run/docker.sock:ro
+    - /etc/localtime:/etc/localtime:ro
     # Volume with Certificates
     - misp-vol-ssl:/srv/misp-ssl
     # Volume with PGP Key
@@ -152,6 +156,7 @@ services:
     security_opt:
       - apparmor:unconfined
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
