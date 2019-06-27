@@ -231,8 +231,11 @@ func_query_hostname(){
 func_query_network_settings(){
   info "Check network settings ..."
   echo "Network settings..."
-  read -rp "$STARTMSG Which MISP Network should we use [DEFAULT: $DOCKER_NETWORK]: " -ei "$DOCKER_NETWORK" DOCKER_NETWORK
-  read -rp "$STARTMSG Which MISP Network BRIDGE Interface Name should we use [DEFAULT: $BRIDGE_NAME]: " -ei "$BRIDGE_NAME" BRIDGE_NAME
+  read -rp "$STARTMSG Which MISP Network should we use [DEFAULT: $NETWORK_CONTAINER_ADDRESS_RANGE]: " -ei "$NETWORK_CONTAINER_ADDRESS_RANGE" NETWORK_CONTAINER_ADDRESS_RANGE
+  read -rp "$STARTMSG Which MISP Network BRIDGE Interface Name should we use [DEFAULT: $NETWORK_BRIDGE_NAME]: " -ei "$NETWORK_BRIDGE_NAME" NETWORK_BRIDGE_NAME
+  read -rp "$STARTMSG If MISP should only available on one interface, which one? [DEFAULT: $NETWORK_BINDING_IPv4]: " -ei "$NETWORK_BINDING_IPv4" NETWORK_BINDING_IPv4
+  echo "To Activate this option please show at https://dcso.github.io/MISP-dockerized-docs/admin/docker/docker_bind_interface.html"
+  echo "Continue in 10 seconds ..." && sleep 10
 }
 
 # Questions for System Proxy Settings

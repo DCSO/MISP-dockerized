@@ -48,8 +48,9 @@ func_check_if_vars_exists() {
   # Docker Registry
   [ -z "${DOCKER_REGISTRY+x}" ] && DOCKER_REGISTRY="dcso" && QUERY_DOCKER_REGISTRY="yes" 
   # Docker Network
-  [ -z "${DOCKER_NETWORK+x}" ] && DOCKER_NETWORK="192.168.47.0/28" && QUERY_NETWORK="yes" 
-  [ -z "${BRIDGE_NAME+x}" ]    && BRIDGE_NAME="mispbr0" && QUERY_NETWORK="yes"
+  [ -z "${NETWORK_CONTAINER_ADDRESS_RANGE+x}" ] && NETWORK_CONTAINER_ADDRESS_RANGE="192.168.47.0/28" && QUERY_NETWORK="yes" 
+  [ -z "${NETWORK_BRIDGE_NAME+x}" ]    && NETWORK_BRIDGE_NAME="mispbr0" && QUERY_NETWORK="yes"
+  [ -z "${NETWORK_BINDING_IPv4+x}" ]    && NETWORK_BINDING_IPv4="0.0.0.0" && QUERY_NETWORK="yes"
   
   # DEPRECATED: System Proxy for Container
   [ -n "${QUESTION_USE_PROXY+x}" ] && CONTAINER_SYSTEM_QUESTION_USE_PROXY="$QUESTION_USE_PROXY"
@@ -274,10 +275,11 @@ version: '3.1'
 networks: 
   misp-backend:
     driver_opts:
-     com.docker.network.bridge.name: "${BRIDGE_NAME}"
+     com.docker.network.bridge.name: "${NETWORK_BRIDGE_NAME}"
+     # com.docker.network.bridge.host_binding_ipv4: "${NETWORK_BINDING_IPv4}"
     ipam:
       config:
-      - subnet: "${DOCKER_NETWORK}"
+      - subnet: "${NETWORK_CONTAINER_ADDRESS_RANGE}"
 
 services:
   misp-db:
@@ -486,8 +488,10 @@ DOCKER_REGISTRY=${DOCKER_REGISTRY}
 # ------------------------------
 # Network Configuration
 # ------------------------------
-DOCKER_NETWORK="${DOCKER_NETWORK}"
-BRIDGE_NAME="${BRIDGE_NAME}"
+NETWORK_CONTAINER_ADDRESS_RANGE="${NETWORK_CONTAINER_ADDRESS_RANGE}"
+NETWORK_BRIDGE_NAME="${NETWORK_BRIDGE_NAME}"
+NETWORK_BINDING_IPv4="${NETWORK_BINDING_IPv4}"
+
 
 # ------------------------------
 # Logging (Syslog)
