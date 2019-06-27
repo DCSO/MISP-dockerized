@@ -4,6 +4,8 @@ addons:
   apt:
     sources:
       - docker-xenial
+  hosts:
+  - misp.example.com
 
 env:
   global:
