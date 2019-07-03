@@ -6,51 +6,8 @@
 
 # Shows Help and all Commands
 help:
-	@echo "Please use one of the following options:\n \
-	General: \n \
-	       make install			| Initial Command for: requirements, build-config, deploy\n \
-	       make requirements	 	| Check if server fullfill all requirements\n \
-	       make deploy 			| Deploy Docker container\n \
-		make upgrade 			| Upgrade MISP-dockerized\n \
-		make update 			| Update MISP-dockerized same as make install\n \
-	       make delete 			| Delete all docker container and networks for MISP\n \
-	       make delete-volumes 		| Delete all docker container, networks and volumes \n \
-		   make delete-images 		| Delete all docker container, networks and images \n \
-		   make delete-all 		| Delete all docker container, networks, volumes and images \n \
-	       make security	 		| Check docker security via misp-robot\n \
-		make test	 		| Test if MISP-environment is ready.\n \
-		\n \
-		make build-config REPOURL=<Custom Docker Registry URL>	 	| Build configuration\n \
-		\n \
-	\n Control Docker Instances\n\
-		make start-all			| Start all docker container\n \
-		make stop-all			| Stop all docker container \n \
-		make restart-all		| Restart all docker container \n \
-	\n Configure: \n \
-	       make change-ssl			| Change ssl certificate and key\n \
-		make change-smime		| Change S/MIME certificate and key\n \
-		make change-pgp			| Change PGP keys\n \
-		make change-all 		| Change SSL, S/MIME and PGP Keys \n \
-	\n Maintenance: \n \
-	    	make enable-maintenance		| Enable maintenance mode \n \
-	    	make disable-maintenance	| Disable maintenance mode \n \
-	\n Backup: \n \
-	       make backup-all 		| Backup all misp volumes via misp-robot\n \
-	       make backup-server		| Backup misp-server volumes via misp-robot\n \
-	       make backup-redis		| Backup misp-redis volumes via misp-robot\n \
-	       make backup-db			| Backup misp-db volumes via misp-robot\n \
-	       make backup-proxy		| Backup misp-proxy volumes via misp-robot\n \
-	       make backup-robot		| Backup misp-robot volumes via misp-robot\n \
-	       \n \
-		make restore-all		| Restore all via misp-robot\n \
-		make restore-server		| Restore misp-server volumes via misp-robot\n \
-	       make restore-redis		| Restore misp-redis volumes via misp-robot\n \
-	       make restore-db			| Restore misp-db volumes via misp-robot\n \
-	       make restore-proxy		| Restore misp-proxy volumes via misp-robot\n \
-	       make restore-robot		| Restore misp-robot volumes via misp-robot\n \
-	\n Help: \n \
-	       make help	 		| Show help\n"
-
+	@scripts/help.sh
+	
 # Start
 install: requirements build-config pull deploy
 	@echo " ###########	Improve Environment	###########"
