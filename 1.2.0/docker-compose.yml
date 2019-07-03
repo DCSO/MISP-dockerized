@@ -1,5 +1,6 @@
 version: '3.1'
 
+### Networks ###
 networks: 
   misp-backend:
     driver: bridge
@@ -10,9 +11,10 @@ networks:
       config:
       - subnet: "192.168.47.0/28"
 
+
+### Services ###
 services:
-  # ### MISP Database ###
-  # # LINK: https://hub.docker.com/_/mariadb/
+  ### MISP Maria Database ###
   misp-db:
     image: dcso/misp-dockerized-db:10.4.5-bionic
     container_name: misp-db
@@ -25,8 +27,6 @@ services:
         - misp-db 
 
   ### MISP Redis Server ###
-  # LINK: https://docs.docker.com/samples/library/redis/
-  # LINK: https://github.com/docker-library/docs/tree/master/redis
   misp-redis:
     image: dcso/misp-dockerized-redis:5-alpine3.9
     restart: unless-stopped
@@ -56,10 +56,9 @@ services:
         aliases:
           - misp-modules
 
-
-  ### MISP Apache Server ###    
+  ### MISP Server ###
   misp-server:
-    image: dcso/misp-dockerized-server:2.4.108-debian
+    image: dcso/misp-dockerized-server:2.4.109-debian
     container_name: misp-server
     restart: unless-stopped
     volumes:
@@ -165,7 +164,6 @@ services:
       misp-backend:
         aliases:
           - misp-monitoring
-
 
 
 ### VOLUMES ###
