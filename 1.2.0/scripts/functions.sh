@@ -486,13 +486,13 @@ func_query_docker_registry() {
 # Questions for Log Settings
 func_query_log_settings(){
   info "Check log settings ..."
-  read -rp "$STARTMSG Would you enable Syslog logging? [y/n] " -ei "$SYSLOG_QUESTION_USE_SYSLOG" response
-  case $response in
+  read -rp "$STARTMSG Would you enable Syslog logging? [y/n] " -ei "$SYSLOG_QUESTION_USE_SYSLOG" SYSLOG_QUESTION_USE_SYSLOG
+  case $SYSLOG_QUESTION_USE_SYSLOG in
   [yY][eE][sS]|[yY])
-    read -rp"$STARTMSG Do you require syslog logging to an remote host if yes, please enter Hostname, DNS or IP? [DEFAULT: $SYSLOG_REMOTE_HOST]: " -ei "$SYSLOG_REMOTE_HOST"  SYSLOG_REMOTE_HOST
-    #syslog-address: "unix:///dev/log"
-         #syslog-address: "unix:///tmp/syslog.sock"
-    [ ! "$SYSLOG_REMOTE_HOST" = "no" ] && SYSLOG_REMOTE_LINE="syslog-address: tcp://$SYSLOG_REMOTE_HOST"
+    SYSLOG_QUESTION_USE_SYSLOG="yes"
+    read -rp"$STARTMSG Do you require syslog logging to an remote host if yes, please enter Hostname or IP, if not leave the field empty ? [DEFAULT: $SYSLOG_REMOTE_HOST]: " -ei "$SYSLOG_REMOTE_HOST"  SYSLOG_REMOTE_HOST
+    [ -n "$SYSLOG_REMOTE_HOST" ] && SYSLOG_REMOTE_LINE="syslog-address: tcp://$SYSLOG_REMOTE_HOST"
+    [ -n "$SYSLOG_REMOTE_HOST" ] && echo "We use $SYSLOG_REMOTE_LINE to send docker logs. Continue in 5 seconds..." && sleep 5
 
     LOG_SETTINGS='### LOG DRIVER ###
     # for more Information: https://docs.docker.com/compose/compose-file/#logging + https://docs.docker.com/config/containers/logging/syslog/
@@ -501,12 +501,12 @@ func_query_log_settings(){
       options:
         '$SYSLOG_REMOTE_LINE'
         # For Facility: https://tools.ietf.org/html/rfc5424#section-6.2.1
-        #syslog-facility: "local7"
+        syslog-facility: "local7"
         #syslog-tls-cert: "/etc/ca-certificates/custom/cert.pem"
         #syslog-tls-key: "/etc/ca-certificates/custom/key.pem"
         #syslog-tls-skip-verify: "true"
         # For Tags: https://docs.docker.com/config/containers/logging/log_tags/
-        tag: "{{.ImageName}}/{{.Name}}/{{.ID}}"
+        tag: "{{.ImageName}} {{.Name}} {{.ID}}"
         #syslog-format: "rfc5424micro"
         #labels: "misp-dockerized"
         #env: "os,customer"
