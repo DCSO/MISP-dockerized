@@ -86,7 +86,7 @@ services:
 
   ### Reverse Proxy ###
   misp-proxy:
-    image: dcso/misp-dockerized-proxy:1
+    image: dcso/misp-dockerized-proxy:2
     container_name: misp-proxy
     restart: unless-stopped
     ports:
