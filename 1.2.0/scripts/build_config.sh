@@ -104,7 +104,7 @@ func_check_if_vars_exists() {
   [ -z "${MISP_NIGHTLY_TAG:+x}" ] && MISP_NIGHTLY_TAG="2.4.nightly-debian"
 
   # PHP
-  [ -z "${PHP_MEMORY_LIMIT+x}" ]        && PHP_MEMORY_LIMIT="512M" && QUERY_PHP="yes"
+  [ -z "${PHP_MEMORY_LIMIT+x}" ]        && PHP_MEMORY_LIMIT="2048M" && QUERY_PHP="yes"
   [ -z "${PHP_MAX_EXECUTION_TIME+x}" ]  && PHP_MAX_EXECUTION_TIME="300" && QUERY_PHP="yes"
   [ -z "${PHP_UPLOAD_MAX_FILESIZE+x}" ] && PHP_UPLOAD_MAX_FILESIZE="50M" && QUERY_PHP="yes"
   [ -z "${PHP_POST_MAX_SIZE+x}" ]       && PHP_POST_MAX_SIZE="50M" && QUERY_PHP="yes"
@@ -412,7 +412,7 @@ services:
 
   misp-monitoring:
     ${IMAGE_MISP_MONITORING-}
-    hostname: "${MISP_FQDN}"
+    #hostname: "${MISP_FQDN}"
     environment:
       # DB
       MYSQL_DATABASE: ${DB_DATABASE}
@@ -420,6 +420,8 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_HOST: ${DB_HOST}
       MYSQL_PORT: ${DB_PORT}
+      # MISP
+      MISP_FQDN: "${MISP_FQDN}"
       # Redis
       REDIS_FQDN: "${REDIS_FQDN}"
       REDIS_PORT: "${REDIS_PORT}"
