@@ -1,5 +1,42 @@
 #!/bin/bash
-set -e
+set -eu
+
+[ $# -ge 1 ] && param_VERSION=${1:-""}
+set -xv
+while (( $(( $# - 1)) )); do
+    case "$(echo "$2"|cut -d = -f 1)" in
+      server)
+        SERVER_TAG="$(echo "$2"|cut -d = -f 2)"
+      ;;
+      redis)
+        REDIS_TAG="$(echo "$2"|cut -d = -f 2)"
+      ;;      
+      proxy)
+        PROXY_TAG="$(echo "$2"|cut -d = -f 2)"
+      ;;
+      db)
+        DB_TAG="$(echo "$2"|cut -d = -f 2)"
+      ;;
+      modules)
+        MODULES_TAG="$(echo "$2"|cut -d = -f 2)"
+      ;;
+      monitoring)
+        MONITORING_TAG="$(echo "$2"|cut -d = -f 2)"
+      ;;
+      robot)
+        ROBOT_TAG="$(echo "$2"|cut -d = -f 1)"
+      ;;
+      * )
+        echo "Not defined container!"
+        echo "Please use '$0 [VERSION] [COMPONENT]=[NEW_TAG]'"
+        echo "Components: server | redis | proxy | db | modules | montitoring | robot"
+        echo "Example: '$0 1.2.0 server=2.4.nightly-debian'"
+        echo "Exit now."
+        exit 1
+      ;;
+    esac
+    shift
+  done
 
 
 # full path <version>/scripts	
@@ -10,40 +47,35 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
     FOLDER=( "${FOLDER[@]%/}" )
 
 # set current version to ""
-CURRENT_VERSION=""
+CURRENT_VERSION="$param_VERSION"
 
 # check if user has currently a installed version
     function check_version_legacy (){
         # This function checks the current version on misp-server version from docker ps
         # https://forums.docker.com/t/docker-ps-a-command-to-publish-only-container-names/8483/2
-        CURRENT_CONTAINER=$(docker ps --format '{{.Image}}'|grep misp-dockerized-server|cut -d : -f 2|cut -d - -f 1)
-        [ "$CURRENT_CONTAINER" == "2.4.99" ] && CURRENT_VERSION="1.0.3" && return
-        [ "$CURRENT_CONTAINER" == "2.4.94" ] && CURRENT_VERSION="0.3.4" && return
-        [ "$CURRENT_CONTAINER" == "2.4.92" ] && CURRENT_VERSION="0.2.0" && return
-        [ "$CURRENT_CONTAINER" == "2.4.88" ] && CURRENT_VERSION="0.1.2" && return
-        echo
-        echo "Sorry the script can not detect your version."
+        #CURRENT_CONTAINER=$(docker ps --format '{{.Image}}'|grep misp-dockerized-server|cut -d : -f 2|cut -d - -f 1)
+        CURRENT_CONTAINER="$(docker exec misp-server printenv|grep VERSION|cut -d = -f 2)"
+        [ "$CURRENT_CONTAINER" = "2.4.99" ] && CURRENT_VERSION="1.0.3" && return
+        [ "$CURRENT_CONTAINER" = "2.4.94" ] && CURRENT_VERSION="0.3.4" && return
+        [ "$CURRENT_CONTAINER" = "2.4.92" ] && CURRENT_VERSION="0.2.0" && return
+        [ "$CURRENT_CONTAINER" = "2.4.88" ] && CURRENT_VERSION="0.1.2" && return
+        echo "Sorry you use a unsupported version. Please make an manual upgrade."
     }
     
     function check_version(){
         # This function checks the current link to which version it goes
         # https://www.linuxquestions.org/questions/linux-software-2/how-to-find-symlink-target-name-in-script-364971/
-        CURRENT_VERSION=$(ls -l current | awk '{print $11}')
+        CURRENT_VERSION="$(ls -l current | awk '{print $11}')"
     }
 
     # if current symlink exists
-    [ -L ./current ] && check_version
+    [ -L ./current ] && [ -z "$CURRENT_VERSION" ] && check_version
     # if current symlink not exists
-    [ -L ./current ] && check_version_legacy
+    [ -L ./current ] && [ -z "$CURRENT_VERSION" ] && check_version_legacy
 
 
 ############### START MAIN ###################
 
-
-
-# check requirements
-    # "$SCRIPTPATH/.scripts/requirements.sh"
-    # echo "### Requirements check...finished"
 
 # check if this execution is automatic from gitlab-ci or travis-ci
     if [ "$CI" != true ]
@@ -54,21 +86,20 @@ CURRENT_VERSION=""
 
         # Ask User which Version he want to install:
         # We made a recalculation the result is the element 0 in the array FOLDER[0] is shown as Element 1. If the user type in the version this recalculation is reverted.
-        echo
         echo "Which version do you want to install:"
         for (( i=1; i<=${#FOLDER[@]}; i++ ))
         do
-            [ "${FOLDER[$i-1]}" == "backup" ] && continue
-            [ "${FOLDER[$i-1]}" == "config" ] && continue
-            [ "${FOLDER[$i-1]}" == "current" ] && continue
-            [ "${FOLDER[$i-1]}" == ".travis" ] && continue
-            [[ "${FOLDER[$i-1]}" == "0."* ]] && continue
-            [[ "${FOLDER[$i-1]}" == "1.0.0"* ]] && continue
-            [[ "${FOLDER[$i-1]}" == "1.0.1"* ]] && continue
-            [[ "${FOLDER[$i-1]}" == "1.0.2"* ]] && continue
-            [[ "${FOLDER[$i-1]}" == "1.1.0"* ]] && continue
-            [ "${FOLDER[$i-1]}" == "$CURRENT_VERSION" ] || echo "[ ${i} ] - ${FOLDER[$i-1]}"
-            [ "${FOLDER[$i-1]}" == "$CURRENT_VERSION" ] && echo "[ ${i} ] - ${FOLDER[$i-1]} (currently installed)"
+            [ "${FOLDER[$i-1]}" = "backup" ] && continue
+            [ "${FOLDER[$i-1]}" = "config" ] && continue
+            [ "${FOLDER[$i-1]}" = "current" ] && continue
+            [ "${FOLDER[$i-1]}" = ".travis" ] && continue
+            [[ "${FOLDER[$i-1]}" = "0."* ]] && continue
+            [[ "${FOLDER[$i-1]}" = "1.0.0"* ]] && continue
+            [[ "${FOLDER[$i-1]}" = "1.0.1"* ]] && continue
+            [[ "${FOLDER[$i-1]}" = "1.0.2"* ]] && continue
+            [[ "${FOLDER[$i-1]}" = "1.1.0"* ]] && continue
+            [ "${FOLDER[$i-1]}" = "$CURRENT_VERSION" ] || echo "[ ${i} ] - ${FOLDER[$i-1]}"
+            [ "${FOLDER[$i-1]}" = "$CURRENT_VERSION" ] && echo "[ ${i} ] - ${FOLDER[$i-1]} (currently installed)"
         done
         echo
 
@@ -84,16 +115,18 @@ CURRENT_VERSION=""
         ###
         # CI AREA
         ###
-
-        # Parameter 1:
-        param_VERSION="$1"
-        [ "$CI" == true ] && [ -z "$param_VERSION" ] && echo "No version parameter. Please call: '$0 1.0.2'. Exit." && exit
-
-        # If the user is a CI Pipeline:
-        [ "$CI" == true ] && CURRENT_VERSION="$param_VERSION"
-        
+        [ -z "${param_VERSION-}" ] && echo "No version parameter. Please call: '$0 [VERSION]'. Exit." && exit
+        [ -d config ] || mkdir config || ( echo "Can not create directory config. Exit now" && exit 1 )
+          [ -n "${SERVER_TAG-}" ] && echo "Change Tag for server..." && echo "MISP_CONTAINER_TAG=$SERVER_TAG" >> config/config.env
+          [ -n "${PROXY_TAG-}" ] && echo "Change Tag for proxy..." && echo "PROXY_CONTAINER_TAG=$PROXY_TAG" >> config/config.env
+          [ -n "${REDIS_TAG-}" ] && echo "Change Tag for redis..." && echo "REDIS_CONTAINER_TAG=$REDIS_TAG" >> config/config.env
+          [ -n "${DB_TAG-}" ] && echo "Change Tag for db..." && echo "DB_CONTAINER_TAG=$DB_TAG" >> config/config.env
+          [ -n "${MODULES_TAG-}" ] && echo "Change Tag for misp-modules..." && echo "MISP_MODULES_CONTAINER_TAG=$MODULES_TAG" >> config/config.env
+          [ -n "${ROBOT_TAG-}" ] && echo "Change Tag for robot..." && echo "ROBOT_CONTAINER_TAG=$ROBOT_TAG" >> config/config.env
+          [ -n "${MONITORING_TAG-}" ] && echo "Change Tag for robot..." && echo "MONITORING_CONTAINER_TAG=$MONITORING_TAG" >> config/config.en
     fi
 
+echo "Selected version: $CURRENT_VERSION..."
 
 # Create Symlink to "current" Folder
     if [ -z "$CURRENT_VERSION" ]

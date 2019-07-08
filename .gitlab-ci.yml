@@ -4,10 +4,10 @@ services:
   - docker:dind
 
 stages:
-- build
 - test
 - scan
 - deploy
+- unsupported
 
 variables:
   # The following variables are setup via gitlab project group:
@@ -28,8 +28,20 @@ before_script:
 - .ci/01_before_install.sh
 
 
+shellcheck:
+  stage: test
+  tags:
+  - misp
+  image: koalaman/shellcheck-alpine
+  script:
+    - find . -path "*.sh" -type f -print -exec shellcheck {} +
+  allow_failure: true     # If you would check via shellcheck, but not to fail it there is any found.
+
+
 .env_test_only:
-  stage: build
+  stage: test
+  tags:
+  - misp
   except:
   - master
   - dev
@@ -44,6 +56,8 @@ before_script:
 # On dev Branch: Build Environment and Test it with our own Test Framework
 .long_test:
   stage: test
+  tags:
+  - misp
   only:
   - dev
   - 1.2.0
@@ -64,13 +78,16 @@ before_script:
 
 .push_productive_images:
   stage: deploy
+  tags:
+  - misp
   only: 
   - master
   - schedules
-  script:
-  # Check hub.docker.com Registry
+  - 1.2.0
+  before_script:
     # Test
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
+  script:
     # Tag 
   - make -C .ci tag REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
     # Push 
@@ -105,6 +122,9 @@ before_script:
 
 
 include:
+  - '.gitlab-unsupported/1.1.x.yml'
+  - '.gitlab-unsupported/1.2.x.yml'
+  - '.gitlab-unsupported/nightly.yml'
   #- '0.1.0/.gitlab-ci.yml'
   #- '0.1.1/.gitlab-ci.yml'
   #- '0.1.2/.gitlab-ci.yml'
