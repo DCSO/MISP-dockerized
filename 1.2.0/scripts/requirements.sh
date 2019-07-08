@@ -1,18 +1,18 @@
 #!/bin/bash
 
-# check if this is an automate build not ask any questions
-[ "$CI" = "true" ] && AUTOMATE_BUILD="true"
-
 # Variables
+# shellcheck disable=SC2164
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 STATUS="OK"
-DOCKER_SOCK="/var/run/docker.sock"
+#DOCKER_SOCK="/var/run/docker.sock"
 
 
 # Load Variables from Configuration
-[ -f "$SCRIPTPATH/../config/config.env" ] && source "$SCRIPTPATH/../config/config.env" && CONFIG_LOADED="true"
+# shellcheck disable=SC1090
+[ -f "$SCRIPTPATH/../config/config.env" ] && source "$SCRIPTPATH/../config/config.env"
 
 # Load functions
+# shellcheck disable=SC1090
 [ -f "$SCRIPTPATH/functions.sh" ] && source "$SCRIPTPATH/functions.sh"
 
 # to add options to the echo command
@@ -44,10 +44,10 @@ echo "" # Empty Line for a better overview.
 #
 #   Check user part of docker group
 #
-    if [ $(whoami) != "root" ]
+    if [ "$(whoami)" != "root" ]
         then
             # if user is not root then check if it is in docker group
-            if [ -z "$(cat /etc/group|grep docker|grep `whoami`)" ]
+            if [ -z "$(grep docker /etc/group|grep "$(whoami)")" ]
                 then
                     STATUS="FAIL"
                     # user not part of docker group

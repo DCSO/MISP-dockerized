@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e 
+set -eu
 
 STARTMSG="[tag]"
 
@@ -15,6 +15,7 @@ func_tag() {
     TAG="$2"
     
     # add -dev 
+    # shellcheck disable=SC2143
     [ -z "$(echo "$TAG"| grep dev)" ] && TAG="$TAG-dev"
     IMAGE_ID="$(docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep "$DOCKER_REPO:$TAG"|cut -d : -f 3|head -n 1;)"
     IMAGE_TAGS="$(docker images --format "{{.Repository}}:{{.Tag}}:{{.ID}}"|grep "$IMAGE_ID"|cut -d : -f 2;)"
@@ -53,6 +54,7 @@ ROBOT_TAG="$(docker ps -f name=robot --format '{{.Image}}'|cut -d : -f 2)"
 MODULES_TAG="$(docker ps -f name=modules --format '{{.Image}}'|cut -d : -f 2)"
 DB_TAG=$(docker ps -f name=db --format '{{.Image}}'|cut -d : -f 2)
 REDIS_TAG=$(docker ps -f name=redis --format '{{.Image}}'|cut -d : -f 2)
+MONITORING_TAG=$(docker ps -f name=monitoring --format '{{.Image}}'|cut -d : -f 2)
 
 
 # Login to Docker registry
@@ -63,15 +65,21 @@ DOCKER_LOGIN_STATE="$(echo "$DOCKER_LOGIN_OUTPUT" | grep 'Login Succeeded')"
 
 if [ ! -z "$DOCKER_LOGIN_STATE" ]; then
   # retag all existing tags dev 2 public repo
-        #$makefile_travis tag REPOURL=$REGISTRY_URL server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} modules_tag=${modules_tag} db_tag=${modules_tag} redis_tag=${modules_tag} postfix_tag=${postfix_tag}
         func_tag "$REGISTRY_URL/misp-dockerized-server" "$SERVER_TAG"
         func_tag "$REGISTRY_URL/misp-dockerized-proxy" "$PROXY_TAG"
         func_tag "$REGISTRY_URL/misp-dockerized-robot" "$ROBOT_TAG"
         func_tag "$REGISTRY_URL/misp-dockerized-misp-modules" "$MODULES_TAG"
+
+        # For all container after 1.1.0
         if version_gt "$CURRENT_VERSION" "1.1.0" ; then
             func_tag "$REGISTRY_URL/misp-dockerized-redis" "$REDIS_TAG"
         fi
-        #func_tag "$REGISTRY_URL/misp-dockerized-db" "$DB_TAG"
+
+        # For all container after 1.2.0
+        if version_gt "$CURRENT_VERSION" "1.2.0" ; then
+            func_tag "$REGISTRY_URL/misp-dockerized-db" "$DB_TAG"
+            func_tag "$REGISTRY_URL/misp-dockerized-monitoring" "$MONITORING_TAG"
+        fi
         echo "###########################################" && docker images && echo "###########################################"
 else
     echo "$DOCKER_LOGIN_OUTPUT"

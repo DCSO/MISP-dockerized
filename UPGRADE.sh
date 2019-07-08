@@ -36,7 +36,7 @@ then
     make -C current/ backup-all
     
     # Update Git repository
-    if [ -n "$(which git)" ]
+    if [ -n "$(command -v git)" ]
     then
         echo "Update git repository ..." && git pull
     else
@@ -57,7 +57,7 @@ else
     
     # Restore Data
     OPTION=""
-    while ( [ ! "$OPTION" == "exit" ] )
+    while [ ! "$OPTION" = "exit" ]
     do
         read -r -p "Which component volumes you want to restore? [ server | proxy | database | all OR exit ]: " -ei "$OPTION" OPTION
         
@@ -79,7 +79,7 @@ else
             break
             ;;
         [eE][xX][iI][tT])
-            OPTION=exit
+            OPTION="exit"
             break;
             ;;
         *)

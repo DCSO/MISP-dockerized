@@ -27,8 +27,10 @@ set -eu
   # Docker-Compose Override File
   DOCKER_COMPOSE_OVERRIDE="${MISP_dockerized_repo}/current/docker-compose.override.yml"
   # Docker-Compose File
+    # shellcheck disable=SC2034
   DOCKER_COMPOSE_FILE="${MISP_dockerized_repo}/current/docker-compose.yml"
   # Backup Folder Path
+    # shellcheck disable=SC2034
   BACKUP_PATH="${MISP_dockerized_repo}/backup"
 
 #################################################
@@ -36,10 +38,12 @@ set -eu
 #################################################
   # Import existing configuration
   echo -en "\e[1;32m$STARTMSG Check and import existing configuration file ...\e[0m"
+  # shellcheck disable=SC1090
   [ -f "$CONFIG_FILE" ] && source "$CONFIG_FILE"
   echo "done"
   # Import functions file
   echo -en "\e[1;32m$STARTMSG Check and import global functions.sh file ...\e[0m" 
+  # shellcheck disable=SC1090
   [ -f "$FUNCTIONS_FILE" ] && source "$FUNCTIONS_FILE" 
   echo "done"
 
@@ -52,7 +56,7 @@ func_check_if_vars_exists() {
   # Default Variables for the config
   #
   # Docker Registry
-  [ -z "${DOCKER_REGISTRY+x}" ] && DOCKER_REGISTRY="dcso" && QUERY_DOCKER_REGISTRY="yes" 
+  [ -z "${DOCKER_REGISTRY+x}" ] && DOCKER_REGISTRY="dcso" #&& QUERY_DOCKER_REGISTRY="yes" 
   # Docker Network
   [ -z "${NETWORK_CONTAINER_ADDRESS_RANGE+x}" ] && NETWORK_CONTAINER_ADDRESS_RANGE="192.168.47.0/28" && QUERY_NETWORK="yes" 
   [ -z "${NETWORK_BRIDGE_NAME+x}" ]    && NETWORK_BRIDGE_NAME="mispbr0" && QUERY_NETWORK="yes"
@@ -89,9 +93,12 @@ func_check_if_vars_exists() {
   [ -z "${DB_ROOT_PASSWORD+x}" ]   && DB_ROOT_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)" && QUERY_DB="yes"
   
   # DEPRECATED MISP
+  # shellcheck disable=SC2154
   [ -n "${myHOSTNAME+x}" ]         && MISP_FQDN="$myHOSTNAME"
   [ -n "${MISP_URL+x}" ]           && MISP_BASEURL="$MISP_URL"
+  # shellcheck disable=SC2154
   [ -n "${MISP_prefix+x}" ]        && MISP_PREFIX="$MISP_prefix"
+    # shellcheck disable=SC2154
   [ -n "${MISP_encoding+x}" ]      && MISP_ENCODING="$MISP_encoding"
   [ -n "${ADD_ANALYZE_COLUMN+x}" ] && MISP_ADD_EVENT_ANALYZE_COLUMN="$ADD_ANALYZE_COLUMN"
   # END DEPRECATED
@@ -119,7 +126,9 @@ func_check_if_vars_exists() {
   [ -n "${HTTP_PORT+x}" ]            && PROXY_HTTP_PORT="$HTTP_PORT"
   [ -n "${HTTPS_PORT+x}" ]           && PROXY_HTTPS_PORT="$HTTPS_PORT"
   [ -n "${HTTP_SERVERADMIN+x}" ]     && MAIL_CONTACT_ADDRESS="$HTTP_SERVERADMIN"
+  # shellcheck disable=SC2154
   [ -n "${ALLOW_ALL_IPs+x}" ]        && PROXY_QUESTION_USE_IP_RESTRICTION="$ALLOW_ALL_IPs"
+  # shellcheck disable=SC2154
   [ -n "${client_max_body_size+x}" ] && PROXY_CLIENT_MAX_BODY_SIZE="$client_max_body_size"
   [ -n "${HTTP_ALLOWED_IP+x}" ]         && PROXY_IP_RESTRICTION="$HTTP_ALLOWED_IP"
   # END DEPRECATED
@@ -198,7 +207,7 @@ func_check_if_vars_exists() {
 ##  main part
 #################################################
 # Override Registry if it is set via parameter
-[ ! -z "${PARAMETER_DOCKER_REGISTRY-}" ] && DOCKER_REGISTRY="$PARAMETER_DOCKER_REGISTRY"
+[ -n "${PARAMETER_DOCKER_REGISTRY-}" ] && DOCKER_REGISTRY="$PARAMETER_DOCKER_REGISTRY"
 # if vars not exists
 func_check_if_vars_exists
 # Docker Registry
@@ -265,7 +274,7 @@ then
   IMAGE_MISP_PROXY="image: ${DOCKER_REGISTRY}/misp-dockerized-proxy:${PROXY_CONTAINER_TAG}"
   IMAGE_MISP_ROBOT="image: ${DOCKER_REGISTRY}/misp-dockerized-robot:${ROBOT_CONTAINER_TAG}"
   IMAGE_MISP_REDIS="image: ${DOCKER_REGISTRY}/misp-dockerized-redis:${REDIS_CONTAINER_TAG}"
-  IMAGE_MISP_POSTFIX="image: ${DOCKER_REGISTRY}/misp-dockerized-postfix:${POSTFIX_CONTAINER_TAG}"
+  #IMAGE_MISP_POSTFIX="image: ${DOCKER_REGISTRY}/misp-dockerized-postfix:${POSTFIX_CONTAINER_TAG}"
   IMAGE_MISP_DB="image: ${DOCKER_REGISTRY}/misp-dockerized-db:${DB_CONTAINER_TAG}"
   IMAGE_MISP_MONITORING="image: ${DOCKER_REGISTRY}/misp-dockerized-monitoring:${MONITORING_CONTAINER_TAG}"
 fi

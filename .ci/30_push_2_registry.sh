@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set -eu
 
 STARTMSG="[push]"
 
@@ -16,7 +16,8 @@ func_push() {
     TAGS="$2"
     for i in $TAGS
     do
-        [ ! -z "$(echo $i | grep 'dev')" ] && continue
+        # shellcheck disable=SC2143
+        [ -n "$(echo "$i" | grep 'dev')" ] && continue
         docker push "$DOCKER_REPO:$i"
     done
 }
@@ -31,12 +32,20 @@ REGISTRY_URL="$1"
 REGISTRY_USER="$2"
 REGISTRY_PW="$3"
 
+# shellcheck disable=SC2046
 SERVER_TAGS="$(docker images --no-trunc --format '{{.Tag}}={{.ID}}' | grep $(docker inspect misp-server -f '{{.Image}}')|cut -d = -f 1)"
+# shellcheck disable=SC2046
 PROXY_TAGS="$(docker images --no-trunc --format '{{.Tag}}={{.ID}}' | grep $(docker inspect misp-proxy -f '{{.Image}}')|cut -d = -f 1)"
+# shellcheck disable=SC2046
 ROBOT_TAGS="$(docker images --no-trunc --format '{{.Tag}}={{.ID}}' | grep $(docker inspect misp-robot -f '{{.Image}}')|cut -d = -f 1)"
+# shellcheck disable=SC2046
 MODULES_TAGS="$(docker images --no-trunc --format '{{.Tag}}={{.ID}}' | grep $(docker inspect misp-modules -f '{{.Image}}')|cut -d = -f 1)"
-#DB_TAGS=$(docker ps -f name=db --format '{{.Image}}'|cut -d : -f 2)
+# shellcheck disable=SC2046
+DB_TAGS=$(docker ps -f name=db --format '{{.Image}}'|cut -d : -f 2)
+# shellcheck disable=SC2046
 REDIS_TAGS="$(docker images --no-trunc --format '{{.Tag}}={{.ID}}' | grep $(docker inspect misp-redis -f '{{.Image}}')|cut -d = -f 1)"
+# shellcheck disable=SC2046
+MONITORING_TAGS="$(docker images --no-trunc --format '{{.Tag}}={{.ID}}' | grep $(docker inspect misp-monitoring -f '{{.Image}}')|cut -d = -f 1)"
 
 
 
@@ -47,25 +56,23 @@ echo "$DOCKER_LOGIN_OUTPUT"
 DOCKER_LOGIN_STATE="$(echo "$DOCKER_LOGIN_OUTPUT" | grep 'Login Succeeded')"
 
 if [ ! -z "$DOCKER_LOGIN_STATE" ]; then
-#   # retag all existing tags dev 2 public repo
-#         #$makefile_travis tag REPOURL=$REGISTRY_URL server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} modules_tag=${modules_tag} db_tag=${modules_tag} redis_tag=${modules_tag} postfix_tag=${postfix_tag}
-#         func_tag "$REGISTRY_URL/misp-dockerized-server" "$SERVER_TAG"
-#         func_tag "$REGISTRY_URL/misp-dockerized-server" "$SERVER_TAG"
-#         func_tag "$REGISTRY_URL/misp-dockerized-robot" "$ROBOT_TAG"
-#         func_tag "$REGISTRY_URL/misp-dockerized-misp-modules" "$MODULES_TAG"
-#         #func_tag "$REGISTRY_URL/misp-dockerized-db" "$DB_TAG"
-#         func_tag "$REGISTRY_URL/misp-dockerized-redis" "$REDIS_TAG"
-#         echo "###########################################" && docker images && echo "###########################################"
     # Push all Docker images
         #$makefile_travis push REPOURL=$REGISTRY_URL server_tag=${server_tag} proxy_tag=${proxy_tag} robot_tag=${robot_tag} modules_tag=${modules_tag} postfix_tag=${postfix_tag} 
         func_push "$REGISTRY_URL/misp-dockerized-server" "$SERVER_TAGS"
         func_push "$REGISTRY_URL/misp-dockerized-proxy" "$PROXY_TAGS"
         func_push "$REGISTRY_URL/misp-dockerized-robot" "$ROBOT_TAGS"
         func_push "$REGISTRY_URL/misp-dockerized-misp-modules" "$MODULES_TAGS"
+        
+        # For all container after 1.1.0
         if version_gt "$CURRENT_VERSION" "1.1.0" ; then
             func_push "$REGISTRY_URL/misp-dockerized-redis" "$REDIS_TAGS"
         fi
-        #func_push "$REGISTRY_URL/misp-dockerized-db" "$DB_TAGS"
+
+        # For all container after 1.2.0
+        if version_gt "$CURRENT_VERSION" "1.2.0" ; then
+            func_push "$REGISTRY_URL/misp-dockerized-db" "$DB_TAGS"
+            func_push "$REGISTRY_URL/misp-dockerized-monitoring" "$MONITORING_TAGS"
+        fi
 else
     echo "$DOCKER_LOGIN_OUTPUT"
     exit
