@@ -34,8 +34,14 @@ set -eu
 #################################################
 ##  import functions
 #################################################
-echo -en "\e[1;32m$STARTMSG Check and import existing configuration file ...\e[0m" && [ -f "$CONFIG_FILE" ] && source "$CONFIG_FILE" && echo "done"
-echo -en "\e[1;32m$STARTMSG Check and import global functions.sh file ...\e[0m" && [ -f "$FUNCTIONS_FILE" ] && source "$FUNCTIONS_FILE" && echo "done"
+  # Import existing configuration
+  echo -en "\e[1;32m$STARTMSG Check and import existing configuration file ...\e[0m"
+  [ -f "$CONFIG_FILE" ] && source "$CONFIG_FILE"
+  echo "done"
+  # Import functions file
+  echo -en "\e[1;32m$STARTMSG Check and import global functions.sh file ...\e[0m" 
+  [ -f "$FUNCTIONS_FILE" ] && source "$FUNCTIONS_FILE" 
+  echo "done"
 
 ######################################################################
 
