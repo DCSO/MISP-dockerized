@@ -328,7 +328,7 @@ services:
       # Timezone
       TZ: ${TZ-}
       # MISP-Modules
-      MISP_MODULES_DEBUG: ${MISP_MODULES_DEBUG}
+      MISP_MODULES_DEBUG: "${MISP_MODULES_DEBUG}"
       # Logging options
       LOG_SYSLOG_ENABLED: "${SYSLOG_QUESTION_USE_SYSLOG}"
     ${LOG_SETTINGS-}
