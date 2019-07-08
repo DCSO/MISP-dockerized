@@ -1,4 +1,4 @@
-image: docker/compose:1.24.1
+image: gitlab.dcso.lolcat:4567/misp/helper-containers:docker_compose
 
 services:
   - docker:dind
