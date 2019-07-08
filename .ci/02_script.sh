@@ -22,8 +22,8 @@ CURRENT_VERSION="$5"
 
 # Login to Docker registry
 echo "$STARTMSG Try to login to Docker registry... (Only with Gitlab CI)"
-[ "$GITLAB_CI" = "true" ] && [ "$REGISTRY_URL" != "dcso" ] && DOCKER_LOGIN_OUTPUT="$(echo "$REGISTRY_PW" | docker login -u "$REGISTRY_USER" "$REGISTRY_URL" --password-stdin)"
-[ "$GITLAB_CI" = "true" ] && [ "$REGISTRY_URL" = "dcso" ] && DOCKER_LOGIN_OUTPUT="$(echo "$REGISTRY_PW" | docker login -u "$REGISTRY_USER" --password-stdin)"
+[ "${GITLAB_CI-}" = "true" ] && [ "$REGISTRY_URL" != "dcso" ] && DOCKER_LOGIN_OUTPUT="$(echo "$REGISTRY_PW" | docker login -u "$REGISTRY_USER" "$REGISTRY_URL" --password-stdin)"
+[ "${GITLAB_CI-}" = "true" ] && [ "$REGISTRY_URL" = "dcso" ] && DOCKER_LOGIN_OUTPUT="$(echo "$REGISTRY_PW" | docker login -u "$REGISTRY_USER" --password-stdin)"
 echo "$DOCKER_LOGIN_OUTPUT"
 
 ###### Create current folder 
