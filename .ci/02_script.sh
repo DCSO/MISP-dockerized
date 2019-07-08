@@ -18,7 +18,7 @@ REGISTRY_USER="$2"
 REGISTRY_PW="$3"
 TEST_TYPE="$4"
 CURRENT_VERSION="$5"
-
+DOCKER_LOGIN_OUTPUT=""
 
 # Login to Docker registry
 echo "$STARTMSG Try to login to Docker registry... (Only with Gitlab CI)"
