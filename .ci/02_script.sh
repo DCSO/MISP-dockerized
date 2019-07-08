@@ -1,10 +1,10 @@
 #!/bin/sh
-set -e
+set -eu
 
 STARTMSG="[02_script]"
 
 # change directory for make usage
-pushd ..
+cd ..
 
 [ -z "$1" ] && echo "$STARTMSG No parameter with the Docker registry URL. Exit now." && exit 1
 [ "$1" = "NOT2PUSH" ] && echo "$STARTMSG The NOT2PUSH slug is only for local build and retag not for pushin to docker registries. Exit now." && exit 1
@@ -21,8 +21,8 @@ CURRENT_VERSION="$5"
 
 
 # Login to Docker registry
-echo "### Try to login to Docker registry... (Only with Gitlab CI)"
-[ "$GITLAB_CI" = "true" ] [ "$REGISTRY_URL" != "dcso" ] && DOCKER_LOGIN_OUTPUT="$(echo "$REGISTRY_PW" | docker login -u "$REGISTRY_USER" "$REGISTRY_URL" --password-stdin)"
+echo "$STARTMSG Try to login to Docker registry... (Only with Gitlab CI)"
+[ "$GITLAB_CI" = "true" ] && [ "$REGISTRY_URL" != "dcso" ] && DOCKER_LOGIN_OUTPUT="$(echo "$REGISTRY_PW" | docker login -u "$REGISTRY_USER" "$REGISTRY_URL" --password-stdin)"
 [ "$GITLAB_CI" = "true" ] && [ "$REGISTRY_URL" = "dcso" ] && DOCKER_LOGIN_OUTPUT="$(echo "$REGISTRY_PW" | docker login -u "$REGISTRY_USER" --password-stdin)"
 echo "$DOCKER_LOGIN_OUTPUT"
 
@@ -34,6 +34,7 @@ echo "$DOCKER_LOGIN_OUTPUT"
 
 
 # Build config and deploy environent
+    # shellcheck disable=SC2154
     echo "$STARTMSG Build Configuration..." && $makefile_main build-config REPOURL="$REGISTRY_URL"
     echo "$STARTMSG Pull Images..." && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml pull -q
     echo "$STARTMSG Start Environment..." && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml up -d
