@@ -15,7 +15,7 @@ update:
 	bash ./UPDATE
 
 install:
-	bash ./FOR_NEW_INSTALL.sh $(test) $(folder)
+	bash ./FOR_NEW_INSTALL.sh $(VERSION)
 	make -C current install
 
 new: install
