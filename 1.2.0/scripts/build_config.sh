@@ -321,7 +321,7 @@ services:
       # MISP-Modules
       MISP_MODULES_DEBUG: ${MISP_MODULES_DEBUG}
       # Logging options
-      LOG_SYSLOG_ENABLED: ${SYSLOG_QUESTION_USE_SYSLOG}
+      LOG_SYSLOG_ENABLED: "${SYSLOG_QUESTION_USE_SYSLOG}"
     ${LOG_SETTINGS-}
 
   misp-server:
@@ -378,7 +378,7 @@ services:
       SSL_PASSPHRASE_ENABLE: "${SSL_PASSPHRASE_ENABLE}"
       SSL_PASSPHRASE: "${SSL_PASSPHRASE}"
       # Logging options
-      LOG_SYSLOG_ENABLED: ${SYSLOG_QUESTION_USE_SYSLOG}
+      LOG_SYSLOG_ENABLED: "${SYSLOG_QUESTION_USE_SYSLOG}"
     ${LOG_SETTINGS-}
 
   misp-proxy:
@@ -402,7 +402,7 @@ services:
       SSL_PASSPHRASE_ENABLE: "${SSL_PASSPHRASE_ENABLE}"
       SSL_PASSPHRASE: "${SSL_PASSPHRASE}"
       # Logging options
-      LOG_SYSLOG_ENABLED: ${SYSLOG_QUESTION_USE_SYSLOG}
+      LOG_SYSLOG_ENABLED: "${SYSLOG_QUESTION_USE_SYSLOG}"
     ${LOG_SETTINGS-}
 
   misp-robot:
@@ -418,7 +418,7 @@ services:
       # Timezone
       TZ: "${TZ-}"
       # Logging options
-      LOG_SYSLOG_ENABLED: ${SYSLOG_QUESTION_USE_SYSLOG}
+      LOG_SYSLOG_ENABLED: "${SYSLOG_QUESTION_USE_SYSLOG}"
     volumes:
     # Github Repository
     - ${MISP_dockerized_repo}:/srv/MISP-dockerized
@@ -448,7 +448,7 @@ services:
       EMAIL_SENDER: ${MAIL_SENDER_ADDRESS}
       DEFAULT_RECIPIENT_EMAIL: ${MAIL_CONTACT_ADDRESS}
       # Logging options
-      LOG_SYSLOG_ENABLED: ${SYSLOG_QUESTION_USE_SYSLOG}
+      LOG_SYSLOG_ENABLED: "${SYSLOG_QUESTION_USE_SYSLOG}"
     ${LOG_SETTINGS-}
 
 EOF
