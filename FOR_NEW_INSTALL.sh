@@ -2,7 +2,6 @@
 set -eu
 
 [ $# -ge 1 ] && param_VERSION=${1:-""}
-set -xv
 while (( $(( $# - 1)) )); do
     case "$(echo "$2"|cut -d = -f 1)" in
       server)
