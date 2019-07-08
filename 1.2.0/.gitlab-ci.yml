@@ -6,16 +6,6 @@ env_test_only 1.2.0:
   #   changes:
   #     - 1.2.0/*
 
-env_test_only_hub.docker.com 1.2.0:
-  variables:
-    CURRENT_VERSION: 1.2.0
-  extends: .env_test_only_hub.docker.com
-  # only:
-  #   changes:
-  #     - 1.2.0/*
-
-
-
 long_test 1.2.0:
   variables:
     CURRENT_VERSION: 1.2.0
@@ -24,16 +14,6 @@ long_test 1.2.0:
   #   changes:
   #     - 1.2.0/*
 
-long_test_hub.docker.com 1.2.0:
-  variables:
-    CURRENT_VERSION: 1.2.0
-  extends: .long_test_hub.docker.com
-  # only:
-  #   changes:
-  #     - 1.2.0/*
-
-
-
 push_productive_images 1.2.0:
   variables:
     CURRENT_VERSION: 1.2.0
@@ -41,16 +21,6 @@ push_productive_images 1.2.0:
   # only:
   #   changes:
   #     - 1.2.0/*
-
-push_productive_images_hub.docker.com 1.2.0:
-  variables:
-    CURRENT_VERSION: 1.2.0
-  extends: .push_productive_images_hub.docker.com
-  # only:
-  #   changes:
-  #     - 1.2.0/*
-
-
 
 # scan proxy:
 #   variables:

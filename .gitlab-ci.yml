@@ -28,21 +28,7 @@ before_script:
 - .ci/01_before_install.sh
 
 
-
-# On all other pull requests and branches exclude dev and master: Build Environment, but do nothing more. No tests. Tests with our Test Framework are only done in the dev branch.
 .env_test_only:
-  stage: build
-  except:
-  - master
-  - dev
-  - 1.2.0
-  script:
-    # Test
-  - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=no_test VERSION=$CURRENT_VERSION
-    # Clean Up
-  - echo "##### clean up..." &&  make -C $FOLDER delete
-
-.env_test_only_hub.docker.com:
   stage: build
   except:
   - master
@@ -55,30 +41,8 @@ before_script:
   - echo "##### clean up..." &&  make -C $FOLDER delete
 
 
-  
 # On dev Branch: Build Environment and Test it with our own Test Framework
 .long_test:
-  stage: test
-  only:
-  - dev
-  - 1.2.0
-  allow_failure: true
-  script:
-    # Test
-  - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=long_test VERSION=$CURRENT_VERSION
-    # Tag
-  - make -C .ci tag REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW
-    # Clean Up
-  - echo "##### clean up..." &&  make -C $FOLDER delete
-  # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
-  artifacts:
-    paths: 
-    - .ci/reports/*.xml
-    reports:
-      junit: .ci/reports/*.xml
-
-# On dev Branch: Build Environment and Test it with our own Test Framework
-.long_test_hub.docker.com:
   stage: test
   only:
   - dev
@@ -98,31 +62,7 @@ before_script:
       junit: .ci/reports/*.xml
 
 
-
-# On MASTER Branch: Build Environment + retag Images to remove "-dev" tag
 .push_productive_images:
-  stage: deploy
-  only: 
-  - master
-  - schedules
-  script:
-  # Check internal Registry
-    # Test
-  - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=long_test VERSION=$CURRENT_VERSION
-    # Tag
-  - make -C .ci tag REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW
-    # Push
-  - make -C .ci push REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW
-    # Clean Up
-  - echo "##### clean up..." &&  make -C $FOLDER delete
-  # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
-  artifacts:
-    paths: 
-    - .ci/reports/*.xml
-    reports:
-      junit: .ci/reports/*.xml
-
-.push_productive_images_hub.docker.com:
   stage: deploy
   only: 
   - master
