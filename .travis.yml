@@ -43,8 +43,7 @@ before_install:
 
 before_script:
 # Env test only
-- set -xv
-- echo "" ; ( [ "$TRAVIS_EVENT_TYPE" = "pull" ] || [ "$TRAVIS_EVENT_TYPE" = "pull_request" ] ) && make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=no_test VERSION=$VERSION
+- echo "" ; ( [ "$TRAVIS_EVENT_TYPE" = "push" ] || [ "$TRAVIS_EVENT_TYPE" = "pull_request" ] ) && make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=no_test VERSION=$VERSION
 
 script:
 - set -xv
