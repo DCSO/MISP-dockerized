@@ -43,7 +43,8 @@ before_install:
 
 
 script:
-# Env test onyl
+- set -xv
+# Env test only
 - echo "" ;[ "$TRAVIS_BRANCH" != "dev" ] && [ "$TRAVIS_BRANCH" != "master" ] && [ "$TRAVIS_EVENT_TYPE" != "cron" ] && make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=no_test VERSION=$VERSION
 # Long test
 - echo "" ; ( [ "$TRAVIS_BRANCH" = "dev" ] || [ "$TRAVIS_BRANCH" = "master" ]  && make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$VERSION
