@@ -117,11 +117,7 @@ update: pull deploy
 
 
 test:
-	@make -C ../.ci test
-	@echo
-	@echo "#############################################"
-	@echo "For the report output: cat $(CURDIR)/.travis/reports/*.xml"
-	@echo "#############################################"
+	@scripts/test.sh
 
 
 ####################	used in misp-robot	####################
