@@ -15,8 +15,7 @@ PGP_PATH="${MISP_dockerized_repo}/config/pgp"
 # SMIME File Path
 SMIME_PATH="${MISP_dockerized_repo}/config/smime"
 # PGP
-PGP_PRIVATE_KEY="private.key"
-PGP_PUBLIC_KEY="public.key"
+PGP_KEYFILE="misp.asc"
 # S/MIME
 SMIME_CERT="cert.pem"
 SMIME_KEY="key.pem"

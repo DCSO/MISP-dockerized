@@ -112,12 +112,11 @@ fi
 
 ###############################  PGP CHECKS    #########################
 echo
-if [ ! -f "./config/pgp/$PGP_PRIVATE_KEY" ] && [ ! -f "./config/pgp/$PGP_PUBLIC_KEY" ]; then
+if [ ! -f "./config/pgp/*.asc" ]; then
     warn "[WARN] No PGP key found."
     warn "     To replace the PGP public and private file later: "
-    warn "     1. Please save your public key in:      $PWD/config/pgp/$PGP_PUBLIC_KEY"
-    warn "     2. Please save your private key in:  $PWD/config/pgp/$PGP_PRIVATE_KEY"
-    warn "     3. Do:                         make config-pgp"
+    warn "     1. Please save your public/private key in:      $PWD/config/pgp/$PGP_KEYFILE"
+    warn "     2. Do:                                          make config-pgp"
     echo
     echo
 fi
