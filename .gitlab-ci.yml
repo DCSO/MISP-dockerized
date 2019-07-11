@@ -31,7 +31,7 @@ before_script:
 shellcheck:
   stage: test
   tags:
-  - misp
+  - docker
   image: koalaman/shellcheck-alpine
   before_script:
     - echo "Override default before_script"
@@ -43,7 +43,7 @@ shellcheck:
 .env_test_only:
   stage: test
   tags:
-  - misp
+  - docker
   except:
   - master
   - dev
@@ -59,7 +59,7 @@ shellcheck:
 .long_test:
   stage: test
   tags:
-  - misp
+  - docker
   only:
   - dev
   - 1.2.0
@@ -81,7 +81,7 @@ shellcheck:
 .push_productive_images:
   stage: build
   tags:
-  - misp
+  - docker
   only: 
   - master
   - schedules
