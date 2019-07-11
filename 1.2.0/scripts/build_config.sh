@@ -434,7 +434,6 @@ services:
     volumes:
     # Github Repository
     - ${MISP_dockerized_repo}:/srv/MISP-dockerized
-    ${ADD_LOCALTIME}
     ${LOG_SETTINGS-}
 
   misp-monitoring:
