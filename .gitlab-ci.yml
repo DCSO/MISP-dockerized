@@ -1,5 +1,6 @@
 image: gitlab.dcso.lolcat:4567/misp/helper-containers:docker_compose
 
+
 services:
   - docker:dind
 
@@ -19,9 +20,11 @@ variables:
     # CUSTOM_REGISTRY_PW
   # Set via Job:
     # CURRENT_VERSION
+  DOCKER_HOST: tcp://docker:2375/
   DOCKER_DRIVER: overlay2
 
 before_script:
+- docker info
 # Include Variables
 - source .ci/00_vars.sh
 # Install dependencies
