@@ -42,8 +42,8 @@ shellcheck:
 
 .env_test_only:
   stage: test
-  # tags:
-  # - docker
+  tags:
+  - docker
   except:
   - master
   - dev
