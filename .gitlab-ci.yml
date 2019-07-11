@@ -43,7 +43,7 @@ shellcheck:
 .env_test_only:
   stage: test
   tags:
-  - docker
+  - misp
   except:
   - master
   - dev
