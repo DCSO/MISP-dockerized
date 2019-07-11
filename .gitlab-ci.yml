@@ -20,8 +20,6 @@ variables:
     # CUSTOM_REGISTRY_PW
   # Set via Job:
     # CURRENT_VERSION
-  DOCKER_HOST: tcp://docker:2375/
-  DOCKER_DRIVER: overlay2
 
 before_script:
 - docker info
@@ -30,11 +28,8 @@ before_script:
 # Install dependencies
 - .ci/01_before_install.sh
 
-
 shellcheck:
   stage: test
-  tags:
-  - misp
   image: koalaman/shellcheck-alpine
   before_script:
     - echo "Override default before_script"
@@ -46,7 +41,7 @@ shellcheck:
 .env_test_only:
   stage: test
   tags:
-  - misp
+  - dind
   except:
   - master
   - dev
@@ -55,14 +50,14 @@ shellcheck:
     # Test
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=no_test VERSION=$CURRENT_VERSION
     # Clean Up
-  - echo "##### clean up..." &&  make -C $FOLDER delete
+  - echo "##### clean up..." &&  make delete
 
 
 # On dev Branch: Build Environment and Test it with our own Test Framework
 .long_test:
   stage: test
-  # tags:
-  # - docker
+  tags:
+  - dind
   only:
   - dev
   - 1.2.0
@@ -83,8 +78,8 @@ shellcheck:
 
 .push_productive_images:
   stage: build
-  # tags:
-  # - docker
+  tags:
+  - dind
   only: 
   - master
   - schedules
@@ -105,6 +100,7 @@ shellcheck:
     - ./.ci/reports/*.xml
     reports:
       junit: ./.ci/reports/*.xml
+      
 
 
 
