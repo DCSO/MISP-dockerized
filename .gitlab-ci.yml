@@ -45,7 +45,7 @@ shellcheck:
   except:
   - master
   - dev
-  - 1.2.0
+  - v1.2.0
   script:
     # Test
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=no_test VERSION=$CURRENT_VERSION
@@ -60,7 +60,7 @@ shellcheck:
   - dind
   only:
   - dev
-  - 1.2.0
+  - v1.2.0
   script:
     # Test
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
@@ -83,7 +83,7 @@ shellcheck:
   only: 
   - master
   - schedules
-  - 1.2.0
+  - v1.2.0
   before_script:
     # Test
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
