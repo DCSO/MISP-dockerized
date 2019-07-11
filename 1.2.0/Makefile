@@ -160,7 +160,7 @@ copy-smime:
 change-pgp: copy-pgp
 copy-pgp:
 	-docker cp $(CURDIR)/config/pgp/*.asc misp-server:/var/www/.gnupg/
-	docker exec -ti misp-server change-pgp
+	docker exec misp-server change-pgp
 
 # backup all services
 backup-all:
