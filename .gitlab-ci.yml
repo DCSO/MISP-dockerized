@@ -24,7 +24,7 @@ variables:
   DOCKER_DRIVER: overlay2
 
 
-before_script:
+before_install:
 - docker info
 # Include Variables
 - source .ci/00_vars.sh
@@ -49,9 +49,10 @@ shellcheck:
   - master
   - dev
   - v1.2.0
-  script:
+  before_script:
     # Test
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=no_test VERSION=$CURRENT_VERSION
+  script:
     # Clean Up
   - echo "##### clean up..." &&  make delete
 
@@ -64,9 +65,10 @@ shellcheck:
   only:
   - dev
   - v1.2.0
-  script:
+  before_script:
     # Test
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
+  script:
     # Tag 
   - make -C .ci tag REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
     # Clean Up
