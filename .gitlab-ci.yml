@@ -104,14 +104,14 @@ shellcheck:
       junit: ./.ci/reports/*.xml
       
 
-
-
 .container_scanning:
   # https://docs.gitlab.com/ee/ci/examples/container_scanning.html
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifactsreportscontainer_scanning
   # https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html
   # https://docs.gitlab.com/ee/ci/yaml/#artifactsreportscontainer_scanning-ultimate
   stage: scan
+  tags:
+  - dind
   variables:
     DOCKER_DRIVER: overlay2
     ## Define two new variables based on GitLab's CI/CD predefined variables
