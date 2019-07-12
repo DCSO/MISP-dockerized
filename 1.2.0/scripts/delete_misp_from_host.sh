@@ -53,19 +53,20 @@ do
 	shift
 done
 
-echo "This will remove MISP-dockerized container=$DELETE_CONTAINER, volumes=$DELETE_VOLUMES, network=$DELETE_NETWORK, images=$DELETE_IMAGES and dangling images=$DELETE_PRUNE? Are you sure? (y): "
-[ "${CI-}" = "true" ] || read -r USER_GO
-
 if [ "${CI-}" = "true" ];then
-    USER_GO="y"
     DELETE_CONTAINER="yes"
     DELETE_NETWORK="yes"
     DELETE_PRUNE="yes"
     DELETE_VOLUMES="yes"
 fi
 
+echo "This will remove MISP-dockerized container=$DELETE_CONTAINER, volumes=$DELETE_VOLUMES, network=$DELETE_NETWORK, images=$DELETE_IMAGES and dangling images=$DELETE_PRUNE? Are you sure? (y): "
+[ "${CI-}" = "true" ] || read -r USER_GO
+[ "${CI-}" = "true" ] && USER_GO="y"
+
 if [ "$USER_GO" = "y" ]; then
-    
+    [ "${CI-}" = "true" ] && set -xv
+
     [ "$DELETE_CONTAINER" = "yes" ] && echo "Stop and remove all misp-dockerized container"
     # shellcheck disable=SC2046
     [ "$DELETE_CONTAINER" = "yes" ] && docker rm -f $(docker ps -aqf name=misp-*)
