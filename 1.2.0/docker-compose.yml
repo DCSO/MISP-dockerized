@@ -141,7 +141,7 @@ services:
 
   ### Monitoring ###
   misp-monitoring:
-    image: dcso/misp-dockerized-monitoring:latest
+    image: dcso/misp-dockerized-monitoring:1
     container_name: misp-monitoring
     # ports:
     #   - 19999:19999
