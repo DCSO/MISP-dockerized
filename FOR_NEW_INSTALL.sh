@@ -116,13 +116,15 @@ CURRENT_VERSION="$param_VERSION"
         ###
         [ -z "${param_VERSION-}" ] && echo "No version parameter. Please call: '$0 [VERSION]'. Exit." && exit
         [ -d config ] || mkdir config || ( echo "Can not create directory config. Exit now" && exit 1 )
-          [ -n "${SERVER_TAG-}" ] && echo "Change Tag for server..." && echo "MISP_CONTAINER_TAG=$SERVER_TAG" >> config/config.env
-          [ -n "${PROXY_TAG-}" ] && echo "Change Tag for proxy..." && echo "PROXY_CONTAINER_TAG=$PROXY_TAG" >> config/config.env
-          [ -n "${REDIS_TAG-}" ] && echo "Change Tag for redis..." && echo "REDIS_CONTAINER_TAG=$REDIS_TAG" >> config/config.env
-          [ -n "${DB_TAG-}" ] && echo "Change Tag for db..." && echo "DB_CONTAINER_TAG=$DB_TAG" >> config/config.env
-          [ -n "${MODULES_TAG-}" ] && echo "Change Tag for misp-modules..." && echo "MISP_MODULES_CONTAINER_TAG=$MODULES_TAG" >> config/config.env
-          [ -n "${ROBOT_TAG-}" ] && echo "Change Tag for robot..." && echo "ROBOT_CONTAINER_TAG=$ROBOT_TAG" >> config/config.env
-          [ -n "${MONITORING_TAG-}" ] && echo "Change Tag for robot..." && echo "MONITORING_CONTAINER_TAG=$MONITORING_TAG" >> config/config.en
+          [ -n "${SERVER_TAG-}" ] && echo "Change Tag for server ${SERVER_TAG-}..." && echo "MISP_CONTAINER_TAG=$SERVER_TAG" >> config/config.env
+          [ -n "${PROXY_TAG-}" ] && echo "Change Tag for proxy ${PROXY_TAG-}..." && echo "PROXY_CONTAINER_TAG=$PROXY_TAG" >> config/config.env
+          [ -n "${REDIS_TAG-}" ] && echo "Change Tag for redis ${REDIS_TAG-}..." && echo "REDIS_CONTAINER_TAG=$REDIS_TAG" >> config/config.env
+          [ -n "${DB_TAG-}" ] && echo "Change Tag for db ${DB_TAG-}..." && echo "DB_CONTAINER_TAG=$DB_TAG" >> config/config.env
+          [ -n "${MODULES_TAG-}" ] && echo "Change Tag for misp-modules ${MISP_MODULES_CONTAINER_TAG-}..." && echo "MISP_MODULES_CONTAINER_TAG=$MODULES_TAG" >> config/config.env
+          [ -n "${ROBOT_TAG-}" ] && echo "Change Tag for robot ${ROBOT_TAG-}..." && echo "ROBOT_CONTAINER_TAG=$ROBOT_TAG" >> config/config.env
+          [ -n "${MONITORING_TAG-}" ] && echo "Change Tag for monitoring ${MONITORING_TAG-}..." && echo "MONITORING_CONTAINER_TAG=$MONITORING_TAG" >> config/config.en
+          echo "Config:"
+          tail config/config.en
     fi
 
 echo "Selected version: $CURRENT_VERSION..."
