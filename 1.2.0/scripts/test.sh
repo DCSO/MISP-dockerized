@@ -41,7 +41,7 @@ do
 done
 
 echo "################		Start Tests		###########################"
-docker exec misp-robot bash -c "/srv/scripts/test.sh"
+docker exec misp-robot bash -c "/srv/scripts/test.sh 2> /srv/MISP-dockerized-testbench/reports/error.txt"
 [ ! -d "$REPORT_FOLDER" ] && mkdir "$REPORT_FOLDER"
 docker cp misp-robot:/srv/MISP-dockerized-testbench/reports/. "$REPORT_FOLDER/"
 echo "#################################################################"

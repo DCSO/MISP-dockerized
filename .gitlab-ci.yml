@@ -75,6 +75,7 @@ shellcheck:
   artifacts:
     paths: 
     - .ci/reports/*.xml
+    - .ci/reports/error.txt
     reports:
       junit: .ci/reports/*.xml
 
