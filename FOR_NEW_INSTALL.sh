@@ -124,7 +124,7 @@ CURRENT_VERSION="$param_VERSION"
           [ -n "${ROBOT_TAG-}" ] && echo "Change Tag for robot ${ROBOT_TAG-}..." && echo "ROBOT_CONTAINER_TAG=$ROBOT_TAG" >> config/config.env
           [ -n "${MONITORING_TAG-}" ] && echo "Change Tag for monitoring ${MONITORING_TAG-}..." && echo "MONITORING_CONTAINER_TAG=$MONITORING_TAG" >> config/config.en
           echo "Config:"
-          tail config/config.en
+          [ -f config/config.env ] && tail config/config.env
     fi
 
 echo "Selected version: $CURRENT_VERSION..."
