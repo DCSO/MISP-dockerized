@@ -29,22 +29,17 @@ func_tag() {
     done
 }
 
-
-# change directory for make usage
-[ -z "$1" ] && echo "$STARTMSG No parameter with the Docker registry URL. Exit now." && exit 1
-[ "$1" = "NOT2PUSH" ] && echo "$STARTMSG The NOT2PUSH slug is only for local build and retag not for pushin to docker registries. Exit now." && exit 1
-[ -z "$2" ] && echo "$STARTMSG No parameter with the Docker registry username. Exit now." && exit 1
-[ -z "$3" ] && echo "$STARTMSG No parameter with the Docker registry password. Exit now." && exit 1
-
 REGISTRY_URL="$1"
-REGISTRY_USER="$2"
-REGISTRY_PW="$3"
-
 
 # Pull all latest tagged container
     echo
-    echo "$STARTMSG Pull all latest-dev container..."
-    make pull-latest REPOURL="$REGISTRY_URL"
+    echo "$STARTMSG Pull all latest-dev container..." && sleep 2
+    docker pull "$REGISTRY_URL"/misp-dockerized-proxy:latest-dev;
+	docker pull "$REGISTRY_URL"/misp-dockerized-robot:latest-dev;
+	docker pull "$REGISTRY_URL"/misp-dockerized-server:latest-dev;
+    docker pull "$REGISTRY_URL"/misp-dockerized-db:latest-dev;
+    docker pull "$REGISTRY_URL"/misp-dockerized-redis:latest-dev;
+    docker pull "$REGISTRY_URL"/misp-dockerized-monitoring:latest-dev;
 
 
 # prepare retagging
@@ -57,33 +52,22 @@ REDIS_TAG=$(docker ps -f name=redis --format '{{.Image}}'|cut -d : -f 2)
 MONITORING_TAG=$(docker ps -f name=monitoring --format '{{.Image}}'|cut -d : -f 2)
 
 
-# Login to Docker registry
-[ "$REGISTRY_URL" != "dcso" ] && DOCKER_LOGIN_OUTPUT="$(echo "$REGISTRY_PW" | docker login -u "$REGISTRY_USER" "$REGISTRY_URL" --password-stdin)"
-[ "$REGISTRY_URL" = "dcso" ] && DOCKER_LOGIN_OUTPUT="$(echo "$REGISTRY_PW" | docker login -u "$REGISTRY_USER" --password-stdin)"
-echo "$DOCKER_LOGIN_OUTPUT"
-DOCKER_LOGIN_STATE="$(echo "$DOCKER_LOGIN_OUTPUT" | grep 'Login Succeeded')"
-
-if [ ! -z "$DOCKER_LOGIN_STATE" ]; then
   # retag all existing tags dev 2 public repo
-        func_tag "$REGISTRY_URL/misp-dockerized-server" "$SERVER_TAG"
-        func_tag "$REGISTRY_URL/misp-dockerized-proxy" "$PROXY_TAG"
-        func_tag "$REGISTRY_URL/misp-dockerized-robot" "$ROBOT_TAG"
-        func_tag "$REGISTRY_URL/misp-dockerized-misp-modules" "$MODULES_TAG"
+    func_tag "$REGISTRY_URL/misp-dockerized-server" "$SERVER_TAG"
+    func_tag "$REGISTRY_URL/misp-dockerized-proxy" "$PROXY_TAG"
+    func_tag "$REGISTRY_URL/misp-dockerized-robot" "$ROBOT_TAG"
+    func_tag "$REGISTRY_URL/misp-dockerized-misp-modules" "$MODULES_TAG"
 
-        # For all container after 1.1.0
-        if version_gt "$CURRENT_VERSION" "1.1.0" ; then
-            func_tag "$REGISTRY_URL/misp-dockerized-redis" "$REDIS_TAG"
-        fi
+    # For all container after 1.1.0
+    if version_gt "$CURRENT_VERSION" "1.1.0" ; then
+        func_tag "$REGISTRY_URL/misp-dockerized-redis" "$REDIS_TAG"
+    fi
 
-        # For all container after 1.2.0
-        if version_gt "$CURRENT_VERSION" "1.2.0" ; then
-            func_tag "$REGISTRY_URL/misp-dockerized-db" "$DB_TAG"
-            func_tag "$REGISTRY_URL/misp-dockerized-monitoring" "$MONITORING_TAG"
-        fi
-        echo "###########################################" && docker images && echo "###########################################"
-else
-    echo "$DOCKER_LOGIN_OUTPUT"
-    exit
-fi
+    # For all container after 1.2.0
+    if version_gt "$CURRENT_VERSION" "1.1.0" ; then
+        func_tag "$REGISTRY_URL/misp-dockerized-db" "$DB_TAG"
+        func_tag "$REGISTRY_URL/misp-dockerized-monitoring" "$MONITORING_TAG"
+    fi
+    echo "###########################################" && docker images && echo "###########################################"
 
 echo "$STARTMSG $0 is finished."
