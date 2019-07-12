@@ -56,7 +56,6 @@ done
 if [ "${CI-}" = "true" ];then
     DELETE_CONTAINER="yes"
     DELETE_NETWORK="yes"
-    DELETE_PRUNE="yes"
     DELETE_VOLUMES="yes"
 fi
 
@@ -65,7 +64,6 @@ echo "This will remove MISP-dockerized container=$DELETE_CONTAINER, volumes=$DEL
 [ "${CI-}" = "true" ] && USER_GO="y"
 
 if [ "$USER_GO" = "y" ]; then
-    [ "${CI-}" = "true" ] && set -xv
 
     [ "$DELETE_CONTAINER" = "yes" ] && echo "Stop and remove all misp-dockerized container"
     # shellcheck disable=SC2046
@@ -73,7 +71,7 @@ if [ "$USER_GO" = "y" ]; then
     
     [ "$DELETE_VOLUMES" = "yes" ] && echo "Remove all misp-dockerized volumes"
     # shellcheck disable=SC2046
-    [ "$DELETE_VOLUMES" = "yes" ] && docker volume rm $(docker volume ls -qf name=misp-dockerized*)
+    [ "$DELETE_VOLUMES" = "yes" ] && docker volume rm $(docker volume ls -qf name=misp-vol*)
     
     [ "$DELETE_IMAGES" = "yes" ] && echo "Remove all misp-dockerized images ###"
     # shellcheck disable=SC2046
@@ -81,7 +79,7 @@ if [ "$USER_GO" = "y" ]; then
     
     [ "$DELETE_PRUNE" = "yes" ] && echo "Remove all dangling"
     # shellcheck disable=SC2046
-    [ "$DELETE_PRUNE" = "yes" ] && docker image rm $(docker image ls --filter "dangling=true" --quiet)
+    [ "$DELETE_PRUNE" = "yes" ] && docker image rm $(docker image ls -qf "dangling=true")
 
     [ "$DELETE_NETWORK" = "yes" ] && echo "Remove misp-dockerized Network"
     # shellcheck disable=SC2046
