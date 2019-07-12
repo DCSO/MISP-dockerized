@@ -8,7 +8,7 @@ Light_Green='\033[1;32m'
 STARTMSG="${Light_Green}[TEST]${NC}"
 AUTH_KEY=""
 
-REPORT_FOLDER="$PWD../.ci"
+REPORT_FOLDER="$PWD/../.ci"
 REPORT_FILE="$REPORT_FOLDER/reports/*.xml"
 
 # Functions
