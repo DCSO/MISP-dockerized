@@ -56,148 +56,148 @@ func_check_if_vars_exists() {
   # Default Variables for the config
   #
   # Docker Registry
-  [ -z "${DOCKER_REGISTRY+x}" ] && DOCKER_REGISTRY="dcso" #&& QUERY_DOCKER_REGISTRY="yes" 
+  [ -z "${DOCKER_REGISTRY-}" ] && DOCKER_REGISTRY="dcso" #&& QUERY_DOCKER_REGISTRY="yes" 
   # Docker Network
-  [ -z "${NETWORK_CONTAINER_ADDRESS_RANGE+x}" ] && NETWORK_CONTAINER_ADDRESS_RANGE="192.168.47.0/28" && QUERY_NETWORK="yes" 
-  [ -z "${NETWORK_BRIDGE_NAME+x}" ]    && NETWORK_BRIDGE_NAME="mispbr0" && QUERY_NETWORK="yes"
-  [ -z "${NETWORK_BINDING_IPv4+x}" ]    && NETWORK_BINDING_IPv4="0.0.0.0" && QUERY_NETWORK="yes"
+  [ -z "${NETWORK_CONTAINER_ADDRESS_RANGE-}" ] && NETWORK_CONTAINER_ADDRESS_RANGE="192.168.47.0/28" && QUERY_NETWORK="yes" 
+  [ -z "${NETWORK_BRIDGE_NAME-}" ]    && NETWORK_BRIDGE_NAME="mispbr0" && QUERY_NETWORK="yes"
+  [ -z "${NETWORK_BINDING_IPv4-}" ]    && NETWORK_BINDING_IPv4="0.0.0.0" && QUERY_NETWORK="yes"
   
   # DEPRECATED: System Proxy for Container
-  [ -n "${QUESTION_USE_PROXY+x}" ] && CONTAINER_SYSTEM_QUESTION_USE_PROXY="$QUESTION_USE_PROXY"
-  [ -n "${HTTP_PROXY+x}" ]         && CONTAINER_SYSTEM_HTTP_PROXY="$HTTP_PROXY"
-  [ -n "${HTTPS_PROXY+x}" ]        && CONTAINER_SYSTEM_HTTPS_PROXY="$HTTPS_PROXY"
-  [ -n "${NO_PROXY+x}" ]           && CONTAINER_SYSTEM_NO_PROXY="$NO_PROXY"
+  [ -n "${QUESTION_USE_PROXY-}" ] && CONTAINER_SYSTEM_QUESTION_USE_PROXY="$QUESTION_USE_PROXY"
+  [ -n "${HTTP_PROXY-}" ]         && CONTAINER_SYSTEM_HTTP_PROXY="$HTTP_PROXY"
+  [ -n "${HTTPS_PROXY-}" ]        && CONTAINER_SYSTEM_HTTPS_PROXY="$HTTPS_PROXY"
+  [ -n "${NO_PROXY-}" ]           && CONTAINER_SYSTEM_NO_PROXY="$NO_PROXY"
   # END DEPRECATED
   # System Proxy for Container
-  [ -z "${CONTAINER_SYSTEM_QUESTION_USE_PROXY+x}" ] && CONTAINER_SYSTEM_QUESTION_USE_PROXY="no" && QUERY_PROXY="yes"
-  [ -z "${CONTAINER_SYSTEM_HTTP_PROXY+x}" ]         && CONTAINER_SYSTEM_HTTP_PROXY="" && QUERY_PROXY="yes"
-  [ -z "${CONTAINER_SYSTEM_HTTPS_PROXY+x}" ]        && CONTAINER_SYSTEM_HTTPS_PROXY="" && QUERY_PROXY="yes"
-  [ -z "${CONTAINER_SYSTEM_NO_PROXY+x}" ]           && CONTAINER_SYSTEM_NO_PROXY="0.0.0.0" && QUERY_PROXY="yes"
+  [ -z "${CONTAINER_SYSTEM_QUESTION_USE_PROXY-}" ] && CONTAINER_SYSTEM_QUESTION_USE_PROXY="no" && QUERY_PROXY="yes"
+  [ -z "${CONTAINER_SYSTEM_HTTP_PROXY-}" ]         && CONTAINER_SYSTEM_HTTP_PROXY="" && QUERY_PROXY="yes"
+  [ -z "${CONTAINER_SYSTEM_HTTPS_PROXY-}" ]        && CONTAINER_SYSTEM_HTTPS_PROXY="" && QUERY_PROXY="yes"
+  [ -z "${CONTAINER_SYSTEM_NO_PROXY-}" ]           && CONTAINER_SYSTEM_NO_PROXY="0.0.0.0" && QUERY_PROXY="yes"
   
   # DEPRECATED: DB
-  [ -n "${QUESTION_OWN_DB+x}" ]      && DB_QUESTION_OWN_DB="$QUESTION_OWN_DB"
-  [ -n "${MYSQL_HOST+x}" ]           && DB_HOST="$MYSQL_HOST"
-  [ -n "${MYSQL_PORT+x}" ]           && DB_PORT="$MYSQL_PORT"
-  [ -n "${MYSQL_DATABASE+x}" ]       && DB_DATABASE="$MYSQL_DATABASE"
-  [ -n "${MYSQL_USER+x}" ]           && DB_USER="$MYSQL_USER"
-  [ -n "${MYSQL_PASSWORD+x}" ]       && DB_PASSWORD="$MYSQL_PASSWORD"
-  [ -n "${MYSQL_ROOT_PASSWORD+x}" ]  && DB_ROOT_PASSWORD="$MYSQL_ROOT_PASSWORD"
+  [ -n "${QUESTION_OWN_DB-}" ]      && DB_QUESTION_OWN_DB="$QUESTION_OWN_DB"
+  [ -n "${MYSQL_HOST-}" ]           && DB_HOST="$MYSQL_HOST"
+  [ -n "${MYSQL_PORT-}" ]           && DB_PORT="$MYSQL_PORT"
+  [ -n "${MYSQL_DATABASE-}" ]       && DB_DATABASE="$MYSQL_DATABASE"
+  [ -n "${MYSQL_USER-}" ]           && DB_USER="$MYSQL_USER"
+  [ -n "${MYSQL_PASSWORD-}" ]       && DB_PASSWORD="$MYSQL_PASSWORD"
+  [ -n "${MYSQL_ROOT_PASSWORD-}" ]  && DB_ROOT_PASSWORD="$MYSQL_ROOT_PASSWORD"
   # END DEPRECATED
   # DB
-  [ -z "${DB_QUESTION_OWN_DB+x}" ] && DB_QUESTION_OWN_DB="yes" && QUERY_DB="yes"
-  [ -z "${DB_HOST+x}" ]            && DB_HOST="misp-db" && QUERY_DB="yes"
-  [ -z "${DB_PORT+x}" ]            && DB_PORT="3306" && QUERY_DB="yes"
-  [ -z "${DB_DATABASE+x}" ]        && DB_DATABASE="misp" && QUERY_DB="yes"
-  [ -z "${DB_USER+x}" ]            && DB_USER="misp" && QUERY_DB="yes"
-  [ -z "${DB_PASSWORD+x}" ]        && DB_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)" && QUERY_DB="yes"
-  [ -z "${DB_ROOT_PASSWORD+x}" ]   && DB_ROOT_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)" && QUERY_DB="yes"
+  [ -z "${DB_QUESTION_OWN_DB-}" ] && DB_QUESTION_OWN_DB="yes" && QUERY_DB="yes"
+  [ -z "${DB_HOST-}" ]            && DB_HOST="misp-db" && QUERY_DB="yes"
+  [ -z "${DB_PORT-}" ]            && DB_PORT="3306" && QUERY_DB="yes"
+  [ -z "${DB_DATABASE-}" ]        && DB_DATABASE="misp" && QUERY_DB="yes"
+  [ -z "${DB_USER-}" ]            && DB_USER="misp" && QUERY_DB="yes"
+  [ -z "${DB_PASSWORD-}" ]        && DB_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)" && QUERY_DB="yes"
+  [ -z "${DB_ROOT_PASSWORD-}" ]   && DB_ROOT_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)" && QUERY_DB="yes"
   
   # DEPRECATED MISP
   # shellcheck disable=SC2154
-  [ -n "${myHOSTNAME+x}" ]         && MISP_FQDN="$myHOSTNAME"
-  [ -n "${MISP_URL+x}" ]           && MISP_BASEURL="$MISP_URL"
+  [ -n "${myHOSTNAME-}" ]         && MISP_FQDN="$myHOSTNAME"
+  [ -n "${MISP_URL-}" ]           && MISP_BASEURL="$MISP_URL"
   # shellcheck disable=SC2154
-  [ -n "${MISP_prefix+x}" ]        && MISP_PREFIX="$MISP_prefix"
+  [ -n "${MISP_prefix-}" ]        && MISP_PREFIX="$MISP_prefix"
     # shellcheck disable=SC2154
-  [ -n "${MISP_encoding+x}" ]      && MISP_ENCODING="$MISP_encoding"
-  [ -n "${ADD_ANALYZE_COLUMN+x}" ] && MISP_ADD_EVENT_ANALYZE_COLUMN="$ADD_ANALYZE_COLUMN"
+  [ -n "${MISP_encoding-}" ]      && MISP_ENCODING="$MISP_encoding"
+  [ -n "${ADD_ANALYZE_COLUMN-}" ] && MISP_ADD_EVENT_ANALYZE_COLUMN="$ADD_ANALYZE_COLUMN"
   # END DEPRECATED
   # MISP
-  [ -z "${MISP_FQDN+x}" ]                     && MISP_FQDN="$(hostname -f)" && QUERY_myHOSTNAME="yes"
-  [ -z "${MISP_BASEURL+x}" ]                  && QUERY_myHOSTNAME="yes" # It will be defined in myHOSTNAME MISP_BASEURL="https://${MISP_FQDN}"
-  # if [ -z ${var+x} ]; then echo "var is unset"; else echo "var is set to '$var'"; fi
-  [ -z "${MISP_PREFIX+x}" ]                   && MISP_PREFIX="" && QUERY_MISP="yes"
-  [ -z "${MISP_ENCODING+x}" ]                 && MISP_ENCODING="utf8" && QUERY_MISP="yes"
-  [ -z "${MISP_SALT+x}" ]                     && MISP_SALT="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 50)" && QUERY_MISP="yes"
-  [ -z "${MISP_ADD_EVENT_ANALYZE_COLUMN+x}" ] && MISP_ADD_EVENT_ANALYZE_COLUMN="no" && QUERY_MISP="yes"
-  [ -z "${MISP_HTTPS_PORT:+x}" ]              && MISP_HTTPS_PORT="443" && QUERY_MISP="yes"
+  [ -z "${MISP_FQDN-}" ]                     && MISP_FQDN="$(hostname -f)" && QUERY_myHOSTNAME="yes"
+  [ -z "${MISP_BASEURL-}" ]                  && QUERY_myHOSTNAME="yes" # It will be defined in myHOSTNAME MISP_BASEURL="https://${MISP_FQDN}"
+  # if [ -z ${var-} ]; then echo "var is unset"; else echo "var is set to '$var'"; fi
+  [ -z "${MISP_PREFIX-}" ]                   && MISP_PREFIX="" && QUERY_MISP="yes"
+  [ -z "${MISP_ENCODING-}" ]                 && MISP_ENCODING="utf8" && QUERY_MISP="yes"
+  [ -z "${MISP_SALT-}" ]                     && MISP_SALT="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 50)" && QUERY_MISP="yes"
+  [ -z "${MISP_ADD_EVENT_ANALYZE_COLUMN-}" ] && MISP_ADD_EVENT_ANALYZE_COLUMN="no" && QUERY_MISP="yes"
+  [ -z "${MISP_HTTPS_PORT:-}" ]              && MISP_HTTPS_PORT="443" && QUERY_MISP="yes"
   
   # MISP Container
-  [ -z "${MISP_QUESTION_USE_NIGHTLY_BUILD:+x}" ] && MISP_QUESTION_USE_NIGHTLY_BUILD="no" && QUERY_LATEST_MISP_SERVER="yes"
-  [ -z "${MISP_NIGHTLY_TAG:+x}" ] && MISP_NIGHTLY_TAG="2.4.nightly-debian"
+  [ -z "${MISP_QUESTION_USE_NIGHTLY_BUILD:-}" ] && MISP_QUESTION_USE_NIGHTLY_BUILD="no" && QUERY_LATEST_MISP_SERVER="yes"
+  [ -z "${MISP_NIGHTLY_TAG:-}" ] && MISP_NIGHTLY_TAG="2.4.nightly-debian"
 
   # PHP
-  [ -z "${PHP_MEMORY_LIMIT+x}" ]        && PHP_MEMORY_LIMIT="2048M" && QUERY_PHP="yes"
-  [ -z "${PHP_MAX_EXECUTION_TIME+x}" ]  && PHP_MAX_EXECUTION_TIME="300" && QUERY_PHP="yes"
-  [ -z "${PHP_UPLOAD_MAX_FILESIZE+x}" ] && PHP_UPLOAD_MAX_FILESIZE="50M" && QUERY_PHP="yes"
-  [ -z "${PHP_POST_MAX_SIZE+x}" ]       && PHP_POST_MAX_SIZE="50M" && QUERY_PHP="yes"
+  [ -z "${PHP_MEMORY_LIMIT-}" ]        && PHP_MEMORY_LIMIT="2048M" && QUERY_PHP="yes"
+  [ -z "${PHP_MAX_EXECUTION_TIME-}" ]  && PHP_MAX_EXECUTION_TIME="300" && QUERY_PHP="yes"
+  [ -z "${PHP_UPLOAD_MAX_FILESIZE-}" ] && PHP_UPLOAD_MAX_FILESIZE="50M" && QUERY_PHP="yes"
+  [ -z "${PHP_POST_MAX_SIZE-}" ]       && PHP_POST_MAX_SIZE="50M" && QUERY_PHP="yes"
   
   # DEPRECATED: HTTP
-  [ -n "${HTTP_PORT+x}" ]            && PROXY_HTTP_PORT="$HTTP_PORT"
-  [ -n "${HTTPS_PORT+x}" ]           && PROXY_HTTPS_PORT="$HTTPS_PORT"
-  [ -n "${HTTP_SERVERADMIN+x}" ]     && MAIL_CONTACT_ADDRESS="$HTTP_SERVERADMIN"
+  [ -n "${HTTP_PORT-}" ]            && PROXY_HTTP_PORT="$HTTP_PORT"
+  [ -n "${HTTPS_PORT-}" ]           && PROXY_HTTPS_PORT="$HTTPS_PORT"
+  [ -n "${HTTP_SERVERADMIN-}" ]     && MAIL_CONTACT_ADDRESS="$HTTP_SERVERADMIN"
   # shellcheck disable=SC2154
-  [ -n "${ALLOW_ALL_IPs+x}" ]        && PROXY_QUESTION_USE_IP_RESTRICTION="$ALLOW_ALL_IPs"
+  [ -n "${ALLOW_ALL_IPs-}" ]        && PROXY_QUESTION_USE_IP_RESTRICTION="$ALLOW_ALL_IPs"
   # shellcheck disable=SC2154
-  [ -n "${client_max_body_size+x}" ] && PROXY_CLIENT_MAX_BODY_SIZE="$client_max_body_size"
-  [ -n "${HTTP_ALLOWED_IP+x}" ]         && PROXY_IP_RESTRICTION="$HTTP_ALLOWED_IP"
+  [ -n "${client_max_body_size-}" ] && PROXY_CLIENT_MAX_BODY_SIZE="$client_max_body_size"
+  [ -n "${HTTP_ALLOWED_IP-}" ]         && PROXY_IP_RESTRICTION="$HTTP_ALLOWED_IP"
   # END DEPRECATED
   # Reverse Proxy
-  [ -z "${PROXY_HTTP_PORT+x}" ]                   && PROXY_HTTP_PORT="80" && QUERY_HTTP="yes"
-  [ -z "${PROXY_HTTPS_PORT+x}" ]                  && PROXY_HTTPS_PORT="443" && QUERY_HTTP="yes"
-  [ -z "${PROXY_QUESTION_USE_IP_RESTRICTION+x}" ] && PROXY_QUESTION_USE_IP_RESTRICTION="yes" && QUERY_HTTP="yes"
-  [ -z "${PROXY_CLIENT_MAX_BODY_SIZE+x}" ]        && PROXY_CLIENT_MAX_BODY_SIZE="$PHP_UPLOAD_MAX_FILESIZE" && QUERY_HTTP="yes"
-  [ -z "${PROXY_IP_RESTRICTION+x}" ]              && PROXY_IP_RESTRICTION="all" && QUERY_HTTP="yes"
-  [ -z "${PROXY_BASIC_AUTH_USER+x}" ]             && PROXY_BASIC_AUTH_USER="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 10)" && QUERY_HTTP="yes"
-  [ -z "${PROXY_BASIC_AUTH_PASSWORD+x}" ]         && PROXY_BASIC_AUTH_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)" && QUERY_HTTP="yes"
+  [ -z "${PROXY_HTTP_PORT-}" ]                   && PROXY_HTTP_PORT="80" && QUERY_HTTP="yes"
+  [ -z "${PROXY_HTTPS_PORT-}" ]                  && PROXY_HTTPS_PORT="443" && QUERY_HTTP="yes"
+  [ -z "${PROXY_QUESTION_USE_IP_RESTRICTION-}" ] && PROXY_QUESTION_USE_IP_RESTRICTION="yes" && QUERY_HTTP="yes"
+  [ -z "${PROXY_CLIENT_MAX_BODY_SIZE-}" ]        && PROXY_CLIENT_MAX_BODY_SIZE="$PHP_UPLOAD_MAX_FILESIZE" && QUERY_HTTP="yes"
+  [ -z "${PROXY_IP_RESTRICTION-}" ]              && PROXY_IP_RESTRICTION="all" && QUERY_HTTP="yes"
+  [ -z "${PROXY_BASIC_AUTH_USER-}" ]             && PROXY_BASIC_AUTH_USER="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 10)" && QUERY_HTTP="yes"
+  [ -z "${PROXY_BASIC_AUTH_PASSWORD-}" ]         && PROXY_BASIC_AUTH_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)" && QUERY_HTTP="yes"
   
 
   # DEPRECATED Postfix
-  [ -n "${SENDER_ADDRESS+x}" ]       && MAIL_SENDER_ADDRESS="$SENDER_ADDRESS"
-  [ -n "${DOMAIN+x}" ]               && MAIL_DOMAIN="$DOMAIN"
-  [ -n "${RELAY_USER+x}" ]           && MAIL_RELAY_USER="$RELAY_USER"
-  [ -n "${RELAY_PASSWORD+x}" ]       && MAIL_RELAY_PASSWORD="$RELAY_PASSWORD"
-  [ -n "${RELAYHOST+x}" ]            && MAIL_RELAYHOST="$RELAYHOST"
-  [ -n "${QUESTION_DEBUG_PEERS+x}" ] && MAIL_QUESTION_DEBUG_PEERS="$QUESTION_DEBUG_PEERS"
+  [ -n "${SENDER_ADDRESS-}" ]       && MAIL_SENDER_ADDRESS="$SENDER_ADDRESS"
+  [ -n "${DOMAIN-}" ]               && MAIL_DOMAIN="$DOMAIN"
+  [ -n "${RELAY_USER-}" ]           && MAIL_RELAY_USER="$RELAY_USER"
+  [ -n "${RELAY_PASSWORD-}" ]       && MAIL_RELAY_PASSWORD="$RELAY_PASSWORD"
+  [ -n "${RELAYHOST-}" ]            && MAIL_RELAYHOST="$RELAYHOST"
+  [ -n "${QUESTION_DEBUG_PEERS-}" ] && MAIL_QUESTION_DEBUG_PEERS="$QUESTION_DEBUG_PEERS"
   # END DEPRECATED
   # Mail: misp-server & misp-postfix
-  [ -z "${MAIL_DOMAIN+x}" ]               && MAIL_DOMAIN="example.com" && QUERY_MAIL="yes"
-  [ -z "${MAIL_SENDER_ADDRESS+x}" ]       && MAIL_SENDER_ADDRESS="no-reply@${MAIL_DOMAIN}" && QUERY_MAIL="yes"
-  [ -z "${MAIL_CONTACT_ADDRESS+x}" ]      && MAIL_CONTACT_ADDRESS="support.misp@${MAIL_DOMAIN}" && QUERY_MAIL="yes"
-  [ -z "${MAIL_RELAY_USER+x}" ]           && MAIL_RELAY_USER="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 10)" && QUERY_MAIL="yes"
-  [ -z "${MAIL_RELAY_PASSWORD+x}" ]       && MAIL_RELAY_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)" && QUERY_MAIL="yes"
-  [ -z "${MAIL_RELAYHOST+x}" ]            && MAIL_RELAYHOST="mail.example.com" && QUERY_MAIL="yes"
-  [ -z "${MAIL_QUESTION_DEBUG_PEERS+x}" ] && MAIL_QUESTION_DEBUG_PEERS="no" && QUERY_MAIL="yes"
-  [ -z "${MAIL_ENABLE+x}" ] && MAIL_ENABLE="yes" && QUERY_MAIL="yes"
+  [ -z "${MAIL_DOMAIN-}" ]               && MAIL_DOMAIN="example.com" && QUERY_MAIL="yes"
+  [ -z "${MAIL_SENDER_ADDRESS-}" ]       && MAIL_SENDER_ADDRESS="no-reply@${MAIL_DOMAIN}" && QUERY_MAIL="yes"
+  [ -z "${MAIL_CONTACT_ADDRESS-}" ]      && MAIL_CONTACT_ADDRESS="support.misp@${MAIL_DOMAIN}" && QUERY_MAIL="yes"
+  [ -z "${MAIL_RELAY_USER-}" ]           && MAIL_RELAY_USER="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 10)" && QUERY_MAIL="yes"
+  [ -z "${MAIL_RELAY_PASSWORD-}" ]       && MAIL_RELAY_PASSWORD="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)" && QUERY_MAIL="yes"
+  [ -z "${MAIL_RELAYHOST-}" ]            && MAIL_RELAYHOST="mail.example.com" && QUERY_MAIL="yes"
+  [ -z "${MAIL_QUESTION_DEBUG_PEERS-}" ] && MAIL_QUESTION_DEBUG_PEERS="no" && QUERY_MAIL="yes"
+  [ -z "${MAIL_ENABLE-}" ] && MAIL_ENABLE="yes" && QUERY_MAIL="yes"
 
   # DEPRECATED SMIME / PGP
-  [ -n "${USE_PGP+x}" ]   && PGP_ENABLE="$USE_PGP"
-  [ -n "${USE_SMIME+x}" ] && SMIME_ENABLE="$USE_SMIME"
+  [ -n "${USE_PGP-}" ]   && PGP_ENABLE="$USE_PGP"
+  [ -n "${USE_SMIME-}" ] && SMIME_ENABLE="$USE_SMIME"
   # END DEPRECATED
   # SMIME / PGP
-  [ -z "${PGP_ENABLE+x}" ]   && PGP_ENABLE="no" && QUERY_PGP="yes"
-  [ -z "${SMIME_ENABLE+x}" ] && SMIME_ENABLE="no" && QUERY_SMIME="yes"
+  [ -z "${PGP_ENABLE-}" ]   && PGP_ENABLE="no" && QUERY_PGP="yes"
+  [ -z "${SMIME_ENABLE-}" ] && SMIME_ENABLE="no" && QUERY_SMIME="yes"
   
   # DEPRECATED: Redis
   #[ -z "${USE_EXTERNAL_REDIS}" ] && USE_EXTERNAL_REDIS="yes" && QUERY_REDIS="yes"
   # END DEPRECATED
   # Redis
-  [ -z "${REDIS_FQDN+x}" ] && REDIS_FQDN="misp-redis"  && QUERY_REDIS="yes"
-  [ "${REDIS_FQDN+x}" = "localhost" ] && REDIS_FQDN="misp-redis"  && QUERY_REDIS="yes"
-  [ -z "${REDIS_PORT+x}" ] && REDIS_PORT="6379" && QUERY_REDIS="yes"
-  [ -z "${REDIS_PW+x}" ]   && REDIS_PW="" && QUERY_REDIS="yes"
+  [ -z "${REDIS_FQDN-}" ] && REDIS_FQDN="misp-redis"  && QUERY_REDIS="yes"
+  [ "${REDIS_FQDN-}" = "localhost" ] && REDIS_FQDN="misp-redis"  && QUERY_REDIS="yes"
+  [ -z "${REDIS_PORT-}" ] && REDIS_PORT="6379" && QUERY_REDIS="yes"
+  [ -z "${REDIS_PW-}" ]   && REDIS_PW="" && QUERY_REDIS="yes"
   
   # DEPRECATED LOG_SETTINGS
-  [ -n "${USE_SYSLOG+x}" ] && SYSLOG_QUESTION_USE_SYSLOG="$USE_SYSLOG"
+  [ -n "${USE_SYSLOG-}" ] && SYSLOG_QUESTION_USE_SYSLOG="$USE_SYSLOG"
   # END DEPRECATED
   # LOG_SETTINGS
-  [ -z "${SYSLOG_QUESTION_USE_SYSLOG+x}" ]      && SYSLOG_QUESTION_USE_SYSLOG="no" && QUERY_LOG_SETTINGS="yes"
-  [ -z "${SYSLOG_REMOTE_HOST+x}" ]              && SYSLOG_REMOTE_HOST="127.0.0.1" && QUERY_LOG_SETTINGS="yes"
+  [ -z "${SYSLOG_QUESTION_USE_SYSLOG-}" ]      && SYSLOG_QUESTION_USE_SYSLOG="no" && QUERY_LOG_SETTINGS="yes"
+  [ -z "${SYSLOG_REMOTE_HOST-}" ]              && SYSLOG_REMOTE_HOST="127.0.0.1" && QUERY_LOG_SETTINGS="yes"
   
   # Cron
-  [ -z "${CRON_INTERVAL+x}" ] && CRON_INTERVAL=3600 && QUERY_CRON="yes"
-  [ -z "${CRON_USER_ID+x}" ]  && CRON_USER_ID=1 && QUERY_CRON="yes"
+  [ -z "${CRON_INTERVAL-}" ] && CRON_INTERVAL=3600 && QUERY_CRON="yes"
+  [ -z "${CRON_USER_ID-}" ]  && CRON_USER_ID=1 && QUERY_CRON="yes"
 
   # Timezone
-  [ -z "${TZ+x}" ] && TZ="Europe/Berlin" && QUERY_TIMEZONE="yes"
+  [ -z "${TZ-}" ] && TZ="Europe/Berlin" && QUERY_TIMEZONE="yes"
   
   # MISP-Modules
-  [ -z "${MISP_MODULES_DEBUG+x}" ] && MISP_MODULES_DEBUG="false" && QUERY_MISP_MODULES="yes"
+  [ -z "${MISP_MODULES_DEBUG-}" ] && MISP_MODULES_DEBUG="false" && QUERY_MISP_MODULES="yes"
   
   # SSL
-  [ -z "${SSL_PASSPHRASE_ENABLE+x}" ] && SSL_PASSPHRASE_ENABLE="no" && QUERY_SSL="yes"
-  [ -z "${SSL_PASSPHRASE+x}" ] && SSL_PASSPHRASE="" && QUERY_SSL="yes"
-  # [ -z "${SSL_PASSPHRASE_NGINX_CUSTOM_FILE+x}" ] && SSL_PASSPHRASE_NGINX_CUSTOM_FILE="ssl.passphrase" && QUERY_SSL="yes"
+  [ -z "${SSL_PASSPHRASE_ENABLE-}" ] && SSL_PASSPHRASE_ENABLE="no" && QUERY_SSL="yes"
+  [ -z "${SSL_PASSPHRASE-}" ] && SSL_PASSPHRASE="" && QUERY_SSL="yes"
+  # [ -z "${SSL_PASSPHRASE_NGINX_CUSTOM_FILE-}" ] && SSL_PASSPHRASE_NGINX_CUSTOM_FILE="ssl.passphrase" && QUERY_SSL="yes"
 
 
   #
