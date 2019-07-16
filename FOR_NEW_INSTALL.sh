@@ -4,7 +4,7 @@ set -xv
 
 param_VERSION=${1:-""}
 
-while (( $(( $# - 1)) )) && [[ -n $# ]]; do
+while (( $(( $# - 1 )) )) && [ $# -ge 2 ]; do
     case "$(echo "${2-}"|cut -d = -f 1)" in
       server)
         SERVER_TAG="$(echo "${2-}"|cut -d = -f 2)"
