@@ -347,7 +347,7 @@ func_query_misp_settings(){
   # Deactivated:
   # read -p "Which MISP DB prefix should we use [default: $MISP_PREFIX ]: " -ei "$MISP_PREFIX" MISP_PREFIX
   # read -p "Which MISP Encoding should we use [default: $MISP_ENCODING ]: " -ei "$MISP_ENCODING"  MISP_ENCODING
-  read -rp "$STARTMSG If you do a fresh Installation, you should have a salt. Is this SALT ok [DEFAULT: generated]: " -ei "$MISP_SALT"  MISP_SALT
+  read -rp "$STARTMSG If you do a fresh Installation, you should have a salt. Is this salt value ok ? [DEFAULT: generated]: " -ei "$MISP_SALT"  MISP_SALT
   read -rp "$STARTMSG Do you require the analyse column at list events page? [DEFAULT: no]: " -ei "$MISP_ADD_EVENT_ANALYZE_COLUMN"  MISP_ADD_EVENT_ANALYZE_COLUMN
   #read -rp "$STARTMSG Which sender mailadress should MISP use [DEFAULT: $MAIL_SENDER_ADDRESS]: " -ei "$MAIL_SENDER_ADDRESS" MAIL_SENDER_ADDRESS
 }
