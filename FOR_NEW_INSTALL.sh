@@ -79,7 +79,7 @@ CURRENT_VERSION="$param_VERSION"
 
 
 # check if this execution is automatic from gitlab-ci or travis-ci
-    if [ "$CI" != true ]
+    if [ "${CI-}" != true ]
     then
         ###
         # USER AREA
