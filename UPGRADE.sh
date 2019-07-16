@@ -7,7 +7,6 @@ set -eu
     CURRENT_CONTAINER="$(docker ps --format '{{.Image}}'|grep misp-dockerized-server|cut -d : -f 2|cut -d - -f 1)"
     [ -z "$CURRENT_CONTAINER" ] && echo "Sorry, no Upgrade is possible. The reason is there is no running misp-server. I exit now." && docker ps && exit
 
-exit
 ##################      MAIN        #########################
 
 
@@ -48,6 +47,7 @@ then
     # [3] choose a new version
     touch UPGRADE_STEP_1
     ./FOR_NEW_INSTALL.sh
+    make install
 
 # if the UPGRADE_STEP_1 file exists go to else
 else
