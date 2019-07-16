@@ -38,19 +38,20 @@ then
     if [ -n "$(command -v git)" ]
     then
         echo "Update git repository ..." && git pull
+        echo "I start again..." && ./UPGRADE.sh
     else
         echo "No Git is available please download the Master Zip file from Github.com and make a manual upgrade."
         echo "wget https://github.com/DCSO/MISP-dockerized/archive/master.zip"
         exit 1
     fi
 
+
+# if the UPGRADE_STEP_1 file exists go to else
+else
     # [3] choose a new version
     touch UPGRADE_STEP_1
     ./FOR_NEW_INSTALL.sh
     make install
-
-# if the UPGRADE_STEP_1 file exists go to else
-else
 
     # check if directory exists
     [ ! -d current ] && echo "There is a bug, please open a ticket on https://github.com/DCSO/MISP-dockerized/issues and report the Error. Now I will exit." && exit
