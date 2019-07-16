@@ -1,6 +1,5 @@
 #!/bin/bash
 set -eu
-set -xv
 
 param_VERSION=${1:-""}
 
