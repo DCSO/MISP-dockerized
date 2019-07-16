@@ -50,7 +50,7 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 CURRENT_VERSION="$param_VERSION"
 
 # check if user has currently a installed version
-    function check_version_legacy (){
+    check_version_legacy (){
         # This function checks the current version on misp-server version from docker ps
         # https://forums.docker.com/t/docker-ps-a-command-to-publish-only-container-names/8483/2
         #CURRENT_CONTAINER=$(docker ps --format '{{.Image}}'|grep misp-dockerized-server|cut -d : -f 2|cut -d - -f 1)
@@ -62,7 +62,7 @@ CURRENT_VERSION="$param_VERSION"
         echo "Sorry you use a unsupported version. Please make an manual upgrade."
     }
     
-    function check_version(){
+    check_version(){
         # This function checks the current link to which version it goes
         # https://www.linuxquestions.org/questions/linux-software-2/how-to-find-symlink-target-name-in-script-364971/
         CURRENT_VERSION="$(ls -l current | awk '{print $11}')"
