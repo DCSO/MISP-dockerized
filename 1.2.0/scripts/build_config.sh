@@ -173,6 +173,7 @@ func_check_if_vars_exists() {
   # END DEPRECATED
   # Redis
   [ -z "${REDIS_FQDN+x}" ] && REDIS_FQDN="misp-redis"  && QUERY_REDIS="yes"
+  [ "${REDIS_FQDN+x}" = "localhost" ] && REDIS_FQDN="misp-redis"  && QUERY_REDIS="yes"
   [ -z "${REDIS_PORT+x}" ] && REDIS_PORT="6379" && QUERY_REDIS="yes"
   [ -z "${REDIS_PW+x}" ]   && REDIS_PW="" && QUERY_REDIS="yes"
   
