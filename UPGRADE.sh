@@ -51,6 +51,15 @@ else
     # [3] choose a new version
     ./FOR_NEW_INSTALL.sh
     make -C current install
+    # Check if misp-db container exists and then upgrade it
+    # shellcheck disable=SC2143
+    if [ "$( grep DB_HOST config/config.env|cut -d = -f 2 )" = "misp-db" ];then
+        docker exec -ti misp-db mysql_upgrade
+        docker restart misp-db
+    elif [ "$( grep DB_HOST config/config.env|cut -d = -f 2 )" = "localhost" ];then
+        docker exec -ti misp-server mysql_upgrade
+        docker restart misp-server
+    fi
 
     # check if directory exists
     [ ! -d current ] && echo "There is a bug, please open a ticket on https://github.com/DCSO/MISP-dockerized/issues and report the Error. Now I will exit." && exit
