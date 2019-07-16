@@ -143,6 +143,7 @@ services:
   misp-monitoring:
     image: dcso/misp-dockerized-monitoring:1
     container_name: misp-monitoring
+    restart: unless-stopped
     # ports:
     #   - 19999:19999
     cap_add:
