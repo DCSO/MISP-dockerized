@@ -97,5 +97,10 @@ else
         esac
     done
     
+    echo "Delete old unused files:"
+    for i in .env UPGRADE_STEP_1 docker-compose.*
+    do
+        [ -f "$i" ] && rm -rfv "$i"
+    done
 
 fi
