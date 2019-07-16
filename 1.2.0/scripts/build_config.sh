@@ -57,6 +57,7 @@ func_check_if_vars_exists() {
   #
   # Docker Registry
   [ -z "${DOCKER_REGISTRY-}" ] && DOCKER_REGISTRY="dcso" #&& QUERY_DOCKER_REGISTRY="yes" 
+  [ "${DOCKER_REGISTRY-}" = "dockerhub.dcso.de" ] && DOCKER_REGISTRY="dockerhub.dcso.de/dcso"
   # Docker Network
   [ -z "${NETWORK_CONTAINER_ADDRESS_RANGE-}" ] && NETWORK_CONTAINER_ADDRESS_RANGE="192.168.47.0/28" && QUERY_NETWORK="yes" 
   [ -z "${NETWORK_BRIDGE_NAME-}" ]    && NETWORK_BRIDGE_NAME="mispbr0" && QUERY_NETWORK="yes"
