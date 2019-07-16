@@ -38,14 +38,13 @@ then
     if [ -n "$(command -v git)" ]
     then
         echo "Update git repository ..." && git pull
+        touch UPGRADE_STEP_1
         echo "I start again..." && ./UPGRADE.sh
     else
         echo "No Git is available please download the Master Zip file from Github.com and make a manual upgrade."
         echo "wget https://github.com/DCSO/MISP-dockerized/archive/master.zip"
         exit 1
     fi
-
-    touch UPGRADE_STEP_1
 
 # if the UPGRADE_STEP_1 file exists go to else
 else
