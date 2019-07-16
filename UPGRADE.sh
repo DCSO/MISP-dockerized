@@ -50,7 +50,7 @@ then
 else
     # [3] choose a new version
     ./FOR_NEW_INSTALL.sh
-    make install
+    make -C current install
 
     # check if directory exists
     [ ! -d current ] && echo "There is a bug, please open a ticket on https://github.com/DCSO/MISP-dockerized/issues and report the Error. Now I will exit." && exit
