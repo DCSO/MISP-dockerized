@@ -2,30 +2,30 @@
 set -eu
 set -xv
 
-[ $# -ge 1 ] && param_VERSION=${1:-""}
-param_CONTAINER=${2:-""}
-while (( $(( $# - 1)) )); do
-    case "$(echo "$param_CONTAINER"|cut -d = -f 1)" in
+param_VERSION=${1:-""}
+
+while (( $(( $# - 1)) )) && [[ -n $# ]]; do
+    case "$(echo "${2-}"|cut -d = -f 1)" in
       server)
-        SERVER_TAG="$(echo "$param_CONTAINER"|cut -d = -f 2)"
+        SERVER_TAG="$(echo "${2-}"|cut -d = -f 2)"
       ;;
       redis)
-        REDIS_TAG="$(echo "$param_CONTAINER"|cut -d = -f 2)"
+        REDIS_TAG="$(echo "${2-}"|cut -d = -f 2)"
       ;;      
       proxy)
-        PROXY_TAG="$(echo "$param_CONTAINER"|cut -d = -f 2)"
+        PROXY_TAG="$(echo "${2-}"|cut -d = -f 2)"
       ;;
       db)
-        DB_TAG="$(echo "$param_CONTAINER"|cut -d = -f 2)"
+        DB_TAG="$(echo "${2-}"|cut -d = -f 2)"
       ;;
       modules)
-        MODULES_TAG="$(echo "$param_CONTAINER"|cut -d = -f 2)"
+        MODULES_TAG="$(echo "${2-}"|cut -d = -f 2)"
       ;;
       monitoring)
-        MONITORING_TAG="$(echo "$param_CONTAINER"|cut -d = -f 2)"
+        MONITORING_TAG="$(echo "${2-}"|cut -d = -f 2)"
       ;;
       robot)
-        ROBOT_TAG="$(echo "$param_CONTAINER"|cut -d = -f 1)"
+        ROBOT_TAG="$(echo "${2-}"|cut -d = -f 1)"
       ;;
       * )
         echo "Not defined container!"
