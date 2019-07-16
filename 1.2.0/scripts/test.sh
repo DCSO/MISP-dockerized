@@ -8,8 +8,8 @@ Light_Green='\033[1;32m'
 STARTMSG="${Light_Green}[TEST]${NC}"
 AUTH_KEY=""
 
-REPORT_FOLDER="$PWD/../.ci"
-REPORT_FILE="$REPORT_FOLDER/reports/*.xml"
+REPORT_FOLDER="$PWD/../.ci/reports"
+REPORT_FILE="$REPORT_FOLDER/*.xml"
 
 # Functions
 echo (){
@@ -41,11 +41,19 @@ do
 done
 
 echo "################		Start Tests		###########################"
-docker exec misp-robot bash -c "/srv/scripts/test.sh 2> /srv/MISP-dockerized-testbench/reports/error.txt"
 [ ! -d "$REPORT_FOLDER" ] && mkdir "$REPORT_FOLDER"
-docker cp misp-robot:/srv/MISP-dockerized-testbench/reports/. "$REPORT_FOLDER/"
-echo "#################################################################"
-echo "For the report output: cat $REPORT_FILE"
-echo "#################################################################"
+if ! docker exec misp-robot bash -c "/srv/scripts/test.sh 2> /srv/MISP-dockerized-testbench/error.txt"
+then
+    docker cp misp-robot:/srv/MISP-dockerized-testbench/error.txt "$REPORT_FOLDER/" 
+    command echo 
+    echo "ERROR, please look at $REPORT_FOLDER/error.txt" 
+    command echo 
+    head -n 10 "$REPORT_FOLDER"/error.txt 
+    exit 1
+fi
+    docker cp misp-robot:/srv/MISP-dockerized-testbench/reports/. "$REPORT_FOLDER/"
+    echo "#################################################################"
+    echo "For the report output: cat $REPORT_FILE"
+    echo "#################################################################"
 
 
