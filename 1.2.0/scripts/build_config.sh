@@ -108,7 +108,7 @@ func_check_if_vars_exists() {
   [ -z "${MISP_FQDN-}" ]                     && MISP_FQDN="$(hostname -f)" && QUERY_myHOSTNAME="yes"
   [ -z "${MISP_BASEURL-}" ]                  && QUERY_myHOSTNAME="yes" # It will be defined in myHOSTNAME MISP_BASEURL="https://${MISP_FQDN}"
   # if [ -z ${var-} ]; then echo "var is unset"; else echo "var is set to '$var'"; fi
-  [ -z "${MISP_PREFIX-}" ]                   && MISP_PREFIX="" && QUERY_MISP="yes"
+  [ -z "${MISP_PREFIX-}" ]                   && MISP_PREFIX=""
   [ -z "${MISP_ENCODING-}" ]                 && MISP_ENCODING="utf8" && QUERY_MISP="yes"
   [ -z "${MISP_SALT-}" ]                     && MISP_SALT="$(</dev/urandom tr -dc A-Za-z0-9 | head -c 50)" && QUERY_MISP="yes"
   [ -z "${MISP_ADD_EVENT_ANALYZE_COLUMN-}" ] && MISP_ADD_EVENT_ANALYZE_COLUMN="no" && QUERY_MISP="yes"
@@ -177,7 +177,7 @@ func_check_if_vars_exists() {
   [ -z "${REDIS_FQDN-}" ] && REDIS_FQDN="misp-redis"  && QUERY_REDIS="yes"
   [ "${REDIS_FQDN-}" = "localhost" ] && REDIS_FQDN="misp-redis"  && QUERY_REDIS="yes"
   [ -z "${REDIS_PORT-}" ] && REDIS_PORT="6379" && QUERY_REDIS="yes"
-  [ -z "${REDIS_PW-}" ]   && REDIS_PW="" && QUERY_REDIS="yes"
+  [ -z "${REDIS_PW-}" ]   && REDIS_PW=""
   
   # DEPRECATED LOG_SETTINGS
   [ -n "${USE_SYSLOG-}" ] && SYSLOG_QUESTION_USE_SYSLOG="$USE_SYSLOG"
@@ -198,7 +198,7 @@ func_check_if_vars_exists() {
   
   # SSL
   [ -z "${SSL_PASSPHRASE_ENABLE-}" ] && SSL_PASSPHRASE_ENABLE="no" && QUERY_SSL="yes"
-  [ -z "${SSL_PASSPHRASE-}" ] && SSL_PASSPHRASE="" && QUERY_SSL="yes"
+  [ -z "${SSL_PASSPHRASE-}" ] && SSL_PASSPHRASE=""
   # [ -z "${SSL_PASSPHRASE_NGINX_CUSTOM_FILE-}" ] && SSL_PASSPHRASE_NGINX_CUSTOM_FILE="ssl.passphrase" && QUERY_SSL="yes"
 
 
