@@ -45,11 +45,11 @@ then
         exit 1
     fi
 
+    touch UPGRADE_STEP_1
 
 # if the UPGRADE_STEP_1 file exists go to else
 else
     # [3] choose a new version
-    touch UPGRADE_STEP_1
     ./FOR_NEW_INSTALL.sh
     make install
 
