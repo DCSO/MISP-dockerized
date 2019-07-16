@@ -86,6 +86,7 @@ func_check_if_vars_exists() {
   # DB
   [ -z "${DB_QUESTION_OWN_DB-}" ] && DB_QUESTION_OWN_DB="yes" && QUERY_DB="yes"
   [ -z "${DB_HOST-}" ]            && DB_HOST="misp-db" && QUERY_DB="yes"
+  [ "${DB_HOST-}" = "localhost" ]            && DB_HOST="misp-db" && QUERY_DB="yes"
   [ -z "${DB_PORT-}" ]            && DB_PORT="3306" && QUERY_DB="yes"
   [ -z "${DB_DATABASE-}" ]        && DB_DATABASE="misp" && QUERY_DB="yes"
   [ -z "${DB_USER-}" ]            && DB_USER="misp" && QUERY_DB="yes"
