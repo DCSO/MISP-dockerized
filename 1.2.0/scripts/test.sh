@@ -42,13 +42,16 @@ done
 
 echo "################		Start Tests		###########################"
 [ ! -d "$REPORT_FOLDER" ] && mkdir "$REPORT_FOLDER"
-
+command echo
 echo "misp-proxy:"
 docker logs misp-proxy --tail 20
+command echo
 echo "misp-server:"
 docker logs misp-server --tail 20
+command echo
 echo "misp-modules:"
 docker logs misp-modules --tail 20
+command echo
 
 if ! docker exec misp-robot bash -c "/srv/scripts/test.sh 2> /srv/MISP-dockerized-testbench/error.txt"
 then

@@ -47,4 +47,20 @@
   extends: .push_productive_images
   allow_failure: true
 
-# 2.4.109 is supported
+2.4.109-debian:
+  stage: unsupported
+  variables:
+    CURRENT_VERSION: 1.2.0
+    SERVER_TAG: $CI_JOB_NAME
+  extends: .push_productive_images
+  allow_failure: true
+
+# 2.4.110 is supported
+
+2.4.111-debian:
+  stage: unsupported
+  variables:
+    CURRENT_VERSION: 1.2.0
+    SERVER_TAG: $CI_JOB_NAME
+  extends: .push_productive_images
+  allow_failure: true

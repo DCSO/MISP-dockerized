@@ -56,7 +56,7 @@ services:
 
   ### MISP Server ###
   misp-server:
-    image: dcso/misp-dockerized-server:2.4.111-debian
+    image: dcso/misp-dockerized-server:2.4.110-debian
     container_name: misp-server
     restart: unless-stopped
     volumes:
