@@ -3,41 +3,6 @@ set -eu
 
 param_VERSION=${1:-""}
 
-while (( $(( $# - 1 )) )) && [ $# -ge 2 ]; do
-    case "$(echo "${2-}"|cut -d = -f 1)" in
-      server)
-        SERVER_TAG="$(echo "${2-}"|cut -d = -f 2)"
-      ;;
-      redis)
-        REDIS_TAG="$(echo "${2-}"|cut -d = -f 2)"
-      ;;      
-      proxy)
-        PROXY_TAG="$(echo "${2-}"|cut -d = -f 2)"
-      ;;
-      db)
-        DB_TAG="$(echo "${2-}"|cut -d = -f 2)"
-      ;;
-      modules)
-        MODULES_TAG="$(echo "${2-}"|cut -d = -f 2)"
-      ;;
-      monitoring)
-        MONITORING_TAG="$(echo "${2-}"|cut -d = -f 2)"
-      ;;
-      robot)
-        ROBOT_TAG="$(echo "${2-}"|cut -d = -f 1)"
-      ;;
-      * )
-        echo "Not defined container!"
-        echo "Please use '$0 [VERSION] [COMPONENT]=[NEW_TAG]'"
-        echo "Components: server | redis | proxy | db | modules | montitoring | robot"
-        echo "Example: '$0 1.2.0 server=2.4.nightly-debian'"
-        echo "Exit now."
-        exit 1
-      ;;
-    esac
-    shift
-  done
-
 
 # full path <version>/scripts	
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
@@ -115,7 +80,7 @@ CURRENT_VERSION="$param_VERSION"
         ###
         # CI AREA
         ###
-        [ -z "${param_VERSION-}" ] && echo "No version parameter. Please call: '$0 [VERSION]'. Exit." && exit 1
+        [ -z "${CURRENT_VERSION-}" ] && echo "No version parameter. Please call: '$0 [VERSION]'. Exit." && exit 1
     fi
 
 # Echo which version should be installed
@@ -127,15 +92,15 @@ CURRENT_VERSION="$param_VERSION"
         echo "[Error] The script failed and no version could be selected. Exit now."
         exit 1
     else
+        # Create config and backup folder if it not exists
+        [ ! -d backup ] && echo "mkdir backup" && mkdir backup
+        [ ! -d config ] && echo "mkdir config" && mkdir config
+
         # create symlink for 'current' folder
         [ -L "$PWD/current" ] && echo "[OK] Delete symlink 'current'" && rm "$PWD/current"
         [ -f "$PWD/current" ] && echo "[Error] There is a file called 'current' please backup and delete this file first. Command: 'rm -v $PWD/current'" && exit
         [ -d "$PWD/current" ] && echo "[Error] There is a directory called 'current' please backup and delete this folder first. Command: 'rm -Rv $PWD/current'" && exit
         echo "[OK] Create symlink 'current' for the folder $CURRENT_VERSION" && ln -s "$CURRENT_VERSION" current
-        
-        # Create config and backup folder if it not exists
-        [ -d ./backup ] && mkdir backup
-        [ -d ./config ] && mkdir config
 
         # create symlink for backup
         [ -L "$PWD/current/backup" ] && echo "[OK] Delete symlink 'current/backup'" && rm "$PWD/current/backup"
