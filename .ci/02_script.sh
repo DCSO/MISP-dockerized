@@ -14,11 +14,11 @@ cd ..
 [ -z "$5" ] && echo "$STARTMSG No parameter with the current version. Exit now." && exit 1
 
 REGISTRY_URL="$1"
-REGISTRY_USER="$2"
-REGISTRY_PW="$3"
+#REGISTRY_USER="$2"
+#REGISTRY_PW="$3"
 TEST_TYPE="$4"
 CURRENT_VERSION="$5"
-DOCKER_LOGIN_OUTPUT=""
+#DOCKER_LOGIN_OUTPUT=""
 
 
 ### INTEGRATED in gitlab.dcso.lolcat:4567/misp/helper-containers:docker_compose

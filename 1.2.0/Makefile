@@ -117,7 +117,7 @@ update: pull deploy
 
 
 test:
-	@scripts/test.sh
+	@make -C ../.ci test
 
 
 ####################	used in misp-robot	####################
