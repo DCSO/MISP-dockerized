@@ -93,8 +93,8 @@ CURRENT_VERSION="$param_VERSION"
         exit 1
     else
         # Create config and backup folder if it not exists
-        [ ! -d backup ] && echo "mkdir backup" && mkdir backup
-        [ ! -d config ] && echo "mkdir config" && mkdir config
+        [ ! -d backup ] && echo "[OK] Create 'backup' folder" && mkdir backup
+        [ ! -d config ] && echo "[OK] Create  'config' folder" && mkdir config
 
         # create symlink for 'current' folder
         [ -L "$PWD/current" ] && echo "[OK] Delete symlink 'current'" && rm "$PWD/current"
