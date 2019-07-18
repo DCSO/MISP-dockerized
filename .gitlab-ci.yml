@@ -126,9 +126,7 @@ shellcheck:
 
 
 include:
-  - '.gitlab-unsupported/1.1.x.yml'
-  - '.gitlab-unsupported/1.2.x.yml'
-  - '.gitlab-unsupported/nightly.yml'
+  - '.gitlab-unsupported.yml'
   #- '0.1.0/.gitlab-ci.yml'
   #- '0.1.1/.gitlab-ci.yml'
   #- '0.1.2/.gitlab-ci.yml'

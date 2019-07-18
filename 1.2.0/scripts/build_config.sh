@@ -55,6 +55,9 @@ func_check_if_vars_exists() {
   #
   # Default Variables for the config
   #
+  # Deprecated Container TAG
+  [ -n "${MISP_CONTAINER_TAG-}" ] && SERVER_TAG="$MISP_CONTAINER_TAG"
+
   # Docker Registry
   [ -z "${DOCKER_REGISTRY-}" ] && DOCKER_REGISTRY="dcso" #&& QUERY_DOCKER_REGISTRY="yes" 
   [ "${DOCKER_REGISTRY-}" = "dockerhub.dcso.de" ] && DOCKER_REGISTRY="dockerhub.dcso.de/dcso"
@@ -268,12 +271,12 @@ if [ "${AUTOMATE_BUILD-}" = "true" ]
     [ "${QUERY_LATEST_MISP_SERVER-}" = "yes" ] && func_query_latest_misp_server
 fi
 
-[ "$MISP_QUESTION_USE_NIGHTLY_BUILD" = "yes" ] && MISP_CONTAINER_TAG=$MISP_NIGHTLY_TAG
+[ "$MISP_QUESTION_USE_NIGHTLY_BUILD" = "yes" ] && SERVER_TAG=$MISP_NIGHTLY_TAG
 
 if [ "${DEV_MODE-}" = "true" ] || [ "${DOCKER_REGISTRY-}" != "dcso" ] ; 
 then
   IMAGE_MISP_MODULES="image: ${DOCKER_REGISTRY}/misp-dockerized-misp-modules:${MISP_MODULES_CONTAINER_TAG}"
-  IMAGE_MISP_SERVER="image: ${DOCKER_REGISTRY}/misp-dockerized-server:${MISP_CONTAINER_TAG}"
+  IMAGE_MISP_SERVER="image: ${DOCKER_REGISTRY}/misp-dockerized-server:${SERVER_TAG}"
   IMAGE_MISP_PROXY="image: ${DOCKER_REGISTRY}/misp-dockerized-proxy:${PROXY_CONTAINER_TAG}"
   IMAGE_MISP_ROBOT="image: ${DOCKER_REGISTRY}/misp-dockerized-robot:${ROBOT_CONTAINER_TAG}"
   IMAGE_MISP_REDIS="image: ${DOCKER_REGISTRY}/misp-dockerized-redis:${REDIS_CONTAINER_TAG}"
@@ -494,7 +497,7 @@ CONTAINER_SYSTEM_NO_PROXY="${CONTAINER_SYSTEM_NO_PROXY}"
 # Container Tags
 # ------------------------------
 #POSTFIX_CONTAINER_TAG=${POSTFIX_CONTAINER_TAG}
-#MISP_CONTAINER_TAG=${MISP_CONTAINER_TAG}
+#SERVER_TAG=${SERVER_TAG}
 #PROXY_CONTAINER_TAG=${PROXY_CONTAINER_TAG}
 #ROBOT_CONTAINER_TAG=${ROBOT_CONTAINER_TAG}
 #MISP_MODULES_CONTAINER_TAG=${MISP_MODULES_CONTAINER_TAG}

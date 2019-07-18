@@ -1,5 +1,5 @@
 #!/bin/sh
-set -eu
+
 # https://stackoverflow.com/questions/13068152/grep-exit-codes-in-makefile#13069387
 
 echo "################		Start Tests		###########################"
@@ -29,9 +29,11 @@ then
     echo "misp-server:"; docker logs misp-server --tail 20; echo ""; 
     echo "misp-modules:" ; docker logs misp-modules --tail 20; echo "";
     echo "[ERROR] Test was not successful."; echo "";
+    echo "################		End Tests		###########################"
     exit 1 ;
 else 
     echo "";
     echo "[Info] Test was successful";  echo "";
+    echo "################		End Tests		###########################"
     exit 0; 
 fi

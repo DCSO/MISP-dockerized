@@ -40,6 +40,7 @@ REGISTRY_URL="$1"
     docker pull "$REGISTRY_URL"/misp-dockerized-db:latest-dev;
     docker pull "$REGISTRY_URL"/misp-dockerized-redis:latest-dev;
     docker pull "$REGISTRY_URL"/misp-dockerized-monitoring:latest-dev;
+    docker pull "$REGISTRY_URL"/misp-dockerized-misp-modules:latest-dev;
 
 
 # prepare retagging

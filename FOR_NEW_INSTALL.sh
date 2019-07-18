@@ -115,17 +115,7 @@ CURRENT_VERSION="$param_VERSION"
         ###
         # CI AREA
         ###
-        [ -z "${param_VERSION-}" ] && echo "No version parameter. Please call: '$0 [VERSION]'. Exit." && exit
-        [ -d config ] || mkdir config || ( echo "Can not create directory config. Exit now" && exit 1 )
-          [ -n "${SERVER_TAG-}" ] && echo "Change Tag for server ${SERVER_TAG-}..." && echo "MISP_CONTAINER_TAG=$SERVER_TAG" >> config/config.env
-          [ -n "${PROXY_TAG-}" ] && echo "Change Tag for proxy ${PROXY_TAG-}..." && echo "PROXY_CONTAINER_TAG=$PROXY_TAG" >> config/config.env
-          [ -n "${REDIS_TAG-}" ] && echo "Change Tag for redis ${REDIS_TAG-}..." && echo "REDIS_CONTAINER_TAG=$REDIS_TAG" >> config/config.env
-          [ -n "${DB_TAG-}" ] && echo "Change Tag for db ${DB_TAG-}..." && echo "DB_CONTAINER_TAG=$DB_TAG" >> config/config.env
-          [ -n "${MODULES_TAG-}" ] && echo "Change Tag for misp-modules ${MISP_MODULES_CONTAINER_TAG-}..." && echo "MISP_MODULES_CONTAINER_TAG=$MODULES_TAG" >> config/config.env
-          [ -n "${ROBOT_TAG-}" ] && echo "Change Tag for robot ${ROBOT_TAG-}..." && echo "ROBOT_CONTAINER_TAG=$ROBOT_TAG" >> config/config.env
-          [ -n "${MONITORING_TAG-}" ] && echo "Change Tag for monitoring ${MONITORING_TAG-}..." && echo "MONITORING_CONTAINER_TAG=$MONITORING_TAG" >> config/config.en
-          echo "Config:"
-          [ -f config/config.env ] && tail config/config.env
+        [ -z "${param_VERSION-}" ] && echo "No version parameter. Please call: '$0 [VERSION]'. Exit." && exit 1
     fi
 
 echo "Selected version: $CURRENT_VERSION..."
@@ -141,14 +131,12 @@ echo "Selected version: $CURRENT_VERSION..."
         [ -f "$PWD/current" ] && echo "[Error] There is a file called 'current' please backup and delete this file first. Command: 'rm -v $PWD/current'" && exit
         [ -d "$PWD/current" ] && echo "[Error] There is a directory called 'current' please backup and delete this folder first. Command: 'rm -Rv $PWD/current'" && exit
         echo "[OK] Create symlink 'current' for the folder $CURRENT_VERSION" && ln -s "$CURRENT_VERSION" current
+        
         # create symlink for backup
         [ -L "$PWD/current/backup" ] && echo "[OK] Delete symlink 'current/backup'" && rm "$PWD/current/backup"
         echo "[OK] Create symlink 'current/backup'" && ln -s "../backup" ./current/
+        
         # create symlink for config
         [ -L "$PWD/current/config" ] && echo "[OK] Delete symlink 'current/config'" && rm "$PWD/current/config"
         echo "[OK] Create symlink 'current/config' " && ln -s "../config" ./current/
-
-        # [ "$CI" == true ] || echo "start installation..."
-        # [ "$CI" == true ] || sleep 1
-        # [ "$CI" == true ] || make -C current install
     fi

@@ -164,17 +164,17 @@ check_folder_write(){
 func_default_container_version() {
   info_same_line "Check container version ..."
   # Container Tags
-  MISP_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE"|grep server|cut -d : -f 3)"
-  PROXY_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep proxy|cut -d : -f 3)"
-  ROBOT_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep robot|cut -d : -f 3)"
-  MISP_MODULES_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep modules|cut -d : -f 3)"
-  POSTFIX_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep postfix|cut -d : -f 3)"
-  REDIS_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep redis|cut -d : -f 3)"
-  DB_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep db|cut -d : -f 3)"
-  MONITORING_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep monitoring|cut -d : -f 3)"
+  [ -z ${SERVER_TAG-} ] && SERVER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE"|grep server|cut -d : -f 3)"
+  [ -z ${PROXY_CONTAINER_TAG-} ] && PROXY_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep proxy|cut -d : -f 3)"
+  [ -z ${ROBOT_CONTAINER_TAG-} ] && ROBOT_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep robot|cut -d : -f 3)"
+  [ -z ${MISP_MODULES_CONTAINER_TAG-} ] && MISP_MODULES_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep modules|cut -d : -f 3)"
+  [ -z ${POSTFIX_CONTAINER_TAG-} ] && POSTFIX_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep postfix|cut -d : -f 3)"
+  [ -z ${REDIS_CONTAINER_TAG-} ] && REDIS_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep redis|cut -d : -f 3)"
+  [ -z ${DB_CONTAINER_TAG-} ] && DB_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep db|cut -d : -f 3)"
+  [ -z ${MONITORING_CONTAINER_TAG-} ] && MONITORING_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep monitoring|cut -d : -f 3)"
   if [ "${DEV_MODE-}" = true ]; then
     [ -z "$(echo "$POSTFIX_CONTAINER_TAG"|grep dev)" ] && POSTFIX_CONTAINER_TAG="$POSTFIX_CONTAINER_TAG-dev"
-    [ -z "$(echo "$MISP_CONTAINER_TAG"|grep dev)" ] && MISP_CONTAINER_TAG="$MISP_CONTAINER_TAG-dev"
+    [ -z "$(echo "$SERVER_TAG"|grep dev)" ] && SERVER_TAG="$SERVER_TAG-dev"
     [ -z "$(echo "$PROXY_CONTAINER_TAG"|grep dev)" ] && PROXY_CONTAINER_TAG="$PROXY_CONTAINER_TAG-dev"
     [ -z "$(echo "$ROBOT_CONTAINER_TAG"|grep dev)" ] && ROBOT_CONTAINER_TAG="$ROBOT_CONTAINER_TAG-dev"
     [ -z "$(echo "$MISP_MODULES_CONTAINER_TAG"|grep dev)" ] && MISP_MODULES_CONTAINER_TAG="$MISP_MODULES_CONTAINER_TAG-dev"
@@ -554,7 +554,7 @@ func_query_latest_misp_server() {
   read -rp"Do you want to enable nightly unsupported MISP server container? [ Default: $MISP_QUESTION_USE_NIGHTLY_BUILD ]: " -ei "$MISP_QUESTION_USE_NIGHTLY_BUILD"  MISP_QUESTION_USE_NIGHTLY_BUILD
   case $MISP_QUESTION_USE_NIGHTLY_BUILD in
   [yY][eE][sS]|[yY])
-    MISP_CONTAINER_TAG=$MISP_NIGHTLY_TAG
+    SERVER_TAG=$MISP_NIGHTLY_TAG
     ;;
   *)
     echo
