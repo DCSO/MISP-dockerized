@@ -1,5 +1,5 @@
 #!/bin/sh
-set -xv
+set -eu
 # https://stackoverflow.com/questions/13068152/grep-exit-codes-in-makefile#13069387
 
 echo "################		Start Tests		###########################"
@@ -8,7 +8,10 @@ echo "################		Start Tests		###########################"
 if [ ! -d reports ]; then mkdir reports; fi ;
 
 # Execute Test script from misp-robot
-docker exec misp-robot bash -c "sleep 10 && /srv/scripts/test.sh" 2> reports/error.txt
+[ "${CI-}" = "true" ] && echo "wait 30 seconds..." && sleep 10
+[ "${CI-}" = "true" ] && echo "wait 20 seconds..." && sleep 10
+[ "${CI-}" = "true" ] && echo "wait 10 seconds..." && sleep 10
+docker exec misp-robot bash -c "/srv/scripts/test.sh" 2> reports/error.txt
 # Check return value
 retVal=$?
 
