@@ -40,8 +40,7 @@ CURRENT_VERSION="$5"
     # shellcheck disable=SC2154
     echo "$STARTMSG Build Configuration..." && $makefile_main build-config
     echo "$STARTMSG Pull Images..." && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml pull -q
-    [ ! -d reports ] && mkdir reports
-    echo "$STARTMSG Start Environment..." && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml up --abort-on-container-exit > reports/docker-compose-output.txt &
+    echo "$STARTMSG Start Environment..." && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml up -d
     ###########################################################
     #       ATTENTION   ATTENTION   ATTENTION
     #   If you want to use docker-in-docker (dind) you cant start docker container on another filesystem!!!! You need to do it from the docker-compose directly!!!
