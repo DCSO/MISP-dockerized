@@ -19,7 +19,7 @@ pull-latest:
 	docker pull $(REPOURL)/misp-dockerized-misp-modules:latest-dev;
 
 test:
-	@03_test.sh
+	@bash 03_test.sh
 
 tag:
 	@bash 20_tag_2_registry.sh $(REPOURL) $(USER) $(PW)
