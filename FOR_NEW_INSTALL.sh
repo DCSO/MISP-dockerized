@@ -133,6 +133,10 @@ CURRENT_VERSION="$param_VERSION"
         [ -d "$PWD/current" ] && echo "[Error] There is a directory called 'current' please backup and delete this folder first. Command: 'rm -Rv $PWD/current'" && exit
         echo "[OK] Create symlink 'current' for the folder $CURRENT_VERSION" && ln -s "$CURRENT_VERSION" current
         
+        # Create config and backup folder if it not exists
+        [ -d ./backup ] && mkdir backup
+        [ -d ./config ] && mkdir config
+
         # create symlink for backup
         [ -L "$PWD/current/backup" ] && echo "[OK] Delete symlink 'current/backup'" && rm "$PWD/current/backup"
         echo "[OK] Create symlink 'current/backup'" && ln -s "../backup" ./current/
