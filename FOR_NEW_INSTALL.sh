@@ -77,7 +77,7 @@ CURRENT_VERSION="$param_VERSION"
 ############### START MAIN ###################
 
 
-# check if this execution is automatic from gitlab-ci or travis-ci
+# check which version should be installed
     if [ "${CI-}" != true ]
     then
         ###
@@ -118,13 +118,14 @@ CURRENT_VERSION="$param_VERSION"
         [ -z "${param_VERSION-}" ] && echo "No version parameter. Please call: '$0 [VERSION]'. Exit." && exit 1
     fi
 
-echo "Selected version: $CURRENT_VERSION..."
+# Echo which version should be installed
+  echo "Selected version: $CURRENT_VERSION..."
 
 # Create Symlink to "current" Folder
     if [ -z "$CURRENT_VERSION" ]
     then
         echo "[Error] The script failed and no version could be selected. Exit now."
-        exit
+        exit 1
     else
         # create symlink for 'current' folder
         [ -L "$PWD/current" ] && echo "[OK] Delete symlink 'current'" && rm "$PWD/current"

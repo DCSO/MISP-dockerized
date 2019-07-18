@@ -33,13 +33,14 @@ CURRENT_VERSION="$5"
     echo
     echo "$STARTMSG Create current folder and choose version..."
     bash ./FOR_NEW_INSTALL.sh "$CURRENT_VERSION"
+    ls -la config/
 
 
 # Build config and deploy environent
     # shellcheck disable=SC2154
-    echo "$STARTMSG Build Configuration..." && $makefile_main build-config REPOURL="$REGISTRY_URL"
+    echo "$STARTMSG Build Configuration..." && $makefile_main build-config
     echo "$STARTMSG Pull Images..." && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml pull -q
-    echo "$STARTMSG Start Environment..." && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml up -d
+    echo "$STARTMSG Start Environment..." && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml up --abort-on-container-exit > reports/docker-compose-output.txt &
     ###########################################################
     #       ATTENTION   ATTENTION   ATTENTION
     #   If you want to use docker-in-docker (dind) you cant start docker container on another filesystem!!!! You need to do it from the docker-compose directly!!!
