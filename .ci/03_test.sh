@@ -1,5 +1,5 @@
 #!/bin/sh
-
+set -xv
 # https://stackoverflow.com/questions/13068152/grep-exit-codes-in-makefile#13069387
 
 echo "################		Start Tests		###########################"
@@ -16,7 +16,7 @@ retVal=$?
 docker cp misp-robot:/srv/MISP-dockerized-testbench/reports/. reports/ ;\
 
 # Check if Test was succesful or not
-if $retVal; 
+if [ $retVal != 0 ]; 
 then 
     echo "";
     echo "[ERROR] Test was not successful. Output Logs from Container and exit.";
@@ -28,6 +28,7 @@ then
     echo "[ERROR] Test was not successful."; echo "";
     exit 1 ;
 else 
+    echo "";
     echo "[Info] Test was successful";  echo "";
     exit 0; 
 fi
