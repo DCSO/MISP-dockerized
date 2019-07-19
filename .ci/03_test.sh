@@ -8,6 +8,8 @@ echo "################		Start Tests		###########################"
 if [ ! -d reports ]; then mkdir reports; fi ;
 
 # Execute Test script from misp-robot
+[ "${CI-}" = "true" ] && echo "wait 50 seconds..." && sleep 10
+[ "${CI-}" = "true" ] && echo "wait 40 seconds..." && sleep 10
 [ "${CI-}" = "true" ] && echo "wait 30 seconds..." && sleep 10
 [ "${CI-}" = "true" ] && echo "wait 20 seconds..." && sleep 10
 [ "${CI-}" = "true" ] && echo "wait 10 seconds..." && sleep 10
@@ -24,10 +26,10 @@ then
     echo "";
     echo "[ERROR] Test was not successful. Output Logs from Container and exit.";
     echo "";
-    echo "error output:"; head -n 15 reports/error.txt; echo "";
     echo "misp-proxy:"; docker logs misp-proxy --tail 20; echo "";
     echo "misp-server:"; docker logs misp-server --tail 20; echo ""; 
     echo "misp-modules:" ; docker logs misp-modules --tail 20; echo "";
+    echo "error output:"; head -n 20 reports/error.txt; echo "";
     echo "[ERROR] Test was not successful."; echo "";
     echo "################		End Tests		###########################"
     exit 1 ;
