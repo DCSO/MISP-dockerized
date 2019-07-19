@@ -46,11 +46,11 @@ before_script:
 - echo "" ; ( [ "$TRAVIS_EVENT_TYPE" = "push" ] || [ "$TRAVIS_EVENT_TYPE" = "pull_request" ] ) && make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=no_test VERSION=$VERSION
 
 script:
-- set -xv
 # Long test
-- echo "" ; ( [ "$TRAVIS_BRANCH" = "dev" ] || [ "$TRAVIS_BRANCH" = "master" ] ) && make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$VERSION
+- echo "" ; ( [ "$TRAVIS_BRANCH" = "v1.2.0" ] || [ "$TRAVIS_BRANCH" = "master" ] ) && make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$VERSION
+- echo "Images are build via Gitlab CI."
 
 
-# don't notify me when things fail
-notifications:
-  email: false
+# # don't notify me when things fail
+# notifications:
+#   email: false
