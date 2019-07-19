@@ -6,7 +6,8 @@ set -eu
 # Variables
 NC='\033[0m' # No Color
 Light_Green='\033[1;32m'  
-STARTMSG="${Light_Green}[DELETE]${NC}"
+#STARTMSG="${Light_Green}[DELETE]${NC}"
+STARTMSG="[DELETE]"
 
 DELETE_CONTAINER="no"
 DELETE_IMAGES="no"
