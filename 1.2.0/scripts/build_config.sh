@@ -430,19 +430,6 @@ services:
       http_proxy: ${CONTAINER_SYSTEM_HTTP_PROXY-}
       https_proxy: ${CONTAINER_SYSTEM_HTTPS_PROXY-}
       no_proxy: ${CONTAINER_SYSTEM_NO_PROXY-}
-      # DB
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_HOST: ${DB_HOST}
-      MYSQL_PORT: ${DB_PORT}
-      # Redis
-      REDIS_FQDN: "${REDIS_FQDN}"
-      REDIS_PORT: "${REDIS_PORT}"
-      REDIS_PW: "${REDIS_PW}"
-      # MISP
-      MISP_FQDN: "${MISP_FQDN}"
-      MISP_BASEURL: "${MISP_BASEURL}"
       # Timezone
       TZ: "${TZ-}"
       # Logging options
