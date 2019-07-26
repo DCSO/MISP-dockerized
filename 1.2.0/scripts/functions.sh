@@ -531,7 +531,7 @@ func_query_log_settings(){
 # Questions for CRON Settings
 func_query_cron_settings(){
   info "Check cron settings ..."
-  read -rp"$STARTMSG How often you to start a cronjob? [ Dafault: 3600(s) | 0 means deactivated ]: " -ei "$CRON_INTERVAL"  CRON_INTERVAL
+  read -rp"$STARTMSG How often should the cronjob be started? [ Dafault: 3600(s) | 0 means deactivated ]: " -ei "$CRON_INTERVAL"  CRON_INTERVAL
   read -rp"$STARTMSG Which user id do you want to use for the cron job execution? [ Default: 1 ]: " -ei "$CRON_USER_ID"  CRON_USER_ID
 }
 
