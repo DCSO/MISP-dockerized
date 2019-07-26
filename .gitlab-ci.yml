@@ -20,8 +20,8 @@ variables:
     # CUSTOM_REGISTRY_PW
   # Set via Job:
     # CURRENT_VERSION
-  DOCKER_HOST: tcp://localhost:2375/
-  DOCKER_DRIVER: overlay2
+  # DOCKER_HOST: tcp://docker:2375/
+  # DOCKER_DRIVER: overlay2
 
 
 before_script:
