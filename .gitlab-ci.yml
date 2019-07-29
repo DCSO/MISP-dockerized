@@ -1,4 +1,4 @@
-image: gitlab.dcso.lolcat:4567/misp/helper-containers:docker_dind
+image: gitlab.dcso.lolcat:4567/misp/helper-containers:docker
 
 
 services:
