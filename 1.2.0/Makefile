@@ -32,7 +32,7 @@ support:
 
 # Show MISP Information
 version:
-	docker exec misp-server 
+	docker exec misp-server echo "$$VERSION"
 
 # Build Configuration
 build-config:
@@ -43,26 +43,11 @@ build-config:
 # Start Docker environment
 pull:
 	@echo " ###########	Pull Environment	###########"
-	docker run \
-	    --name misp-robot-init \
-		--rm \
-	    	--network="host" \
-	    	-v $(CURDIR):/srv/MISP-dockerized \
-    	-v $(CURDIR)/scripts:/srv/scripts:ro \
-		-v ~/.docker:/root/.docker:ro \
-		-v /var/run/docker.sock:/var/run/docker.sock:ro \
-		$(shell cat $(CURDIR)/config/config.env|grep DOCKER_REGISTRY|cut -d = -f 2)/misp-dockerized-robot:$(shell cat $(CURDIR)/config/config.env|grep ROBOT_CONTAINER_TAG|cut -d = -f 2) sh -c "docker-compose -f /srv/MISP-dockerized/docker-compose.yml -f /srv/MISP-dockerized/docker-compose.override.yml pull "
+	@scripts/pull.sh
+
 deploy: 
 	@echo " ###########	Deploy Environment	###########"
-	docker run \
-	    --name misp-robot-init \
-		--rm \
-	    	--network="host" \
-	    	-v $(CURDIR):/srv/MISP-dockerized \
-    	-v $(CURDIR)/scripts:/srv/scripts:ro \
-		-v ~/.docker:/root/.docker:ro \
-		-v /var/run/docker.sock:/var/run/docker.sock:ro \
-		$(shell cat $(CURDIR)/config/config.env|grep DOCKER_REGISTRY|cut -d = -f 2)/misp-dockerized-robot:$(shell cat $(CURDIR)/config/config.env|grep ROBOT_CONTAINER_TAG|cut -d = -f 2) sh -c "docker-compose -f /srv/MISP-dockerized/docker-compose.yml -f /srv/MISP-dockerized/docker-compose.override.yml up -d "
+	@scripts/deploy.sh
 	@echo " ###########	MISP environment is ready	###########"
 	@echo "Please go to: https://$(shell cat config/config.env|grep MISP_FQDN|cut -d = -f 2)"
 	@echo "Login credentials:"
@@ -119,10 +104,36 @@ update: pull deploy
 test:
 	@make -C ../.ci test
 
+# backup all services
+backup-all:
+	@scripts/backup_restore.sh backup all
+backup-server:
+	@scripts/backup_restore.sh backup server
+backup-redis:
+	@scripts/backup_restore.sh backup redis
+backup-db:
+	@scripts/backup_restore.sh backup mysql
+backup-proxy:
+	@scripts/backup_restore.sh backup proxy
+backup-robot:
+	@scripts/backup_restore.sh backup robot
+backup-ssl: copy-ssl
+
+# restore service
+restore-all:
+	@scripts/backup_restore.sh restore all
+restore-server:
+	@scripts/backup_restore.sh restore server
+restore-redis:
+	@scripts/backup_restore.sh restore redis
+restore-db:
+	@scripts/backup_restore.sh restore mysql
+restore-proxy:
+	@scripts/backup_restore.sh restore proxy
+restore-robot:
+	@scripts/backup_restore.sh restore robot
 
 ####################	used in misp-robot	####################
-DOCKER_EXEC=docker exec -ti
-#DOCKER_EXEC= "docker run -it --rm "
 
 # configure
 configure:
@@ -136,6 +147,7 @@ change-ssl: config-ssl
 config-ssl: copy-ssl
 	docker restart misp-server
 	docker restart misp-proxy
+
 copy-ssl:
 	-docker cp $(CURDIR)/config/ssl/cert.pem misp-proxy:/etc/nginx/ssl/
 	-docker cp $(CURDIR)/config/ssl/key.pem misp-proxy:/etc/nginx/ssl/
@@ -161,35 +173,6 @@ change-pgp: copy-pgp
 copy-pgp:
 	-docker cp $(CURDIR)/config/pgp/*.asc misp-server:/var/www/.gnupg/
 	docker exec misp-server change-pgp
-
-# backup all services
-backup-all:
-	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh backup all"
-backup-server:
-	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh backup server"
-backup-redis:
-	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh backup redis"
-backup-db:
-	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh backup mysql"
-backup-proxy:
-	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh backup proxy"
-backup-robot:
-	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh backup robot"
-backup-ssl: copy-ssl
-
-# restore service
-restore-all:
-	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh restore"
-restore-server:
-	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh restore server"
-restore-redis:
-	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh restore redis"
-restore-db:
-	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh restore mysql"
-restore-proxy:
-	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh restore proxy"
-restore-robot:
-	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh restore robot"
 
 ##############################
 #	Performance Section
