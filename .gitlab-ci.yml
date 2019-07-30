@@ -1,5 +1,4 @@
 #image: gitlab.dcso.lolcat:4567/misp/helper-containers:docker
-image: docker:latest
 
 
 services:
@@ -26,6 +25,7 @@ variables:
 
 
 before_script:
+- printenv|sort
 - docker info
 # Include Variables
 - source .ci/00_vars.sh
