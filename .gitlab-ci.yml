@@ -1,4 +1,5 @@
-image: gitlab.dcso.lolcat:4567/misp/helper-containers:docker
+#image: gitlab.dcso.lolcat:4567/misp/helper-containers:docker
+image: docker:latest
 
 
 services:
