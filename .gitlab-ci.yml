@@ -1,5 +1,5 @@
 #image: gitlab.dcso.lolcat:4567/misp/helper-containers:docker
-
+image: docker:latest
 
 services:
   - docker:dind
@@ -21,11 +21,12 @@ variables:
   # Set via Job:
     # CURRENT_VERSION
   # DOCKER_HOST: tcp://docker:2375/
-  # DOCKER_DRIVER: overlay2
+  DOCKER_DRIVER: overlay2
 
 
 before_script:
 - printenv|sort
+- docker ps
 - docker info
 # Include Variables
 - source .ci/00_vars.sh
