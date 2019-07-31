@@ -2,7 +2,7 @@ image: gitlab.dcso.lolcat:4567/misp/helper-containers:docker
 #image: docker:latest
 
 services:
-  - docker:dind
+  - docker:18-dind
 
 stages:
 - test
@@ -20,8 +20,8 @@ variables:
     # CUSTOM_REGISTRY_PW
   # Set via Job:
     # CURRENT_VERSION
-  DOCKER_HOST: docker:2376
-  DOCKER_TLS_VERIFY: 1
+  # DOCKER_HOST: docker:2376
+  # DOCKER_TLS_VERIFY: 1
   DOCKER_DRIVER: overlay2
   #DOCKER_TLS_CERTDIR: ""
 
