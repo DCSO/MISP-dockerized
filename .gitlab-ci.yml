@@ -20,9 +20,9 @@ variables:
     # CUSTOM_REGISTRY_PW
   # Set via Job:
     # CURRENT_VERSION
-  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_HOST: docker:2376
   DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: ""
+  #DOCKER_TLS_CERTDIR: ""
 
 
 before_script:
