@@ -26,8 +26,6 @@ variables:
 
 
 before_script:
-- printenv|sort
-- docker ps
 - docker info
 # Include Variables
 - source .ci/00_vars.sh
