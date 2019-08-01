@@ -192,6 +192,7 @@ func_check_if_vars_exists() {
   # Cron
   [ -z "${CRON_INTERVAL-}" ] && CRON_INTERVAL=3600 && QUERY_CRON="yes"
   [ -z "${CRON_USER_ID-}" ]  && CRON_USER_ID=1 && QUERY_CRON="yes"
+  [ -z "${CRON_SERVER_IDS-}" ]  && CRON_SERVER_IDS='1' && QUERY_CRON="yes"
 
   # Timezone
   [ -z "${TZ-}" ] && TZ="Europe/Berlin" && QUERY_TIMEZONE="yes"
@@ -385,6 +386,7 @@ services:
       # Cron
       CRON_INTERVAL: "${CRON_INTERVAL}"
       CRON_USER_ID: "${CRON_USER_ID}"
+      CRON_SERVER_IDS: "${CRON_SERVER_IDS}"
       # PHP
       PHP_MEMORY_LIMIT: "${PHP_MEMORY_LIMIT}"
       PHP_MAX_EXECUTION_TIME: "${PHP_MAX_EXECUTION_TIME}"

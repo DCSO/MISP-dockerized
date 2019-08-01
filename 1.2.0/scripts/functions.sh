@@ -98,7 +98,7 @@ func_check_git() {
             STATUS="FAIL"
             error "[FAIL] Git is not installed. \t\t\tPlease install it first!"
         else
-            echo "[OK] Git is installed. \t\t\tOutput: $(git --version)"
+            info "[OK] Git is installed. \t\t\tOutput: $(git --version)"
     fi
 }
 
@@ -118,8 +118,8 @@ func_check_URL(){
             warn "[WARN] Check: $URL"
             warn "       Result: Connection not available."
         else
-            echo "[OK]   Check: $URL"
-            echo "       Result: $COMMAND."
+            info "[OK]   Check: $URL"
+            info "       Result: $COMMAND."
     fi
 }
 
@@ -135,14 +135,14 @@ check_folder_write(){
                 error "[FAIL] Can not create '$FOLDER' folder."
             else
                 # user is in docker group
-                echo "[OK] Folder $FOLDER exists."
+                info "[OK] Folder $FOLDER exists."
                 touch "$FOLDER/test"
                 if [ ! -e "$FOLDER/test" ]
                     then
                         STATUS="FAIL"
                         error "[FAIL] No write permissions in '$FOLDER'. Please ensure that user '${whoami}' has write permissions.'"
                     else
-                        echo "[OK] Testfile in '$FOLDER' can be created."
+                        info "[OK] Testfile in '$FOLDER' can be created."
                         rm "$FOLDER/test"
                 fi
         fi
@@ -164,26 +164,34 @@ check_folder_write(){
 func_default_container_version() {
   info_same_line "Check container version ..."
   # Container Tags
-  [ -z ${SERVER_TAG-} ] && SERVER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE"|grep server|cut -d : -f 3)"
-  [ -z ${PROXY_CONTAINER_TAG-} ] && PROXY_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep proxy|cut -d : -f 3)"
-  [ -z ${ROBOT_CONTAINER_TAG-} ] && ROBOT_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep robot|cut -d : -f 3)"
-  [ -z ${MISP_MODULES_CONTAINER_TAG-} ] && MISP_MODULES_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep modules|cut -d : -f 3)"
-  [ -z ${POSTFIX_CONTAINER_TAG-} ] && POSTFIX_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep postfix|cut -d : -f 3)"
-  [ -z ${REDIS_CONTAINER_TAG-} ] && REDIS_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep redis|cut -d : -f 3)"
-  [ -z ${DB_CONTAINER_TAG-} ] && DB_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep db|cut -d : -f 3)"
-  [ -z ${MONITORING_CONTAINER_TAG-} ] && MONITORING_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep monitoring|cut -d : -f 3)"
+  [ -z "${SERVER_TAG-}" ] && SERVER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE"|grep server|cut -d : -f 3)"
+  [ -z "${PROXY_CONTAINER_TAG-}" ] && PROXY_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep proxy|cut -d : -f 3)"
+  [ -z "${ROBOT_CONTAINER_TAG-}" ] && ROBOT_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep robot|cut -d : -f 3)"
+  [ -z "${MISP_MODULES_CONTAINER_TAG-}" ] && MISP_MODULES_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep modules|cut -d : -f 3)"
+  [ -z "${POSTFIX_CONTAINER_TAG-}" ] && POSTFIX_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep postfix|cut -d : -f 3)"
+  [ -z "${REDIS_CONTAINER_TAG-}" ] && REDIS_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep redis|cut -d : -f 3)"
+  [ -z "${DB_CONTAINER_TAG-}" ] && DB_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep db|cut -d : -f 3)"
+  [ -z "${MONITORING_CONTAINER_TAG-}" ] && MONITORING_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep monitoring|cut -d : -f 3)"
   if [ "${DEV_MODE-}" = true ]; then
-    [ -z "$(echo "$POSTFIX_CONTAINER_TAG"|grep dev)" ] && POSTFIX_CONTAINER_TAG="$POSTFIX_CONTAINER_TAG-dev"
-    [ -z "$(echo "$SERVER_TAG"|grep dev)" ] && SERVER_TAG="$SERVER_TAG-dev"
-    [ -z "$(echo "$PROXY_CONTAINER_TAG"|grep dev)" ] && PROXY_CONTAINER_TAG="$PROXY_CONTAINER_TAG-dev"
-    [ -z "$(echo "$ROBOT_CONTAINER_TAG"|grep dev)" ] && ROBOT_CONTAINER_TAG="$ROBOT_CONTAINER_TAG-dev"
-    [ -z "$(echo "$MISP_MODULES_CONTAINER_TAG"|grep dev)" ] && MISP_MODULES_CONTAINER_TAG="$MISP_MODULES_CONTAINER_TAG-dev"
-    [ -z "$(echo "$REDIS_CONTAINER_TAG"|grep dev)" ] && REDIS_CONTAINER_TAG="$REDIS_CONTAINER_TAG-dev"
-    [ -z "$(echo "$DB_CONTAINER_TAG"|grep dev)" ] && DB_CONTAINER_TAG="$DB_CONTAINER_TAG-dev"
-    [ -z "$(echo "$MONITORING_CONTAINER_TAG"|grep dev)" ] && MONITORING_CONTAINER_TAG="$MONITORING_CONTAINER_TAG-dev"
-    [ -z "$(echo "$MISP_NIGHTLY_TAG"|grep dev)" ] && MISP_NIGHTLY_TAG="$MISP_NIGHTLY_TAG-dev"
+    # shellcheck disable=SC2143
+    [ -z "$(command echo "$POSTFIX_CONTAINER_TAG"|grep dev)" ] && POSTFIX_CONTAINER_TAG="$POSTFIX_CONTAINER_TAG-dev"
+    # shellcheck disable=SC2143
+    [ -z "$(command echo "$SERVER_TAG"|grep dev)" ] && SERVER_TAG="$SERVER_TAG-dev"
+    # shellcheck disable=SC2143
+    [ -z "$(command echo "$PROXY_CONTAINER_TAG"|grep dev)" ] && PROXY_CONTAINER_TAG="$PROXY_CONTAINER_TAG-dev"
+    # shellcheck disable=SC2143
+    [ -z "$(command echo "$ROBOT_CONTAINER_TAG"|grep dev)" ] && ROBOT_CONTAINER_TAG="$ROBOT_CONTAINER_TAG-dev"
+    # shellcheck disable=SC2143
+    [ -z "$(command echo "$MISP_MODULES_CONTAINER_TAG"|grep dev)" ] && MISP_MODULES_CONTAINER_TAG="$MISP_MODULES_CONTAINER_TAG-dev"
+    # shellcheck disable=SC2143
+    [ -z "$(command echo "$REDIS_CONTAINER_TAG"|grep dev)" ] && REDIS_CONTAINER_TAG="$REDIS_CONTAINER_TAG-dev"
+    # shellcheck disable=SC2143
+    [ -z "$(command echo "$DB_CONTAINER_TAG"|grep dev)" ] && DB_CONTAINER_TAG="$DB_CONTAINER_TAG-dev"
+    # shellcheck disable=SC2143
+    [ -z "$(command echo "$MONITORING_CONTAINER_TAG"|grep dev)" ] && MONITORING_CONTAINER_TAG="$MONITORING_CONTAINER_TAG-dev"
+    # shellcheck disable=SC2143
+    [ -z "$(command echo "$MISP_NIGHTLY_TAG"|grep dev)" ] && MISP_NIGHTLY_TAG="$MISP_NIGHTLY_TAG-dev"
   fi
-  echo "done"
 }
 
 # Function to Check if Configuration Files exists
@@ -358,7 +366,7 @@ func_query_mail_settings(){
   
   while (true)
   do
-    read -rp"$STARTMSG Should the MISP enable mailing? [y/n]: " -ei "$MAIL_ENABLE" MAIL_ENABLE
+    read -rp "$STARTMSG Should the MISP enable mailing? [y/n]: " -ei "$MAIL_ENABLE" MAIL_ENABLE
     case $MAIL_ENABLE in
       [yY][eE][sS]|[yY])
         MAIL_ENABLE="yes"
@@ -372,7 +380,7 @@ func_query_mail_settings(){
         
         while (true)
         do
-          read -rp"$STARTMSG Should we enable debugging options for a special peer? [y/n]: " -ei "$MAIL_QUESTION_DEBUG_PEERS" MAIL_QUESTION_DEBUG_PEERS
+          read -rp "$STARTMSG Should we enable debugging options for a special peer? [y/n]: " -ei "$MAIL_QUESTION_DEBUG_PEERS" MAIL_QUESTION_DEBUG_PEERS
           case $MAIL_QUESTION_DEBUG_PEERS in
             [yY][eE][sS]|[yY])
               MAIL_QUESTION_DEBUG_PEERS=yes
@@ -434,14 +442,14 @@ func_query_redis_settings(){
 # Questions for PGP
 func_query_pgp_settings(){
   info "Check PGP settings ..."
-  read -rp"$STARTMSG Would you start with PGP? [y/N] " -ei "$PGP_ENABLE" response
+  read -rp "$STARTMSG Would you start with PGP? [y/N] " -ei "$PGP_ENABLE" response
   case $response in
   [yY][eE][sS]|[yY])
     PGP_ENABLE="yes"
     # If pgp public or private key file not exists, but you would start with pgp, we exit.
     if [ ! -f "$PGP_PRIVATE_KEY" ] || [ ! -f "$PGP_PUBLIC_KEY" ] ;
     then
-      echo "$STARTMSG [ERROR] No, PGP public and / or private key found in $PGP_PATH"
+      error "[ERROR] No, PGP public and / or private key found in $PGP_PATH"
       exit 1
     fi
     ;;
@@ -454,14 +462,14 @@ func_query_pgp_settings(){
 # Questions for S/MIME
 func_query_smime_settings(){
   info "Check S/MIME settings ..."
-  read -rp"$STARTMSG Would you start with S/MIME? [y/N] " -ei "$SMIME_ENABLE" response
+  read -rp "$STARTMSG Would you start with S/MIME? [y/N] " -ei "$SMIME_ENABLE" response
   case $response in
   [yY][eE][sS]|[yY])
     SMIME_ENABLE="yes"
     # If smime cert or key file not exists, but you would start with smime, we exit.
     if [ ! -f "$SMIME_CERT" ] || [ ! -f "$SMIME_KEY" ] ;
     then
-      echo "$STARTMSG [ERROR] No, S/MIME certificate and/or private key found in $SMIME_PATH"
+      error "[ERROR] No, S/MIME certificate and/or private key found in $SMIME_PATH"
       exit 1
     fi
     ;;
@@ -497,7 +505,7 @@ func_query_log_settings(){
   case $SYSLOG_QUESTION_USE_SYSLOG in
   [yY][eE][sS]|[yY])
     SYSLOG_QUESTION_USE_SYSLOG="yes"
-    read -rp"$STARTMSG Do you require syslog logging to an remote host if yes, please enter Hostname or IP, if not leave the field empty ? [DEFAULT: $SYSLOG_REMOTE_HOST]: " -ei "$SYSLOG_REMOTE_HOST"  SYSLOG_REMOTE_HOST
+    read -rp "Do you require syslog logging to an remote host if yes, please enter Hostname or IP, if not leave the field empty ? [DEFAULT: $SYSLOG_REMOTE_HOST]: " -ei "$SYSLOG_REMOTE_HOST"  SYSLOG_REMOTE_HOST
     [ -n "$SYSLOG_REMOTE_HOST" ] && SYSLOG_REMOTE_LINE="syslog-address: tcp://$SYSLOG_REMOTE_HOST"
     [ -n "$SYSLOG_REMOTE_HOST" ] && echo "We use $SYSLOG_REMOTE_LINE to send docker logs. Continue in 5 seconds..." && sleep 5
 
@@ -531,54 +539,55 @@ func_query_log_settings(){
 # Questions for CRON Settings
 func_query_cron_settings(){
   info "Check cron settings ..."
-  read -rp"$STARTMSG How often should the cronjob be started? [ Dafault: 3600(s) | 0 means deactivated ]: " -ei "$CRON_INTERVAL"  CRON_INTERVAL
-  read -rp"$STARTMSG Which user id do you want to use for the cron job execution? [ Default: 1 ]: " -ei "$CRON_USER_ID"  CRON_USER_ID
+  read -rp "$STARTMSG How often should the cronjob be started? [ Dafault: 3600(s) | 0 means deactivated ]: " -ei "$CRON_INTERVAL"  CRON_INTERVAL
+  read -rp "$STARTMSG Which user id do you want to use for the cron job execution? [ Default: 1 ]: " -ei "$CRON_USER_ID"  CRON_USER_ID
+  read -rp "$STARTMSG Which server ids do you want to use for the cron job execution? [ Default: 1 ]: " -ei "$CRON_SERVER_IDS"  CRON_SERVER_IDS
 }
 
 # Questions for PHP Settings
 func_query_php_settings(){
    info "Check PHP settings ..."
-   read -rp"Set PHP variable memory_limit? [ Default: $PHP_MEMORY_LIMIT ]: " -ei "$PHP_MEMORY_LIMIT"  PHP_MEMORY_LIMIT
-   read -rp"Set PHP variable max_execution_time? [ Default: $PHP_MAX_EXECUTION_TIME ]: " -ei "$PHP_MAX_EXECUTION_TIME"  PHP_MAX_EXECUTION_TIME
-   read -rp"Set PHP variable post_max_size? [ Default: $PHP_POST_MAX_SIZE ]: " -ei "$PHP_POST_MAX_SIZE"  PHP_POST_MAX_SIZE
-   read -rp"Set PHP variable upload_max_filesize? [ Default: $PHP_UPLOAD_MAX_FILESIZE ]: " -ei "$PHP_UPLOAD_MAX_FILESIZE"  PHP_UPLOAD_MAX_FILESIZE
+   read -rp "$STARTMSG Set PHP variable memory_limit? [ Default: $PHP_MEMORY_LIMIT ]: " -ei "$PHP_MEMORY_LIMIT"  PHP_MEMORY_LIMIT
+   read -rp "$STARTMSG Set PHP variable max_execution_time? [ Default: $PHP_MAX_EXECUTION_TIME ]: " -ei "$PHP_MAX_EXECUTION_TIME"  PHP_MAX_EXECUTION_TIME
+   read -rp "$STARTMSG Set PHP variable post_max_size? [ Default: $PHP_POST_MAX_SIZE ]: " -ei "$PHP_POST_MAX_SIZE"  PHP_POST_MAX_SIZE
+   read -rp "$STARTMSG Set PHP variable upload_max_filesize? [ Default: $PHP_UPLOAD_MAX_FILESIZE ]: " -ei "$PHP_UPLOAD_MAX_FILESIZE"  PHP_UPLOAD_MAX_FILESIZE
 }
 
 func_query_misp_modules() {
    info "Check MISP module settings ..."
-   read -rp"Do you want to enable MISP-module debug mode? [ Default: $MISP_MODULES_DEBUG ]: " -ei "$MISP_MODULES_DEBUG"  MISP_MODULES_DEBUG
+   read -rp "$STARTMSG Do you want to enable MISP-module debug mode? [ Default: $MISP_MODULES_DEBUG ]: " -ei "$MISP_MODULES_DEBUG"  MISP_MODULES_DEBUG
 }
 
 func_query_latest_misp_server() {
   info "Check MISP server version ..."
-  read -rp"Do you want to enable nightly unsupported MISP server container? [ Default: $MISP_QUESTION_USE_NIGHTLY_BUILD ]: " -ei "$MISP_QUESTION_USE_NIGHTLY_BUILD"  MISP_QUESTION_USE_NIGHTLY_BUILD
+  read -rp "$STARTMSG Do you want to enable nightly unsupported MISP server container? [ Default: $MISP_QUESTION_USE_NIGHTLY_BUILD ]: " -ei "$MISP_QUESTION_USE_NIGHTLY_BUILD"  MISP_QUESTION_USE_NIGHTLY_BUILD
   case $MISP_QUESTION_USE_NIGHTLY_BUILD in
   [yY][eE][sS]|[yY])
     SERVER_TAG=$MISP_NIGHTLY_TAG
     ;;
   *)
-    echo
+    command echo
     ;;
   esac
 }
 
 func_query_ssl() {
   info "Check SSL configuration ..."
-  read -rp "Do you want to enable SSL passphrase capabilities? [ Default: $SSL_PASSPHRASE_ENABLE ]: " -ei "$SSL_PASSPHRASE_ENABLE"  SSL_PASSPHRASE_ENABLE
+  read -rp "$STARTMSG Do you want to enable SSL passphrase capabilities? [ Default: $SSL_PASSPHRASE_ENABLE ]: " -ei "$SSL_PASSPHRASE_ENABLE"  SSL_PASSPHRASE_ENABLE
   case $SSL_PASSPHRASE_ENABLE in
   [yY][eE][sS]|[yY])
     SSL_PASSPHRASE_ENABLE="yes"
-    read -rp "Which SSL passphrase should we set? (You can leave it empty and we files.) : " -ei "$SSL_PASSPHRASE"  SSL_PASSPHRASE
+    read -rp "$STARTMSG Which SSL passphrase should we set? (You can leave it empty and we files.) : " -ei "$SSL_PASSPHRASE"  SSL_PASSPHRASE
     if [ -z "$SSL_PASSPHRASE" ]
     then
       # read -rp "Name of SSL passphrase file NGINX ? [ Default: $SSL_PASSPHRASE_NGINX_CUSTOM_FILE ]: " -ei "$SSL_PASSPHRASE_NGINX_CUSTOM_FILE"  SSL_PASSPHRASE_NGINX_CUSTOM_FILE
-      echo "We search the NGINX and Apache2 files in $PWD/config/ssl/"
-      echo "NGINX File: $SSL_PASSPHRASE_NGINX_CUSTOM_FILE"
+      info "We search the NGINX and Apache2 files in $PWD/config/ssl/"
+      info "NGINX File: $SSL_PASSPHRASE_NGINX_CUSTOM_FILE"
       command echo
     fi
     ;;
   *)
-    echo "We disabled the SSL passphrase capabilites. (Default)"
+    info "We disabled the SSL passphrase capabilites. (Default)"
     ;;
   esac
 }
