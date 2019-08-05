@@ -27,11 +27,12 @@ variables:
 
 
 before_script:
-- docker info
+#- docker info
 # Include Variables
 - source .ci/00_vars.sh
 # Install dependencies
-- .ci/01_before_install.sh
+#- .ci/01_before_install.sh
+- git config --global user.name "MISP-dockerized-bot"
 
 shellcheck:
   stage: test
@@ -41,7 +42,6 @@ shellcheck:
   script:
     - find . -path "*.sh" -type f -print -exec shellcheck {} +
   allow_failure: true     # If you would check via shellcheck, but not to fail it there is any found.
-
 
 .env_test_only:
   stage: test
