@@ -53,7 +53,7 @@ echo "misp-modules:"
 docker logs misp-modules --tail 20
 command echo
 
-if ! docker exec misp-robot bash -c "/srv/scripts/test.sh 2> /srv/MISP-dockerized-testbench/error.txt"
+if ! docker exec misp-robot bash -c "/srv/scripts/test.sh"
 then
     docker cp misp-robot:/srv/MISP-dockerized-testbench/error.txt "$REPORT_FOLDER/" 
     command echo 
