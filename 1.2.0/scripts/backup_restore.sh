@@ -1,8 +1,7 @@
 #!/bin/sh
 set -eu
-set -xv
 
-if [ "$(docker ps -qf name=\"misp-robot\")" ];then
+if [ -n "$(docker ps -qf name="misp-robot")" ];then
   echo "I try to start backup_restore script from current running misp-robot"
 else
   echo "No misp-robot is identified, I start a temporary misp-robot"
@@ -28,9 +27,9 @@ else
       "$DOCKER_REGISTRY"/misp-dockerized-robot:"$ROBOT_CONTAINER_TAG" sh -c "docker-compose -f /srv/MISP-dockerized/current/docker-compose.yml -f /srv/MISP-dockerized/current/docker-compose.override.yml up -d misp-robot"
 fi
 
-# Start script
 
-[ "${1-}" = "restore" ] && make install
-sleep 2
-echo "Start backup_restore script..."
-docker exec -ti misp-robot sh -c "/srv/scripts/backup_restore.sh $*"
+# If you want to restore first install environment
+  [ "${1-}" = "restore" ] && make install && sleep 2
+# Start script
+  echo "Start backup_restore script..."
+  docker exec -ti misp-robot sh -c "/srv/scripts/backup_restore.sh $*"
