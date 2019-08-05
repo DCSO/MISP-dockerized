@@ -1,7 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 #description     :This script remove all misp docker container, their volumes and the /opt/misp path.
 #==============================================================================
 set -eu
+
+command echo
 
 # Variables
 NC='\033[0m' # No Color
@@ -60,8 +62,7 @@ if [ "${CI-}" = "true" ];then
     DELETE_VOLUMES="yes"
 fi
 
-echo "This will remove MISP-dockerized container=$DELETE_CONTAINER, volumes=$DELETE_VOLUMES, network=$DELETE_NETWORK, images=$DELETE_IMAGES and dangling images=$DELETE_PRUNE? Are you sure? (y): "
-[ "${CI-}" = "true" ] || read -r USER_GO
+[ "${CI-}" = "true" ] || read -rp "$STARTMSG This will remove MISP-dockerized container=$DELETE_CONTAINER, volumes=$DELETE_VOLUMES, network=$DELETE_NETWORK, images=$DELETE_IMAGES and dangling images=$DELETE_PRUNE? Are you sure? (y): " -ei "y" USER_GO
 [ "${CI-}" = "true" ] && USER_GO="y"
 
 if [ "$USER_GO" = "y" ]; then
