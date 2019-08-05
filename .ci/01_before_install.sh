@@ -6,7 +6,6 @@ STARTMSG="[before_install]"
 echo
 echo "$STARTMSG Install requirements..."
     
-    
     # Gitlab Alpine Image:
     if [ "$GITLAB_CI" = "true" ]; then
     ### INTEGRATED in gitlab.dcso.lolcat:4567/misp/helper-containers:docker_compose
@@ -40,10 +39,5 @@ echo "$STARTMSG Install requirements..."
 
 # Show version of docker-compose:
     docker-compose -v
-
-# Set Git Options
-    echo
-    echo "$STARTMSG Set Git options..."
-    git config --global user.name "MISP-dockerized-bot"
 
 echo "$STARTMSG $0 is finished."
