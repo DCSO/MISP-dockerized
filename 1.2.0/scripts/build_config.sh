@@ -228,14 +228,14 @@ if [ "${AUTOMATE_BUILD-}" = "true" ]
     # Automated Startup only for travis
     ################################################
     # ask no questions only defaults
-    warn "Automatic build..."
+    warn "CI installation..."
     ####
     # set hostname to an fix one
     MISP_FQDN="misp.example.com"
     MISP_BASEURL="https://$MISP_FQDN"
 
   else
-    warn "Manual build ..."
+    warn "Default installation ..."
     # Hostname
     [ "${QUERY_myHOSTNAME-}" = "yes" ] && func_query_hostname
     # Network
