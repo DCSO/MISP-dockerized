@@ -3,7 +3,7 @@ set -eu
 set -xv
 
 if [ "$(docker ps -qf name=\"misp-robot\")" ];then
-  echo "I try to start backup script from current running misp-robot"
+  echo "I try to start backup_restore script from current running misp-robot"
 else
   echo "No misp-robot is identified, I start a temporary misp-robot"
 	
@@ -29,4 +29,8 @@ else
 fi
 
 # Start script
+
+[ "${1-}" = "restore" ] && make install
+sleep 2
+echo "Start backup_restore script..."
 docker exec -ti misp-robot sh -c "/srv/scripts/backup_restore.sh $*"
