@@ -61,6 +61,8 @@ deploy:
 	@echo "MISP now finishes some configuration tasks to ensure that everything works properly."
 	@echo "It may take 5-10 minutes for MISP to become fully available."
 	@echo "Please do not turn off or restart the server during this time."
+	@echo
+	@echo
 
 
 # delete all misp container, volumes and images
@@ -124,27 +126,29 @@ backup-robot:
 backup-ssl: copy-ssl
 
 # restore service
-
-restore-all: restore-prep
+restore:
 	@scripts/backup_restore.sh restore all
 
-restore-server: restore-prep
-	@scripts/backup_restore.sh restore server
+# restore-all:
+# 	@scripts/backup_restore.sh restore all
 
-restore-redis: restore-prep
-	@scripts/backup_restore.sh restore redis
+# restore-server:
+# 	@scripts/backup_restore.sh restore server
 
-restore-db: restore-prep
-	@scripts/backup_restore.sh restore mysql
+# restore-redis:
+# 	@scripts/backup_restore.sh restore redis
 
-restore-proxy: restore-prep
-	@scripts/backup_restore.sh restore proxy
+# restore-db:
+# 	@scripts/backup_restore.sh restore mysql
 
-restore-robot: restore-prep
-	@scripts/backup_restore.sh restore robot
+# restore-proxy:
+# 	@scripts/backup_restore.sh restore proxy
 
-restore-config: restore-prep
-	@scripts/backup_restore.sh restore config
+# restore-robot:
+# 	@scripts/backup_restore.sh restore robot
+
+# restore-config:
+# 	@scripts/backup_restore.sh restore config
 
 ####################	used in misp-robot	####################
 
