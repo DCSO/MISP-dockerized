@@ -37,12 +37,12 @@ set -eu
 ##  import functions
 #################################################
   # Import existing configuration
-  echo -en "\e[1;32m$STARTMSG Check and import existing configuration file ...\e[0m"
+  echo -en "\e[1;32m$STARTMSG Check and import existing configuration file ...\e[0m "
   # shellcheck disable=SC1090
   [ -f "$CONFIG_FILE" ] && source "$CONFIG_FILE"
   echo "done"
   # Import functions file
-  echo -en "\e[1;32m$STARTMSG Check and import global functions.sh file ...\e[0m" 
+  echo -en "\e[1;32m$STARTMSG Check and import global functions.sh file ...\e[0m " 
   # shellcheck disable=SC1090
   [ -f "$FUNCTIONS_FILE" ] && source "$FUNCTIONS_FILE" 
   echo "done"
@@ -51,7 +51,7 @@ set -eu
 
 # Function to set default values
 func_check_if_vars_exists() {
-  info_same_line "Check if all vars exists..."
+  info_same_line "Check if all vars exists ... "
   #
   # Default Variables for the config
   #
@@ -207,7 +207,7 @@ func_check_if_vars_exists() {
 
 
   #
-  echo "...done"
+  echo "done"
 }
 
 #################################################
@@ -228,14 +228,14 @@ if [ "${AUTOMATE_BUILD-}" = "true" ]
     # Automated Startup only for travis
     ################################################
     # ask no questions only defaults
-    info "Automatic build..."
+    warn "Automatic build..."
     ####
     # set hostname to an fix one
     MISP_FQDN="misp.example.com"
     MISP_BASEURL="https://$MISP_FQDN"
 
   else
-    info "Manual build ..."
+    warn "Manual build ..."
     # Hostname
     [ "${QUERY_myHOSTNAME-}" = "yes" ] && func_query_hostname
     # Network
@@ -483,6 +483,7 @@ cat << EOF > "$CONFIG_FILE"
 # ------------------------------
 CRON_INTERVAL="${CRON_INTERVAL}"
 CRON_USER_ID="${CRON_USER_ID}"
+CRON_SERVER_IDS="${CRON_SERVER_IDS}"
 
 # ------------------------------
 # Container System Proxy

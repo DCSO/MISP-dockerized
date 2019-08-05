@@ -78,7 +78,7 @@ func_check_docker() {
     #
     #   Check DOCKER
     #
-    info "Check Docker..."
+    info "Check Docker... "
     if [ -z "$(which docker)" ] 
         then
             STATUS="FAIL"
@@ -92,7 +92,7 @@ func_check_git() {
     #
     #   Check GIT
     #
-    info "Check Git..."
+    info "Check Git... "
     if [ -z "$(which git)" ] 
         then
             STATUS="FAIL"
@@ -107,7 +107,7 @@ func_check_URL(){
     # CHECK required URLs
     #
     URL="$1"
-    info "Check URL $URL..."
+    info "Check URL $URL... "
 
     [ "$CONTAINER_SYSTEM_QUESTION_USE_PROXY" = "yes" ] && PROXY=" -x $CONTAINER_SYSTEM_HTTPS_PROXY"
     OPTIONS="-vs --connect-timeout 60 -m 30 $PROXY"
@@ -128,7 +128,7 @@ check_folder_write(){
     #   Check Write permissions
     #
     FOLDER="$1"
-    info "Check write permissions $FOLDER ..."
+    info "Check write permissions $FOLDER ... "
     if [ ! -e "$FOLDER" ]
             then
                 STATUS="FAIL"
@@ -162,7 +162,7 @@ check_folder_write(){
 
 # Function for the Container Versions
 func_default_container_version() {
-  info_same_line "Check container version ..."
+  info_same_line "Check container version... "
   # Container Tags
   [ -z "${SERVER_TAG-}" ] && SERVER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE"|grep server|cut -d : -f 3)"
   [ -z "${PROXY_CONTAINER_TAG-}" ] && PROXY_CONTAINER_TAG="$(grep image: "$DOCKER_COMPOSE_FILE" |grep proxy|cut -d : -f 3)"
@@ -192,6 +192,7 @@ func_default_container_version() {
     # shellcheck disable=SC2143
     [ -z "$(command echo "$MISP_NIGHTLY_TAG"|grep dev)" ] && MISP_NIGHTLY_TAG="$MISP_NIGHTLY_TAG-dev"
   fi
+  echo "done"
 }
 
 # Function to Check if Configuration Files exists
@@ -235,7 +236,7 @@ func_query_timezone(){
 
 # Questions for Hostname
 func_query_hostname(){
-  info "Check hostname ..."
+  info "Check hostname ... "
   # read Hostname for MISP Instance
   read -rp "$STARTMSG Hostname (FQDN - example.org is not a valid FQDN) [DEFAULT: $MISP_FQDN]: " -ei "$MISP_FQDN" MISP_FQDN
   [ -z "${MISP_BASEURL-}" ] && MISP_BASEURL="https://$MISP_FQDN"
@@ -244,18 +245,18 @@ func_query_hostname(){
 
 # Questions for Network
 func_query_network_settings(){
-  info "Check network settings ..."
-  echo "Network settings..."
+  info "Check network settings ... "
+  echo "Network settings... "
   read -rp "$STARTMSG Which MISP Network should we use [DEFAULT: $NETWORK_CONTAINER_ADDRESS_RANGE]: " -ei "$NETWORK_CONTAINER_ADDRESS_RANGE" NETWORK_CONTAINER_ADDRESS_RANGE
   read -rp "$STARTMSG Which MISP Network BRIDGE Interface Name should we use [DEFAULT: $NETWORK_BRIDGE_NAME]: " -ei "$NETWORK_BRIDGE_NAME" NETWORK_BRIDGE_NAME
   read -rp "$STARTMSG If MISP should only available on one interface, which one? [DEFAULT: $NETWORK_BINDING_IPv4]: " -ei "$NETWORK_BINDING_IPv4" NETWORK_BINDING_IPv4
   echo "To Activate this option please show at https://dcso.github.io/MISP-dockerized-docs/admin/docker/docker_bind_interface.html"
-  echo "Continue in 10 seconds ..." && sleep 10
+  echo "Continue in 10 seconds ... " && sleep 10
 }
 
 # Questions for System Proxy Settings
 func_query_system_proxy_settings(){
-  info "Check container system proxy settings ..."
+  info "Check container system proxy settings ... "
   # read Proxy Settings MISP Instance
   while (true)
   do
@@ -282,7 +283,7 @@ func_query_system_proxy_settings(){
 
 # Questions for DB
 func_query_db_settings(){
-  info "Check database settings ..."
+  info "Check database settings ... "
   # check if a own DB is needed
     while (true)
     do
@@ -318,7 +319,7 @@ func_query_db_settings(){
 
 # Questions for Reverse Proxy Settings
 func_query_reverse_proxy_settings(){
-  info "Check reverse proxy settings ..."
+  info "Check reverse proxy settings ... "
   # read HTTP Settings
   # deactivate because MISP does not allow redirection of port:
   #read -p "Which HTTPS Port should we expose [DEFAULT: $HTTPS_PORT]: " -ei "$HTTPS_PORT" HTTPS_PORT
@@ -350,7 +351,7 @@ func_query_reverse_proxy_settings(){
 
 # Questions for MISP Settings
 func_query_misp_settings(){
-  info "Check MISP settings ..."
+  info "Check MISP settings ... "
   # read and set MISP config settings
   # Deactivated:
   # read -p "Which MISP DB prefix should we use [default: $MISP_PREFIX ]: " -ei "$MISP_PREFIX" MISP_PREFIX
@@ -362,7 +363,7 @@ func_query_misp_settings(){
 
 # Questions for Mail
 func_query_mail_settings(){
-  info "Check mail settings ..."
+  info "Check mail settings ... "
   
   while (true)
   do
@@ -418,7 +419,7 @@ func_query_mail_settings(){
 
 # Questions for Redis
 func_query_redis_settings(){
-  info "Check Redis settings ..."
+  info "Check Redis settings ... "
   #
   # Since v.1.2.0 external Redis is default. 
   # But you can choose if you want misp-redis or any other external installed one.
@@ -441,7 +442,7 @@ func_query_redis_settings(){
 
 # Questions for PGP
 func_query_pgp_settings(){
-  info "Check PGP settings ..."
+  info "Check PGP settings ... "
   read -rp "$STARTMSG Would you start with PGP? [y/N] " -ei "$PGP_ENABLE" response
   case $response in
   [yY][eE][sS]|[yY])
@@ -461,7 +462,7 @@ func_query_pgp_settings(){
 
 # Questions for S/MIME
 func_query_smime_settings(){
-  info "Check S/MIME settings ..."
+  info "Check S/MIME settings ... "
   read -rp "$STARTMSG Would you start with S/MIME? [y/N] " -ei "$SMIME_ENABLE" response
   case $response in
   [yY][eE][sS]|[yY])
@@ -482,11 +483,12 @@ func_query_smime_settings(){
 
 # Questions for Docker Registry
 func_query_docker_registry() { 
-  info_same_line "Check Docker registry settings ..."
-  if [ -z "${DOCKER_REGISTRY+x}" ]; then
+  info_same_line "Check Docker registry settings ... "
+  if [ -z "${DOCKER_REGISTRY-}" ]; then
     # Default use hub.docker.com
     DOCKER_REGISTRY="dcso"
     ############## FILE exists ##############
+    echo "done"
     echo
     echo "We switched the container repository to secure DCSO registry."
     echo "      If you want to use the public one from hub.docker.com,"
@@ -495,19 +497,18 @@ func_query_docker_registry() {
   else
     echo "done"
   fi
-
 }
 
 # Questions for Log Settings
 func_query_log_settings(){
-  info "Check log settings ..."
+  info "Check log settings ... "
   read -rp "$STARTMSG Would you enable Syslog logging? [y/n] " -ei "$SYSLOG_QUESTION_USE_SYSLOG" SYSLOG_QUESTION_USE_SYSLOG
   case $SYSLOG_QUESTION_USE_SYSLOG in
   [yY][eE][sS]|[yY])
     SYSLOG_QUESTION_USE_SYSLOG="yes"
     read -rp "Do you require syslog logging to an remote host if yes, please enter Hostname or IP, if not leave the field empty ? [DEFAULT: $SYSLOG_REMOTE_HOST]: " -ei "$SYSLOG_REMOTE_HOST"  SYSLOG_REMOTE_HOST
     [ -n "$SYSLOG_REMOTE_HOST" ] && SYSLOG_REMOTE_LINE="syslog-address: tcp://$SYSLOG_REMOTE_HOST"
-    [ -n "$SYSLOG_REMOTE_HOST" ] && echo "We use $SYSLOG_REMOTE_LINE to send docker logs. Continue in 5 seconds..." && sleep 5
+    [ -n "$SYSLOG_REMOTE_HOST" ] && echo "We use $SYSLOG_REMOTE_LINE to send docker logs. Continue in 5 seconds... " && sleep 5
 
     LOG_SETTINGS='### LOG DRIVER ###
     # for more Information: https://docs.docker.com/compose/compose-file/#logging + https://docs.docker.com/config/containers/logging/syslog/
@@ -538,15 +539,16 @@ func_query_log_settings(){
 
 # Questions for CRON Settings
 func_query_cron_settings(){
-  info "Check cron settings ..."
+  info "Check cron settings ... "
   read -rp "$STARTMSG How often should the cronjob be started? [ Dafault: 3600(s) | 0 means deactivated ]: " -ei "$CRON_INTERVAL"  CRON_INTERVAL
   read -rp "$STARTMSG Which user id do you want to use for the cron job execution? [ Default: 1 ]: " -ei "$CRON_USER_ID"  CRON_USER_ID
   read -rp "$STARTMSG Which server ids do you want to use for the cron job execution? [ Default: 1 ]: " -ei "$CRON_SERVER_IDS"  CRON_SERVER_IDS
+  echo "done"
 }
 
 # Questions for PHP Settings
 func_query_php_settings(){
-   info "Check PHP settings ..."
+   info "Check PHP settings ... "
    read -rp "$STARTMSG Set PHP variable memory_limit? [ Default: $PHP_MEMORY_LIMIT ]: " -ei "$PHP_MEMORY_LIMIT"  PHP_MEMORY_LIMIT
    read -rp "$STARTMSG Set PHP variable max_execution_time? [ Default: $PHP_MAX_EXECUTION_TIME ]: " -ei "$PHP_MAX_EXECUTION_TIME"  PHP_MAX_EXECUTION_TIME
    read -rp "$STARTMSG Set PHP variable post_max_size? [ Default: $PHP_POST_MAX_SIZE ]: " -ei "$PHP_POST_MAX_SIZE"  PHP_POST_MAX_SIZE
@@ -554,12 +556,12 @@ func_query_php_settings(){
 }
 
 func_query_misp_modules() {
-   info "Check MISP module settings ..."
+   info "Check MISP module settings ... "
    read -rp "$STARTMSG Do you want to enable MISP-module debug mode? [ Default: $MISP_MODULES_DEBUG ]: " -ei "$MISP_MODULES_DEBUG"  MISP_MODULES_DEBUG
 }
 
 func_query_latest_misp_server() {
-  info "Check MISP server version ..."
+  info "Check MISP server version ... "
   read -rp "$STARTMSG Do you want to enable nightly unsupported MISP server container? [ Default: $MISP_QUESTION_USE_NIGHTLY_BUILD ]: " -ei "$MISP_QUESTION_USE_NIGHTLY_BUILD"  MISP_QUESTION_USE_NIGHTLY_BUILD
   case $MISP_QUESTION_USE_NIGHTLY_BUILD in
   [yY][eE][sS]|[yY])
@@ -572,7 +574,7 @@ func_query_latest_misp_server() {
 }
 
 func_query_ssl() {
-  info "Check SSL configuration ..."
+  info "Check SSL configuration ... "
   read -rp "$STARTMSG Do you want to enable SSL passphrase capabilities? [ Default: $SSL_PASSPHRASE_ENABLE ]: " -ei "$SSL_PASSPHRASE_ENABLE"  SSL_PASSPHRASE_ENABLE
   case $SSL_PASSPHRASE_ENABLE in
   [yY][eE][sS]|[yY])
