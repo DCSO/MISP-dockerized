@@ -46,7 +46,7 @@ services:
   
   ### MISP Modules ###
   misp-modules:
-    image: dcso/misp-dockerized-misp-modules:3
+    image: dcso/misp-dockerized-misp-modules:latest
     container_name: misp-modules
     restart: unless-stopped
     networks:
@@ -56,7 +56,7 @@ services:
 
   ### MISP Server ###
   misp-server:
-    image: dcso/misp-dockerized-server:2.4.109-debian
+    image: dcso/misp-dockerized-server:2.4.112-debian
     container_name: misp-server
     restart: unless-stopped
     volumes:
@@ -141,7 +141,7 @@ services:
 
   ### Monitoring ###
   misp-monitoring:
-    image: dcso/misp-dockerized-monitoring:1
+    image: dcso/misp-dockerized-monitoring:latest
     container_name: misp-monitoring
     restart: unless-stopped
     # ports:
