@@ -62,7 +62,7 @@ services:
     volumes:
     ###### mips-server ######
     # Apache2 Configuration
-    - misp-vol-server-apache2-config-sites-enabled:/etc/apache2/sites-enabled
+    #- misp-vol-server-apache2-config-sites-enabled:/etc/apache2/sites-enabled
     # Volume with Certificates
     - misp-vol-ssl:/etc/apache2/ssl
     # Volume with PGP Key
@@ -70,7 +70,7 @@ services:
     # Volume with S/MIME Certificate and Key
     - misp-vol-smime:/var/www/MISP/.smime
     ###### misp-redis ######
-    - misp-vol-redis-data:/redis_data_dir
+    #- misp-vol-redis-data:/redis_data_dir
     # MISP Configurations:
     - misp-vol-server-MISP-app-Config:/var/www/MISP/app/Config
     - misp-vol-server-MISP-cakeresque-config:/var/www/MISP/app/Plugin/CakeResque/Config
@@ -123,13 +123,13 @@ services:
     # Volume with S/MIME Certificate and Key
     - misp-vol-smime:/srv/misp-smime
     ###### mips-server ######
-    - misp-vol-server-apache2-config-sites-enabled:/srv/misp-server/apache2/sites-enabled
+    #- misp-vol-server-apache2-config-sites-enabled:/srv/misp-server/apache2/sites-enabled
     - misp-vol-server-MISP-app-Config:/srv/misp-server/MISP/Config
     - misp-vol-server-MISP-cakeresque-config:/srv/misp-server/MISP/CakeResque/Config
     - misp-vol-server-MISP-tmp:/srv/misp-server/MISP/app/tmp
     - misp-vol-server-MISP-attachments:/srv/misp-server/MISP/app/files
     ###### misp-proxy ######
-    - misp-vol-proxy-conf:/srv/misp-proxy/conf.d
+    #- misp-vol-proxy-conf:/srv/misp-proxy/conf.d
     ###### misp-redis ######
     - misp-vol-redis-data:/srv/misp-redis
     ###### misp-db ######
