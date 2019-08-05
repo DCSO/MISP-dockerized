@@ -13,7 +13,7 @@ cd ..
 [ -z "$4" ] && echo "$STARTMSG No parameter with the test type [ long_test | no_test ]. Exit now." && exit 1
 [ -z "$5" ] && echo "$STARTMSG No parameter with the current version. Exit now." && exit 1
 
-REGISTRY_URL="$1"
+#REGISTRY_URL="$1"
 #REGISTRY_USER="$2"
 #REGISTRY_PW="$3"
 TEST_TYPE="$4"
@@ -38,9 +38,9 @@ CURRENT_VERSION="$5"
 
 # Build config and deploy environent
     # shellcheck disable=SC2154
-    echo "$STARTMSG Build Configuration..." && $makefile_main build-config
-    echo "$STARTMSG Pull Images..." && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml pull -q
-    echo "$STARTMSG Start Environment..." && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml up -d
+    echo "$STARTMSG Build Configuration... " && $makefile_main build-config
+    echo "$STARTMSG Pull Images... " && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml pull -q
+    echo "$STARTMSG Start Environment... " && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml up -d
     ###########################################################
     #       ATTENTION   ATTENTION   ATTENTION
     #   If you want to use docker-in-docker (dind) you cant start docker container on another filesystem!!!! You need to do it from the docker-compose directly!!!
@@ -48,7 +48,7 @@ CURRENT_VERSION="$5"
     ############################################################
 
 # Wait a short time
-    sleep 10
+    for i in 10 9 ... 1; do echo "$i"; sleep 1; done
 # show docker container
      echo "$STARTMSG show running docker container..." &&  docker ps
 
@@ -62,7 +62,9 @@ then
         echo "$STARTMSG show running docker container..." &&  docker ps
 fi  
 
+# Configure SSL, SMIME, PGP
 $makefile_main configure
+
 # show config folders
     ls -laR config/
 
