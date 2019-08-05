@@ -42,29 +42,20 @@ done
 
 echo "################		Start Tests		###########################"
 [ ! -d "$REPORT_FOLDER" ] && mkdir "$REPORT_FOLDER"
-command echo
-echo "misp-proxy:"
-docker logs misp-proxy --tail 20
-command echo
-echo "misp-server:"
-docker logs misp-server --tail 20
-command echo
-echo "misp-modules:"
-docker logs misp-modules --tail 20
-command echo
+docker exec misp-robot bash -c "/srv/scripts/test.sh"
 
-if ! docker exec misp-robot bash -c "/srv/scripts/test.sh"
-then
-    docker cp misp-robot:/srv/MISP-dockerized-testbench/error.txt "$REPORT_FOLDER/" 
-    command echo 
-    echo "ERROR, please look at $REPORT_FOLDER/error.txt" 
-    command echo 
-    head -n 10 "$REPORT_FOLDER"/error.txt 
-    exit 1
-fi
-    docker cp misp-robot:/srv/MISP-dockerized-testbench/reports/. "$REPORT_FOLDER/"
-    echo "#################################################################"
-    echo "For the report output: cat $REPORT_FILE"
-    echo "#################################################################"
+command echo && echo "misp-proxy:"
+docker logs misp-proxy --tail 20
+command echo && echo "misp-server:"
+docker logs misp-server --tail 20
+command echo && echo "misp-modules:"
+docker logs misp-modules --tail 20
+command echo 
+#     exit 1
+# fi
+#     docker cp misp-robot:/srv/MISP-dockerized-testbench/reports/. "$REPORT_FOLDER/"
+#     echo "#################################################################"
+#     echo "For the report output: cat $REPORT_FILE"
+#     echo "#################################################################"
 
 
