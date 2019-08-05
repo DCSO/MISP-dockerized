@@ -168,15 +168,14 @@ copy-ssl:
 	docker restart misp-server
 	docker restart misp-proxy
 
+# x509 SSL Passphrase
 change-ssl-passphrase: copy-ssl-passphrase
 copy-ssl-passphrase:
-	docker cp $(CURDIR)/config/ssl/ssl.passphrase misp-proxy:/etc/nginx/ssl/
-	#docker cp misp-proxy:/etc/nginx/ssl/ssl.passphrase $(CURDIR)/config/ssl/
+	-docker cp $(CURDIR)/config/ssl/ssl.passphrase misp-proxy:/etc/nginx/ssl/
 
 # S/MIME
 change-smime: copy-smime
 copy-smime:
-	#$(DOCKER_EXEC) misp-robot /bin/bash -c "ansible-playbook -i 'localhost,' -c local -t smime /etc/ansible/playbooks/robot-playbook/site.yml"
 	-docker cp $(CURDIR)/config/smime/cert.pem misp-server:/var/www/MISP/.smime/
 	-docker cp $(CURDIR)/config/smime/key.pem misp-server:/var/www/MISP/.smime/
 
