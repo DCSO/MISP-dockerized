@@ -57,6 +57,10 @@ deploy:
 	@echo "Do not forget to add / change your SSL certificate with:    make change-ssl"
 	@echo "Do not forget to add / change your S/MIME certificate with:    make change-smime"
 	@echo "Do not forget to add / change your PGP certificate with:    make change-pgp'"
+	@echo
+	@echo "MISP now finishes some configuration tasks to ensure that everything works properly. \
+			It may take 5-10 minutes for MISP to become fully available. \
+			Please do not turn off or restart the server during this time. "
 
 
 # delete all misp container, volumes and images
@@ -120,18 +124,27 @@ backup-robot:
 backup-ssl: copy-ssl
 
 # restore service
-restore-all:
+
+restore-all: restore-prep
 	@scripts/backup_restore.sh restore all
-restore-server:
+
+restore-server: restore-prep
 	@scripts/backup_restore.sh restore server
-restore-redis:
+
+restore-redis: restore-prep
 	@scripts/backup_restore.sh restore redis
-restore-db:
+
+restore-db: restore-prep
 	@scripts/backup_restore.sh restore mysql
-restore-proxy:
+
+restore-proxy: restore-prep
 	@scripts/backup_restore.sh restore proxy
-restore-robot:
+
+restore-robot: restore-prep
 	@scripts/backup_restore.sh restore robot
+
+restore-config: restore-prep
+	@scripts/backup_restore.sh restore config
 
 ####################	used in misp-robot	####################
 
@@ -145,9 +158,6 @@ configure:
 # x509 SSL Certificate
 change-ssl: config-ssl
 config-ssl: copy-ssl
-	docker restart misp-server
-	docker restart misp-proxy
-
 copy-ssl:
 	-docker cp $(CURDIR)/config/ssl/cert.pem misp-proxy:/etc/nginx/ssl/
 	-docker cp $(CURDIR)/config/ssl/key.pem misp-proxy:/etc/nginx/ssl/
@@ -155,6 +165,8 @@ copy-ssl:
 	-docker cp misp-proxy:/etc/nginx/ssl/cert.pem $(CURDIR)/config/ssl/
 	-docker cp misp-proxy:/etc/nginx/ssl/key.pem $(CURDIR)/config/ssl/
 	-docker cp misp-proxy:/etc/nginx/ssl/ssl.passphrase $(CURDIR)/config/ssl/
+	docker restart misp-server
+	docker restart misp-proxy
 
 change-ssl-passphrase: copy-ssl-passphrase
 copy-ssl-passphrase:
