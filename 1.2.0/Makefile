@@ -58,22 +58,22 @@ deploy:
 	@echo "Do not forget to add / change your S/MIME certificate with:    make change-smime"
 	@echo "Do not forget to add / change your PGP certificate with:    make change-pgp'"
 	@echo
-	@echo "MISP now finishes some configuration tasks to ensure that everything works properly. \
-			It may take 5-10 minutes for MISP to become fully available. \
-			Please do not turn off or restart the server during this time. "
+	@echo "MISP now finishes some configuration tasks to ensure that everything works properly."
+	@echo "It may take 5-10 minutes for MISP to become fully available."
+	@echo "Please do not turn off or restart the server during this time."
 
 
 # delete all misp container, volumes and images
-delete: copy-ssl
-	scripts/delete_misp_from_host.sh --container --network
+delete: copy-ssl_without_restart
+	@scripts/delete_misp_from_host.sh --container --network
 
-delete-volumes: copy-ssl
-	scripts/delete_misp_from_host.sh --volumes --container --network
+delete-volumes: copy-ssl_without_restart
+	@scripts/delete_misp_from_host.sh --volumes --container --network
 
-delete-images: copy-ssl
-	scripts/delete_misp_from_host.sh --images --container --network
+delete-images: copy-ssl_without_restart
+	@scripts/delete_misp_from_host.sh --images --container --network
 
-delete-all: copy-ssl
+delete-all: copy-ssl_without_restart
 	@scripts/delete_misp_from_host.sh --images --container --network --volumes --prune
 
 
@@ -157,16 +157,16 @@ configure:
 
 # x509 SSL Certificate
 change-ssl: config-ssl
-config-ssl: copy-ssl
-copy-ssl:
+	docker restart misp-server
+	docker restart misp-proxy
+config-ssl: copy-ssl_without_restart
+copy-ssl_without_restart:
 	-docker cp $(CURDIR)/config/ssl/cert.pem misp-proxy:/etc/nginx/ssl/
 	-docker cp $(CURDIR)/config/ssl/key.pem misp-proxy:/etc/nginx/ssl/
 	-docker cp $(CURDIR)/config/ssl/ssl.passphrase misp-proxy:/etc/nginx/ssl/
 	-docker cp misp-proxy:/etc/nginx/ssl/cert.pem $(CURDIR)/config/ssl/
 	-docker cp misp-proxy:/etc/nginx/ssl/key.pem $(CURDIR)/config/ssl/
 	-docker cp misp-proxy:/etc/nginx/ssl/ssl.passphrase $(CURDIR)/config/ssl/
-	docker restart misp-server
-	docker restart misp-proxy
 
 # x509 SSL Passphrase
 change-ssl-passphrase: copy-ssl-passphrase
