@@ -56,7 +56,7 @@ loading_animation() {
 # Build config and deploy environent
     # shellcheck disable=SC2154
     command echo && echo "$STARTMSG Build Configuration... " && $makefile_main build-config
-    command echo && echo "$STARTMSG Pull Images... " && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml -q pull & pid=$!
+    command echo && echo "$STARTMSG Pull Images... " && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml pull -q & pid=$!
     loading_animation ${pid} "Pull Images" 
     command echo && echo "$STARTMSG Start Environment... " && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml up -d
     ###########################################################
