@@ -21,6 +21,24 @@ CURRENT_VERSION="$5"
 #DOCKER_LOGIN_OUTPUT=""
 
 
+# LOADING Animation
+loading_animation() {
+  # How to use: cmd & pid=$! ; loading_animation ${pid} "$2" 
+  pid="${1}"
+
+  spin='-\|/'
+
+  i=0
+  while kill -0 "$pid" 2>/dev/null
+  do
+    i=$(( (i+1) %4 ))
+    # shellcheck disable=SC2059
+    printf "\r${spin:$i:1} ...working $2"
+    sleep .1
+  done
+  command echo ""
+}
+
 ### INTEGRATED in gitlab.dcso.lolcat:4567/misp/helper-containers:docker_compose
 # Login to Docker registry
 # echo "$STARTMSG Try to login to Docker registry... (Only with Gitlab CI)"
@@ -38,7 +56,8 @@ CURRENT_VERSION="$5"
 # Build config and deploy environent
     # shellcheck disable=SC2154
     command echo && echo "$STARTMSG Build Configuration... " && $makefile_main build-config
-    command echo && echo "$STARTMSG Pull Images... " && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml pull
+    command echo && echo "$STARTMSG Pull Images... " && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml -q pull & pid=$!
+    loading_animation ${pid} "Pull Images" 
     command echo && echo "$STARTMSG Start Environment... " && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml up -d
     ###########################################################
     #       ATTENTION   ATTENTION   ATTENTION
