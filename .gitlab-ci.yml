@@ -67,18 +67,19 @@ shellcheck:
   - dev
   - v1.2.0
   script:
-  #   # Test
+  - echo "No task."
+    #   # Test
   # - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
   #   # Tag 
   # - make -C .ci tag REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
-    # Clean Up
-  - echo "##### clean up..." &&  make -C $FOLDER delete
-  # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
-  artifacts:
-    paths: 
-    - .ci/reports/*
-    reports:
-      junit: .ci/reports/*.xml
+  #   # Clean Up
+  # - echo "##### clean up..." &&  make -C $FOLDER delete
+  # # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
+  # artifacts:
+  #   paths: 
+  #   - .ci/reports/*
+  #   reports:
+  #     junit: .ci/reports/*.xml
 
 
 .push_productive_images:
