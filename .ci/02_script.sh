@@ -63,8 +63,6 @@ loading_animation() {
     #   Source: https://stackoverflow.com/questions/31381322/docker-in-docker-cannot-mount-volume
     ############################################################
 
-# Wait a short time
-    for i in 10 9 ... 1; do echo "$i"; sleep 1; done
 # show docker container
      command echo
      echo "$STARTMSG show running docker container..." &&  docker ps
