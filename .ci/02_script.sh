@@ -66,6 +66,7 @@ loading_animation() {
 # show docker container
      command echo
      echo "$STARTMSG show running docker container..." &&  docker ps
+     echo "$STARTMSG show docker images..." &&  docker images
 
 # Automated test
 if [ "$TEST_TYPE" = "long_test" ]
