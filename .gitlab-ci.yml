@@ -26,7 +26,7 @@ variables:
   #DOCKER_TLS_CERTDIR: ""
 
 
-before_install:
+before_script:
 #- docker info
 # Include Variables
 - source .ci/00_vars.sh
@@ -37,7 +37,7 @@ before_install:
 shellcheck:
   stage: test
   image: koalaman/shellcheck-alpine
-  before_install:
+  before_script:
     - echo "Override default before_script"
   script:
     - find . -path "*.sh" -type f -print -exec shellcheck {} +
@@ -89,12 +89,11 @@ shellcheck:
   - master
   - schedules
   - v1.2.0
-  before_script:
+  script:
     # Test
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
     # Tag 
   - make -C .ci tag REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
-  script:
     # Push 
   - make -C .ci push REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
     # Clean Up
