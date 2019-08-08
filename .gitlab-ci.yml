@@ -26,7 +26,7 @@ variables:
   #DOCKER_TLS_CERTDIR: ""
 
 
-before_script:
+before_install:
 #- docker info
 # Include Variables
 - source .ci/00_vars.sh
@@ -37,7 +37,7 @@ before_script:
 shellcheck:
   stage: test
   image: koalaman/shellcheck-alpine
-  before_script:
+  before_install:
     - echo "Override default before_script"
   script:
     - find . -path "*.sh" -type f -print -exec shellcheck {} +
@@ -67,10 +67,10 @@ shellcheck:
   - dev
   - v1.2.0
   script:
-    # Test
-  - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
-    # Tag 
-  - make -C .ci tag REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
+  #   # Test
+  # - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
+  #   # Tag 
+  # - make -C .ci tag REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
     # Clean Up
   - echo "##### clean up..." &&  make -C $FOLDER delete
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
@@ -89,11 +89,12 @@ shellcheck:
   - master
   - schedules
   - v1.2.0
-  script:
+  before_script:
     # Test
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
     # Tag 
   - make -C .ci tag REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
+  script:
     # Push 
   - make -C .ci push REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
     # Clean Up
