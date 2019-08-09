@@ -25,16 +25,20 @@ CURRENT_VERSION="$5"
 loading_animation() {
   # How to use: cmd & pid=$! ; loading_animation ${pid} "$2" 
   pid="${1}"
-
-  spin='-\|/'
-
   i=0
   while kill -0 "$pid" 2>/dev/null
   do
     echo "...working $2"
-    sleep 5
+    sleep 10
   done
   command echo ""
+}
+
+func_pull_image(){
+    for i in "$@"
+    do
+        echo "docker pull ... " && docker pull "$i"
+    done
 }
 
 ### INTEGRATED in gitlab.dcso.lolcat:4567/misp/helper-containers:docker_compose
@@ -54,9 +58,12 @@ loading_animation() {
 # Build config and deploy environent
     # shellcheck disable=SC2154
     command echo && echo "$STARTMSG Build Configuration... " && $makefile_main build-config
-    command echo && echo "$STARTMSG Pull Images... " && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml pull -q & pid=$!
-    loading_animation ${pid} "Pull Images" 
+    # shellcheck disable=SC2046
+    command echo && echo "$STARTMSG Pull Images... " && func_pull_image $(docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml config|grep image|tr -d ' '|cut -c7-)
+    #command echo && echo "$STARTMSG Pull Images... " && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml pull -q & pid=$!
+    #loading_animation ${pid} "Pull Images" 
     command echo && echo "$STARTMSG Start Environment... " && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml up -d
+    docker cp ssl/. misp-proxy:/etc/nginx/ssl/
     ###########################################################
     #       ATTENTION   ATTENTION   ATTENTION
     #   If you want to use docker-in-docker (dind) you cant start docker container on another filesystem!!!! You need to do it from the docker-compose directly!!!
@@ -68,17 +75,24 @@ loading_animation() {
      echo "$STARTMSG show running docker container..." &&  docker ps
      echo "$STARTMSG show docker images..." &&  docker images
 
+set -xv
 # Automated test
 if [ "$TEST_TYPE" = "long_test" ]
 then 
     command echo
     echo "$STARTMSG test environment..." &&  make -C .ci test; 
     # Wait a short time
-        sleep 10
+    max=90
+    for i in $(seq 0 $max)
+    do  
+        k=$max-$i
+        [ $(( k % 10)) -eq 0 ] && "Wait $k seconds until the test starts...";
+    done
     # show docker container
         command echo
         echo "$STARTMSG show running docker container..." &&  docker ps
 fi  
+set +xv
 
 # Configure SSL, SMIME, PGP
 $makefile_main configure
