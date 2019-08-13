@@ -1,4 +1,6 @@
 #!/bin/sh
+set -eu
+
 # https://stackoverflow.com/questions/13068152/grep-exit-codes-in-makefile#13069387
 
 # Variables

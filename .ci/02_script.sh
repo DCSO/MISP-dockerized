@@ -80,17 +80,10 @@ set -xv
 if [ "$TEST_TYPE" = "long_test" ]
 then 
     command echo
-    echo "$STARTMSG test environment..." &&  make -C .ci test; 
-    # Wait a short time
-    max=90
-    for i in $(seq 0 $max)
-    do  
-        k=$max-$i
-        [ $(( k % 10)) -eq 0 ] && "Wait $k seconds until the test starts...";
-    done
+    echo "$STARTMSG Test environment..." &&  make -C .ci test; 
     # show docker container
         command echo
-        echo "$STARTMSG show running docker container..." &&  docker ps
+        echo "$STARTMSG Show running docker container..." &&  docker ps
 fi  
 set +xv
 
@@ -100,3 +93,4 @@ set +xv
 # show config folders
     ls -laR config/
 
+command echo "$STARTMSG ##### FINISHED. #####"
