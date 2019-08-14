@@ -36,11 +36,11 @@ env:
 
 
 before_install:
-  # Include Variables
-  - source .ci/00_vars.sh
-  # Install dependencies
-  - sudo .ci/01_before_install.sh
-  # Add docker-retag executable
+# Include Variables
+- source .ci/00_vars.sh
+# Install dependencies
+- sudo .ci/01_before_install.sh
+# Add docker-retag executable
 - wget -q https://github.com/joshdk/docker-retag/releases/download/0.0.2/docker-retag && chmod +x docker-retag
 
 before_script:
