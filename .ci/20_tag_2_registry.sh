@@ -65,7 +65,7 @@ MONITORING_TAG=$(docker ps -f name=monitoring --format '{{.Image}}'|cut -d : -f 
     fi
 
     # For all container after 1.2.0
-    if version_gt "$CURRENT_VERSION" "1.1.0" ; then
+    if version_gt "$CURRENT_VERSION" "1.2.0" ; then
         func_tag "$REGISTRY_URL/misp-dockerized-db" "$DB_TAG"
         func_tag "$REGISTRY_URL/misp-dockerized-monitoring" "$MONITORING_TAG"
     fi
