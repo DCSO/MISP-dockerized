@@ -37,7 +37,7 @@ loading_animation() {
 func_pull_image(){
     for i in "$@"
     do
-        echo "docker pull ... " && docker pull "$i"
+        echo "Docker pull ... " && docker pull "$i"
     done
 }
 
@@ -50,19 +50,21 @@ func_pull_image(){
 
 ###### Create current folder 
 # Choose the Environment Version
-    command echo && echo "$STARTMSG Create current folder and choose version..."
+    command echo && echo "$STARTMSG Create 'current' folder and choose version ..."
     bash ./FOR_NEW_INSTALL.sh "$CURRENT_VERSION"
     ls -la config/
 
 
 # Build config and deploy environent
     # shellcheck disable=SC2154
-    command echo && echo "$STARTMSG Build Configuration... " && $makefile_main build-config
+    command echo && echo "$STARTMSG Check requirements ... " && $makefile_main requirements
+    # shellcheck disable=SC2154
+    command echo && echo "$STARTMSG Build configuration ... " && $makefile_main build-config
     # shellcheck disable=SC2046
     command echo && echo "$STARTMSG Pull Images... " && func_pull_image $(docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml config|grep image|tr -d ' '|cut -c7-)
     #command echo && echo "$STARTMSG Pull Images... " && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml pull -q & pid=$!
     #loading_animation ${pid} "Pull Images" 
-    command echo && echo "$STARTMSG Start Environment... " && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml up -d
+    command echo && echo "$STARTMSG Start environment ... " && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml up -d
     docker cp .ci/ssl/. misp-proxy:/etc/nginx/ssl/
     ###########################################################
     #       ATTENTION   ATTENTION   ATTENTION
@@ -72,18 +74,18 @@ func_pull_image(){
 
 # show docker container
      command echo
-     echo "$STARTMSG show running docker container..." &&  docker ps
-     echo "$STARTMSG show docker images..." &&  docker images
+     echo "$STARTMSG Show running docker container ..." &&  docker ps
+     echo "$STARTMSG Show Docker images ..." &&  docker images
 
 set -xv
 # Automated test
 if [ "$TEST_TYPE" = "long_test" ]
 then 
     command echo
-    echo "$STARTMSG Test environment..." &&  make -C .ci test; 
+    echo "$STARTMSG Test environment ..." &&  make -C .ci test; 
     # show docker container
         command echo
-        echo "$STARTMSG Show running docker container..." &&  docker ps
+        echo "$STARTMSG Show running docker container ..." &&  docker ps
 fi  
 set +xv
 
