@@ -37,7 +37,7 @@ loading_animation() {
 func_pull_image(){
     for i in "$@"
     do
-        echo "Docker pull $i ... " && docker pull -q "$i" 
+        echo "Docker pull $i ... " && docker pull "$i" > /dev/null
     done
 }
 
