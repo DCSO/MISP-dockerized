@@ -37,7 +37,7 @@ loading_animation() {
 func_pull_image(){
     for i in "$@"
     do
-        echo "Docker pull ... " && docker pull "$i"
+        echo "Docker pull $i ... " && docker pull -q "$i" 
     done
 }
 
@@ -65,7 +65,7 @@ func_pull_image(){
     #command echo && echo "$STARTMSG Pull Images... " && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml pull -q & pid=$!
     #loading_animation ${pid} "Pull Images" 
     command echo && echo "$STARTMSG Start environment ... " && docker-compose -f current/docker-compose.yml -f current/docker-compose.override.yml up -d
-    docker cp .ci/ssl/. misp-proxy:/etc/nginx/ssl/
+    command echo && echo "$STARTMSG Copy SSL to misp-proxy ... " &&docker cp .ci/ssl/. misp-proxy:/etc/nginx/ssl/
     ###########################################################
     #       ATTENTION   ATTENTION   ATTENTION
     #   If you want to use docker-in-docker (dind) you cant start docker container on another filesystem!!!! You need to do it from the docker-compose directly!!!
@@ -77,7 +77,6 @@ func_pull_image(){
      echo "$STARTMSG Show running docker container ..." &&  docker ps
      echo "$STARTMSG Show Docker images ..." &&  docker images
 
-set -xv
 # Automated test
 if [ "$TEST_TYPE" = "long_test" ]
 then 
@@ -87,7 +86,6 @@ then
         command echo
         echo "$STARTMSG Show running docker container ..." &&  docker ps
 fi  
-set +xv
 
 # Configure SSL, SMIME, PGP
     $makefile_main configure
