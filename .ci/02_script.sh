@@ -78,7 +78,7 @@ func_pull_image(){
      echo "$STARTMSG Show Docker images ..." &&  docker images
 
 # Automated test
-if [ "$TEST_TYPE" = "long_test" ]
+if [ "$TEST_TYPE" = "long_test" ] && [ "$CURRENT_VERSION" != "1.0.4" ]
 then 
     command echo
     echo "$STARTMSG Test environment ..." &&  make -C .ci test; 
