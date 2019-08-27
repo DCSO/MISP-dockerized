@@ -1,0 +1,2 @@
+# Patch once a week the container
+@weekly 		make -C /opt/MISP-dockerized deploy
