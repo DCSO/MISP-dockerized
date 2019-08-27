@@ -68,7 +68,7 @@ function check_if_vars_exists() {
   [ -z "$ALLOW_ALL_IPs" ] && ALLOW_ALL_IPs="yes" && QUERY_HTTP="yes"
   [ -z "$client_max_body_size" ] && client_max_body_size="50M" && QUERY_HTTP="yes"
   [ -z "$HTTP_ALLOWED_IP" ] && HTTP_ALLOWED_IP="all" && QUERY_HTTP="yes"
-  [ -z "$PHP_MEMORY" ] && PHP_MEMORY="512M" && QUERY_HTTP="yes"
+  [ -z "$PHP_MEMORY" ] && PHP_MEMORY="2048M" && QUERY_HTTP="yes"
   # MISP
   [ -z "${MISP_prefix+x}" ] && MISP_prefix="" && QUERY_MISP="yes"
   [ -z "$MISP_encoding" ] && MISP_encoding="utf8" && QUERY_MISP="yes"
