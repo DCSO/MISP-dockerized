@@ -1,0 +1,77 @@
+---
+
+2.4.104-debian:
+  stage: unsupported
+  variables:
+    CURRENT_VERSION: 1.2.0
+    SERVER_TAG: $CI_JOB_NAME
+  extends: .push_productive_images
+  allow_failure: true
+
+2.4.105-debian:
+  stage: unsupported
+  variables:
+    CURRENT_VERSION: 1.2.0
+    SERVER_TAG: $CI_JOB_NAME
+  extends: .push_productive_images
+  allow_failure: true
+
+2.4.106-debian:
+  stage: unsupported
+  variables:
+    CURRENT_VERSION: 1.2.0
+    SERVER_TAG: $CI_JOB_NAME
+  extends: .push_productive_images
+  allow_failure: true
+
+2.4.107-debian:
+  stage: unsupported
+  variables:
+    CURRENT_VERSION: 1.2.0
+    SERVER_TAG: $CI_JOB_NAME
+  extends: .push_productive_images
+  allow_failure: true
+
+2.4.108-debian:
+  stage: unsupported
+  variables:
+    CURRENT_VERSION: 1.2.0
+    SERVER_TAG: $CI_JOB_NAME
+  extends: .push_productive_images
+  allow_failure: true
+
+2.4.108-debian:
+  stage: unsupported
+  variables:
+    CURRENT_VERSION: 1.2.0
+    SERVER_TAG: $CI_JOB_NAME
+  extends: .push_productive_images
+  allow_failure: true
+
+2.4.109-debian:
+  stage: unsupported
+  variables:
+    CURRENT_VERSION: 1.2.0
+    SERVER_TAG: $CI_JOB_NAME
+  extends: .push_productive_images
+  allow_failure: true
+
+# 2.4.110 is supported
+
+2.4.111-debian:
+  stage: unsupported
+  variables:
+    CURRENT_VERSION: 1.2.0
+    SERVER_TAG: $CI_JOB_NAME
+  extends: .push_productive_images
+  allow_failure: true
+
+  #########################################
+2.4.nightly-debian:
+  stage: unsupported
+  variables:
+    CURRENT_VERSION: 1.2.0
+    SERVER_TAG: $CI_JOB_NAME
+  extends: .push_productive_images
+  allow_failure: true
+########################################################

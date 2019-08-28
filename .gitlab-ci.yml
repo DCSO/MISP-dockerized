@@ -1,13 +1,14 @@
-image: docker:latest
+image: gitlab.dcso.lolcat:4567/misp/helper-containers:docker
+#image: docker:latest
 
 services:
   - docker:dind
 
 stages:
-- build
 - test
 - scan
-- deploy
+- build
+- unsupported
 
 variables:
   # The following variables are setup via gitlab project group:
@@ -19,116 +20,77 @@ variables:
     # CUSTOM_REGISTRY_PW
   # Set via Job:
     # CURRENT_VERSION
+  # DOCKER_HOST: docker:2376
+  # DOCKER_TLS_VERIFY: 1
   DOCKER_DRIVER: overlay2
+  #DOCKER_TLS_CERTDIR: ""
+
 
 before_script:
+#- docker info
 # Include Variables
 - source .ci/00_vars.sh
 # Install dependencies
-- .ci/01_before_install.sh
+#- .ci/01_before_install.sh
+- git config --global user.name "MISP-dockerized-bot"
 
-
-
-# On all other pull requests and branches exclude dev and master: Build Environment, but do nothing more. No tests. Tests with our Test Framework are only done in the dev branch.
-.env_test_only:
-  stage: build
-  except:
-  - master
-  - dev
-  - 1.2.0
+shellcheck:
+  stage: test
+  image: koalaman/shellcheck-alpine
+  before_script:
+    - echo "Override default before_script"
   script:
-    # Test
-  - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=no_test VERSION=$CURRENT_VERSION
-    # Clean Up
-  - echo "##### clean up..." &&  make -C $FOLDER delete
+    - find . -path "*.sh" -type f -print -exec shellcheck {} +
+  allow_failure: true     # If you would check via shellcheck, but not to fail it there is any found.
 
-.env_test_only_hub.docker.com:
-  stage: build
+.env_test_only:
+  stage: test
+  tags:
+  - dind
   except:
   - master
   - dev
-  - 1.2.0
+  - v1.2.0
   script:
     # Test
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=no_test VERSION=$CURRENT_VERSION
     # Clean Up
-  - echo "##### clean up..." &&  make -C $FOLDER delete
+  - echo "##### clean up..." &&  make delete
 
 
-  
 # On dev Branch: Build Environment and Test it with our own Test Framework
 .long_test:
   stage: test
+  tags:
+  - dind
   only:
   - dev
-  - 1.2.0
-  allow_failure: true
+  - v1.2.0
   script:
-    # Test
-  - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=long_test VERSION=$CURRENT_VERSION
-    # Tag
-  - make -C .ci tag REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW
-    # Clean Up
-  - echo "##### clean up..." &&  make -C $FOLDER delete
-  # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
-  artifacts:
-    paths: 
-    - .ci/reports/*.xml
-    reports:
-      junit: .ci/reports/*.xml
-
-# On dev Branch: Build Environment and Test it with our own Test Framework
-.long_test_hub.docker.com:
-  stage: test
-  only:
-  - dev
-  - 1.2.0
-  script:
-    # Test
-  - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
-    # Tag 
-  - make -C .ci tag REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
-    # Clean Up
-  - echo "##### clean up..." &&  make -C $FOLDER delete
-  # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
-  artifacts:
-    paths: 
-    - .ci/reports/*.xml
-    reports:
-      junit: .ci/reports/*.xml
+  - echo "No task."
+    #   # Test
+  # - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
+  #   # Tag 
+  # - make -C .ci tag REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD
+  #   # Clean Up
+  # - echo "##### clean up..." &&  make -C $FOLDER delete
+  # # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
+  # artifacts:
+  #   paths: 
+  #   - .ci/reports/*
+  #   reports:
+  #     junit: .ci/reports/*.xml
 
 
-
-# On MASTER Branch: Build Environment + retag Images to remove "-dev" tag
 .push_productive_images:
-  stage: deploy
+  stage: build
+  tags:
+  - dind
   only: 
   - master
   - schedules
+  - v1.2.0
   script:
-  # Check internal Registry
-    # Test
-  - make -C .ci script REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW TEST=long_test VERSION=$CURRENT_VERSION
-    # Tag
-  - make -C .ci tag REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW
-    # Push
-  - make -C .ci push REPOURL=$CUSTOM_REGISTRY_URL USER=$CUSTOM_REGISTRY_USER PW=$CUSTOM_REGISTRY_PW
-    # Clean Up
-  - echo "##### clean up..." &&  make -C $FOLDER delete
-  # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
-  artifacts:
-    paths: 
-    - .ci/reports/*.xml
-    reports:
-      junit: .ci/reports/*.xml
-
-.push_productive_images_hub.docker.com:
-  stage: deploy
-  only: 
-  - master
-  - schedules
-  script:
-  # Check hub.docker.com Registry
     # Test
   - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$CURRENT_VERSION
     # Tag 
@@ -140,11 +102,10 @@ before_script:
   # https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-reports
   artifacts:
     paths: 
-    - ./.ci/reports/*.xml
+    - ./.ci/reports/*
     reports:
       junit: ./.ci/reports/*.xml
-
-
+      
 
 .container_scanning:
   # https://docs.gitlab.com/ee/ci/examples/container_scanning.html
@@ -152,6 +113,8 @@ before_script:
   # https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html
   # https://docs.gitlab.com/ee/ci/yaml/#artifactsreportscontainer_scanning-ultimate
   stage: scan
+  tags:
+  - dind
   variables:
     DOCKER_DRIVER: overlay2
     ## Define two new variables based on GitLab's CI/CD predefined variables
@@ -165,6 +128,7 @@ before_script:
 
 
 include:
+  - '.gitlab-unsupported.yml'
   #- '0.1.0/.gitlab-ci.yml'
   #- '0.1.1/.gitlab-ci.yml'
   #- '0.1.2/.gitlab-ci.yml'
@@ -177,6 +141,8 @@ include:
   #- '1.0.0/.gitlab-ci.yml'
   #- '1.0.1/.gitlab-ci.yml'
   #- '1.0.2/.gitlab-ci.yml'
-  - '1.0.3/.gitlab-ci.yml'
+  #- '1.0.3/.gitlab-ci.yml'
+  - '1.0.4/.gitlab-ci.yml'
   #- '1.1.0/.gitlab-ci.yml'
   - '1.1.1/.gitlab-ci.yml'
+  - '1.2.0/.gitlab-ci.yml'

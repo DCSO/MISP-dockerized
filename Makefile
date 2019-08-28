@@ -15,7 +15,7 @@ update:
 	bash ./UPDATE
 
 install:
-	bash ./FOR_NEW_INSTALL.sh
+	bash ./FOR_NEW_INSTALL.sh $(VERSION)
 	make -C current install
 
 new: install
@@ -37,4 +37,3 @@ change-pgp:
 
 backup:
 	make -C current backup-all
-

@@ -19,10 +19,7 @@ pull-latest:
 	docker pull $(REPOURL)/misp-dockerized-misp-modules:latest-dev;
 
 test:
-	@echo "################		Start Tests		###########################"
-	-docker exec misp-robot bash -c "/srv/scripts/test.sh"
-	@if [ ! -d reports ]; then mkdir reports; fi
-	@docker cp misp-robot:/srv/MISP-dockerized-testbench/reports/. reports/
+	@bash 03_test.sh
 
 tag:
 	@bash 20_tag_2_registry.sh $(REPOURL) $(USER) $(PW)

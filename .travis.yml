@@ -4,9 +4,12 @@ addons:
   apt:
     sources:
       - docker-xenial
+  hosts:
+  - misp.example.com
 
 env:
   global:
+  - DOCKER_COMPOSE_VERSION=1.24.1
   # The following variables are setup via gitlab project group:
     # DOCKER_HUB_TOKEN
     # DOCKER_SLUG
@@ -16,10 +19,9 @@ env:
     # CUSTOM_REGISTRY_USER
     # CUSTOM_REGISTRY_PW
   # Docker Username only valid for this repo
-  - secure: "UVqDqQ5UFX8kzaU3wxFg0BUr2Cq0dh4BvuGl2krMkfHPWIseZZYAqctqCvQffKUROD+h+sCALepQZX4ZKsi2a08OJclv6TN8Eri2A3i5dYfBbeZ6rHq4e18bm+dEi00VYbqKMvz0SewqlewpowrKdfnLsO9ZvPr8pdKLWWqCdK90Id/OeQKs+THDtFcshqdtNrDaDBqQsZqWX58oLXzT6jio6hAlIh3MmSRFrx3nplLM5P9xJ3gKy1BIhs+3G26UfTrVxjuwCEsvhpWB52735INkA4vxunHZT/vbP+WDkI3am//pFz6Xg0F+9l8LepaTYT2Ksowq8GZD5lKLnfhknJOvyRhGWiV2k6SYz7cnW66RK630G588O9oa0ol3HnjQYCW9PNnQn11EZUBpcf2BVFEi4k/OGtJarv2dAI9LjLDerMKdHDpVqlAINLlWNrCwgxmg682SvsiEQwurxux9WEcMQacPU0ruTdV6GGgZdu67NEBkOP+Wcn/6ZjVXrPTXCDBSMOO/DVLd/HJyCCs3wkusf7/bdcG5Fta8DSW25VY8pZzfFVG1m5yAvl/Ndgl0wiHfsEUuhLK/TkUOOtFlSspbtnWXG1qzlJOWuFEBS6f5MogOJxQU17gJmCLHg9qvoR/tMv5UfezziwXn7m3mRagy1FMBG9VFf6ri6BR7XC8="
+  #- secure: "UVqDqQ5UFX8kzaU3wxFg0BUr2Cq0dh4BvuGl2krMkfHPWIseZZYAqctqCvQffKUROD+h+sCALepQZX4ZKsi2a08OJclv6TN8Eri2A3i5dYfBbeZ6rHq4e18bm+dEi00VYbqKMvz0SewqlewpowrKdfnLsO9ZvPr8pdKLWWqCdK90Id/OeQKs+THDtFcshqdtNrDaDBqQsZqWX58oLXzT6jio6hAlIh3MmSRFrx3nplLM5P9xJ3gKy1BIhs+3G26UfTrVxjuwCEsvhpWB52735INkA4vxunHZT/vbP+WDkI3am//pFz6Xg0F+9l8LepaTYT2Ksowq8GZD5lKLnfhknJOvyRhGWiV2k6SYz7cnW66RK630G588O9oa0ol3HnjQYCW9PNnQn11EZUBpcf2BVFEi4k/OGtJarv2dAI9LjLDerMKdHDpVqlAINLlWNrCwgxmg682SvsiEQwurxux9WEcMQacPU0ruTdV6GGgZdu67NEBkOP+Wcn/6ZjVXrPTXCDBSMOO/DVLd/HJyCCs3wkusf7/bdcG5Fta8DSW25VY8pZzfFVG1m5yAvl/Ndgl0wiHfsEUuhLK/TkUOOtFlSspbtnWXG1qzlJOWuFEBS6f5MogOJxQU17gJmCLHg9qvoR/tMv5UfezziwXn7m3mRagy1FMBG9VFf6ri6BR7XC8="
   # Docker Password only valid for this repo
-  - secure: "DbvcY54cCCFfCNcqGNL4leThq/a9HTCVf5dj4hX7LKgh7xi9UYWVE9y/v/3i9kmVvptDu4c3xkUw1hKaLXIMJ0xSRvzJMtMQTz4awlymJmYXyJrV1Hvy6O+Xq961xff/gFSLYvntomlhDiA3f5e2VGYLacrVXExyQdy/uvy0I23ceyFgcRb2U0iRuBscWyvvXLyTYtvQFFnMlGwxXl789YK6YYIKf30AOZ6Q7ffm4VRPJ+ppRxJk4HxglBHcE+Ez81OW9PdXJTsUSBw8UcS0ZV7tD1cSOwL3lTCdlVYKEwDnSwIYLbXnnBhm4aG0L2flJ4hHUUk6TIQGTHtG2Z9wihLEjeEqLGg9vr9xE0XJdaL2stM6UgLJa9Oyb2Zl3UUQeaxkXU0LDWnwOBvamGhhWvHWi6qvVOh011Qb7WlLZcBY+Di+EGellb4NG8MvLmU0K0DEUQuCpi9yz5opiy1TYgZwNLBwRcX15nc3ePaqKLPkH5SQxFPMY9DkOpgtGNda7HRkEZ9Zy0d2MizzmS6/PfTKXQOzJordnWJdZ8lPh2mZmPN0Jpv4WsJZtszN+airztCeC0pkkkOurRI1Cz+cxky15QtfOPbuC7/3OCi60m5SoYxqNN172PdCZQdO2VY25YTTRiExLBJkA/Xwmc0b0DZ2maTownJX3yi8HOAhKcA="
-  - CI="true"
+  #- secure: "DbvcY54cCCFfCNcqGNL4leThq/a9HTCVf5dj4hX7LKgh7xi9UYWVE9y/v/3i9kmVvptDu4c3xkUw1hKaLXIMJ0xSRvzJMtMQTz4awlymJmYXyJrV1Hvy6O+Xq961xff/gFSLYvntomlhDiA3f5e2VGYLacrVXExyQdy/uvy0I23ceyFgcRb2U0iRuBscWyvvXLyTYtvQFFnMlGwxXl789YK6YYIKf30AOZ6Q7ffm4VRPJ+ppRxJk4HxglBHcE+Ez81OW9PdXJTsUSBw8UcS0ZV7tD1cSOwL3lTCdlVYKEwDnSwIYLbXnnBhm4aG0L2flJ4hHUUk6TIQGTHtG2Z9wihLEjeEqLGg9vr9xE0XJdaL2stM6UgLJa9Oyb2Zl3UUQeaxkXU0LDWnwOBvamGhhWvHWi6qvVOh011Qb7WlLZcBY+Di+EGellb4NG8MvLmU0K0DEUQuCpi9yz5opiy1TYgZwNLBwRcX15nc3ePaqKLPkH5SQxFPMY9DkOpgtGNda7HRkEZ9Zy0d2MizzmS6/PfTKXQOzJordnWJdZ8lPh2mZmPN0Jpv4WsJZtszN+airztCeC0pkkkOurRI1Cz+cxky15QtfOPbuC7/3OCi60m5SoYxqNN172PdCZQdO2VY25YTTRiExLBJkA/Xwmc0b0DZ2maTownJX3yi8HOAhKcA="
   matrix:
   #- VERSION=0.1.2
   #- VERSION=0.2.0
@@ -27,45 +29,31 @@ env:
   #- VERSION=1.0.0
   #- VERSION=1.0.1
   #- VERSION=1.0.2
-  - VERSION=1.0.3
+  #- VERSION=1.0.3
+  - VERSION=1.0.4
   #- VERSION=1.1.0
   - VERSION=1.1.1
+  - VERSION=1.2.0
 
 
 before_install:
-  # Include Variables
-  - source .ci/00_vars.sh
-  # Install dependencies
-  - sudo .ci/01_before_install.sh
+# Include Variables
+- source .ci/00_vars.sh
+# Install dependencies
+- sudo .ci/01_before_install.sh
+# Add docker-retag executable
+- wget -q https://github.com/joshdk/docker-retag/releases/download/0.0.2/docker-retag && chmod +x docker-retag
 
-jobs:
-  include:
-    - stage: "env_test_only_hub.docker.com"
-      name: "env_test_only_hub.docker.com"
-      if: branch != dev AND branch != master AND type != cron
-      script: 
-      - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=no_test VERSION=$VERSION
-    - stage: "long_test_hub.docker.com"
-      name: "long_test_hub.docker.com"
-      if: branch == dev OR branch == master OR type == cron
-      script: 
-      - make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$VERSION
-      
-# Push all Images found with the current Docker container name to the Docker registries
-#
-# deploy:
-#   provider: script
-#   script: 
-#     - bash .ci/02_script.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD long_test $VERSION;
-#     # Push hub.docker.com
-#     - bash .ci/30_push_2_registry.sh $DOCKER_SLUG $DOCKER_USERNAME $DOCKER_PASSWORD
-#     # Clean Up
-#     - echo "##### clean up..." &&  make -C $FOLDER delete
-#   on:
-#     all_branches: true
-#     condition: $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+ OR $TRAVIS_BRANCH = master
+before_script:
+# Env test only
+- echo "" ; ( [ "$TRAVIS_EVENT_TYPE" = "push" ] || [ "$TRAVIS_EVENT_TYPE" = "pull_request" ] ) && make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=no_test VERSION=$VERSION
+
+script:
+# Long test
+- echo "" ; ( [ "$TRAVIS_BRANCH" = "v1.2.0" ] || [ "$TRAVIS_BRANCH" = "master" ] ) && make -C .ci script REPOURL=$DOCKER_SLUG USER=$DOCKER_USERNAME PW=$DOCKER_PASSWORD TEST=long_test VERSION=$VERSION
+- echo "Images are build via Gitlab CI."
 
 
-# don't notify me when things fail
-notifications:
-  email: false
+# # don't notify me when things fail
+# notifications:
+#   email: false
