@@ -109,7 +109,7 @@ function default_container_version() {
   ############################################
   # Start Global Variable Section
   ############################################
-  MISP_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep server|cut -d : -f 4)"
+  MISP_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep server|cut -d : -f 3)"
   PROXY_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep proxy|cut -d : -f 3)"
   ROBOT_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep robot|cut -d : -f 3)"
   MISP_MODULES_CONTAINER_TAG="$(cat $DOCKER_COMPOSE_FILE |grep image:|grep modules|cut -d : -f 3)"
@@ -509,7 +509,7 @@ fi
 
 if [ "$DEV_MODE" == true -o DOCKER_REGISTRY != "dockerhub.dcso.de" ]; then
   IMAGE_MISP_MODULES="image: ${DOCKER_REGISTRY}/misp-dockerized-misp-modules:${MISP_MODULES_CONTAINER_TAG}"
-  IMAGE_MISP_SERVER="image: localhost:5000/misp-dockerized-server:${MISP_CONTAINER_TAG}"
+  IMAGE_MISP_SERVER="image: ${DOCKER_REGISTRY}/misp-dockerized-server:${MISP_CONTAINER_TAG}"
   IMAGE_MISP_PROXY="image: ${DOCKER_REGISTRY}/misp-dockerized-proxy:${PROXY_CONTAINER_TAG}"
   IMAGE_MISP_ROBOT="image: ${DOCKER_REGISTRY}/misp-dockerized-robot:${ROBOT_CONTAINER_TAG}"
   IMAGE_MISP_REDIS="image: ${DOCKER_REGISTRY}/misp-dockerized-redis:${REDIS_CONTAINER_TAG}"
