@@ -204,7 +204,7 @@ backup-ssl: copy-ssl
 
 # restore service
 restore-all:
-	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh restore"
+	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh restore all"
 restore-server:
 	$(DOCKER_EXEC) misp-robot /bin/bash -c "scripts/backup_restore.sh restore server"
 restore-redis:
