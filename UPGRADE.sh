@@ -62,40 +62,42 @@ else
     fi
 
     # check if directory exists
-    [ ! -d current ] && echo "There is a bug, please open a ticket on https://github.com/DCSO/MISP-dockerized/issues and report the Error. Now I will exit." && exit
+    [ ! -d current ] && echo "There is a bug, please open a ticket on https://github.com/DCSO/MISP-dockerized/issues and report the error. Exit now." && exit
     
-    # Restore Data
-    OPTION=""
-    while [ ! "$OPTION" = "exit" ]
-    do
-        read -r -p "Which component volumes you want to restore? [ server | proxy | database | all OR exit ]: " -ei "$OPTION" OPTION
-        
-        case $OPTION in
-        [aA][lL][lL])
-            make -C current/ restore-all
-            break
-            ;;
-        [sS][eE][rR][vV][eE][rR])
-            make -C current/ restore-server
-            break
-            ;;
-        [pP][rR][oO][xX][yY])
-            make -C current/ restore-server
-            break
-            ;;
-        [dD][aA][tT][aA][bB][aA][sS][eE])
-            make -C current/ restore-server
-            break
-            ;;
-        [eE][xX][iI][tT])
-            OPTION="exit"
-            break;
-            ;;
-        *)
-            echo -e "\nplease choose only options from the text below!\n"
-        ;;
-        esac
-    done
+    echo "--- Done Upgrading ---"
+    echo "If something is missing or there are problems with the login, please manually execute the function *make restore* from the MISP-dockerized base directory to restore the saved data."
+    # Restore Data - normaly not needed
+    #OPTION=""
+    #while [ ! "$OPTION" = "exit" ]
+    #do
+    #    read -r -p "Which component volumes you want to restore? [ server | proxy | database | all OR exit ]: " -ei "$OPTION" OPTION
+    #    
+    #   case $OPTION in
+    #    [aA][lL][lL])
+    #        make -C current/ restore-all
+    #        break
+    #        ;;
+    #    [sS][eE][rR][vV][eE][rR])
+    #        make -C current/ restore-server
+    #        break
+    #        ;;
+    #    [pP][rR][oO][xX][yY])
+    #        make -C current/ restore-server
+    #        break
+    #        ;;
+    #    [dD][aA][tT][aA][bB][aA][sS][eE])
+    #        make -C current/ restore-server
+    #        break
+    #        ;;
+    #    [eE][xX][iI][tT])
+    #        OPTION="exit"
+    #        break;
+    #        ;;
+    #    *)
+    #        echo -e "\nplease choose only options from the text below!\n"
+    #    ;;
+    #    esac
+    #done
     
     echo "Delete old unused files:"
     for i in .env UPGRADE_STEP_1 docker-compose.*
