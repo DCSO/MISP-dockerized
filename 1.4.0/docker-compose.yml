@@ -44,6 +44,8 @@ services:
       retries: 3
     volumes:
     - misp-vol-redis-data:/data/
+    ###### Basefolder for backups
+    - /opt/MISP-dockerized:/srv/MISP-dockerized
     networks:
       misp-backend:
         aliases:
@@ -84,6 +86,8 @@ services:
     - misp-vol-server-MISP-attachments:/var/www/MISP/app/files
     ###### misp-db ######
     - misp-vol-db-data:/var/lib/mysql
+    ###### Basefolder for backups
+    - /opt/MISP-dockerized:/srv/MISP-dockerized
     networks:
       misp-backend:
         aliases:
@@ -106,6 +110,8 @@ services:
       #- misp-vol-proxy-conf:/etc/nginx/conf.d
       # SSL 
       - misp-vol-ssl:/etc/nginx/ssl
+      ###### Basefolder for backups
+      - /opt/MISP-dockerized:/srv/MISP-dockerized
     networks:
       misp-backend:
         aliases:
