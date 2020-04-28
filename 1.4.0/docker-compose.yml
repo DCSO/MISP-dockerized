@@ -120,7 +120,7 @@ services:
 
   ### Robot ###
   misp-robot:
-    image: dockerhub.dcso.de/misp-dockerized-robot:2
+    image: dockerhub.dcso.de/misp-dockerized-robot:2.6
     container_name: misp-robot
     restart: unless-stopped
     tty: true
