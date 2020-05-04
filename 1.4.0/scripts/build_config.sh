@@ -206,7 +206,7 @@ function query_proxy_settings(){
   # read Proxy Settings MISP Instance
   while (true)
   do
-    read -r -p "$STARTMSG Should we use an proxy configuration? [y/N] " -ei "$QUESTION_USE_PROXY" QUESTION_USE_PROXY
+    read -r -p "$STARTMSG Should we use a proxy configuration? [y/N] " -ei "$QUESTION_USE_PROXY" QUESTION_USE_PROXY
     case $QUESTION_USE_PROXY in
       [yY][eE][sS]|[yY])
         QUESTION_USE_PROXY="yes"
@@ -221,7 +221,7 @@ function query_proxy_settings(){
         break
         ;;
       *)
-        echo -e "\nplease only choose [y|n] for the question!\n"
+        echo -e "\nplease only choose [y|n] for this question!\n"
       ;;
     esac
   done  
@@ -252,7 +252,7 @@ function query_db_settings(){
           exit 1
           ;;
         *)
-          echo -e "\n$STARTMSG Please only choose [y|n] for the question!\n"
+          echo -e "\n$STARTMSG Please only choose [y|n] for this question!\n"
       esac
     done
   read -p "$STARTMSG Which DB Name should we use for DB Connection [DEFAULT: $MYSQL_DATABASE]: " -ei "$MYSQL_DATABASE" MYSQL_DATABASE
@@ -270,29 +270,29 @@ function query_http_settings(){
   
   
   read -p "$STARTMSG Which HTTP Serveradmin mailadress should we use [DEFAULT: $HTTP_SERVERADMIN]: " -ei "$HTTP_SERVERADMIN" HTTP_SERVERADMIN
-
-  while (true)
-  do
-    read -r -p "$STARTMSG Should we allow access to misp from every IP? [y/N] " -ei "$ALLOW_ALL_IPs" ALLOW_ALL_IPs
-    case $ALLOW_ALL_IPs in
-      [yY][eE][sS]|[yY])
-        ALLOW_ALL_IPs=yes
-        HTTP_ALLOWED_IP="all"
-        break
-        ;;
-      [nN][oO]|[nN])
-        ALLOW_ALL_IPs=no
-        read -p "$STARTMSG Which IPs should have access? [DEFAULT: 192.168.0.0/16 172.16.0.0/12 10.0.0.0/8]: " -ei "$HTTP_ALLOWED_IP" HTTP_ALLOWED_IP
-        break
-        ;;
-      [eE][xX][iI][tT])
-        exit 1
-        ;;
-      *)
-        echo -e "\n$STARTMSG Please only choose [y|n] for the question!\n"
-      ;;
-    esac
-  done
+  ALLOW_ALL_IPs=yes
+  #while (true)
+  #do
+  #  read -r -p "$STARTMSG Should we allow access to misp from every IP? [y/N] " -ei "$ALLOW_ALL_IPs" ALLOW_ALL_IPs
+  #  case $ALLOW_ALL_IPs in
+  #    [yY][eE][sS]|[yY])
+  #      ALLOW_ALL_IPs=yes
+  #      HTTP_ALLOWED_IP="all"
+  #      break
+  #      ;;
+  #    [nN][oO]|[nN])
+  #      ALLOW_ALL_IPs=no
+  #      read -p "$STARTMSG Which IPs should have access? [DEFAULT: 192.168.0.0/16 172.16.0.0/12 10.0.0.0/8]: " -ei "$HTTP_ALLOWED_IP" HTTP_ALLOWED_IP
+  #      break
+  #      ;;
+  #    [eE][xX][iI][tT])
+  #      exit 1
+  #      ;;
+  #    *)
+  #      echo -e "\n$STARTMSG Please only choose [y|n] for the question!\n"
+  #    ;;
+  #  esac
+  #done
 }
 
 # Questions for MISP Settings into MISP-server
@@ -300,8 +300,8 @@ function query_misp_settings(){
   # read and set MISP config settings
   # read -p "Which MISP DB prefix should we use [default: '']: " -ei $MISP_prefix MISP_prefix
   # read -p "Which MISP Encoding should we use [default: utf8]: " -ei $MISP_encoding  MISP_encoding
-  read -p "$STARTMSG If you do a fresh Installation, you should have a Salt. Is this SALT ok [DEFAULT: generated]: " -ei $MISP_SALT  MISP_SALT
-  read -p "$STARTMSG Do you require the analyse column at List Events page? [DEFAULT: no]: " -ei $ADD_ANALYZE_COLUMN  ADD_ANALYZE_COLUMN
+  read -p "$STARTMSG If you do a fresh installation, you should define a SALT. Is this SALT ok [DEFAULT: generated]: " -ei $MISP_SALT  MISP_SALT
+  #read -p "$STARTMSG Do you require the analyse column at List Events page? [DEFAULT: no]: " -ei $ADD_ANALYZE_COLUMN  ADD_ANALYZE_COLUMN
   read -p "$STARTMSG Which sender mailadress should MISP use [DEFAULT: $SENDER_ADDRESS]: " -ei "$SENDER_ADDRESS" SENDER_ADDRESS
 }
 
@@ -330,7 +330,7 @@ function query_postfix_settings(){
         exit 1
         ;;
       *)
-        echo -e "\n$STARTMSG Please only choose [y|n] for the question!\n"
+        echo -e "\n$STARTMSG Please only choose [y|n] for this question!\n"
       ;;
     esac
   done
@@ -338,20 +338,23 @@ function query_postfix_settings(){
 
 # Questions for Redis
 function query_redis_settings(){
-  echo
-  read -rp "$STARTMSG Do you want to use an external Redis database? [y/n]: " -ei "n"  response
-  case $response in
-  [yY][eE][sS]|[yY])
-    USE_EXTERNAL_REDIS="yes"
-    read -rp "$STARTMSG Which FQDN has the external redis database? [Example: $REDIS_FQDN ]: " -ei "$REDIS_FQDN"  REDIS_FQDN
-    read -rp "$STARTMSG Which port has the external redis database? [Default: 6379 ]: " -ei "$REDIS_PORT"  REDIS_PORT
-    read -rp "$STARTMSG Which password has the external redis database? [Default: '' (empty) ]: " -ei ""  REDIS_PW
-    ;;
-  *)
-    USE_EXTERNAL_REDIS="no"
-    REDIS_FQDN="localhost"
-    ;;
-  esac
+  USE_EXTERNAL_REDIS="no"
+  REDIS_FQDN="localhost"
+
+#  echo
+#  read -rp "$STARTMSG Do you want to use an external Redis database? [y/n]: " -ei "n"  response
+#  case $response in
+#  [yY][eE][sS]|[yY])
+#    USE_EXTERNAL_REDIS="yes"
+#    read -rp "$STARTMSG Which FQDN has the external redis database? [Example: $REDIS_FQDN ]: " -ei "$REDIS_FQDN"  REDIS_FQDN
+#    read -rp "$STARTMSG Which port has the external redis database? [Default: 6379 ]: " -ei "$REDIS_PORT"  REDIS_PORT
+#    read -rp "$STARTMSG Which password has the external redis database? [Default: '' (empty) ]: " -ei ""  REDIS_PW
+#    ;;
+#  *)
+#    USE_EXTERNAL_REDIS="no"
+#    REDIS_FQDN="localhost"
+#    ;;
+#  esac
 }
 
 # Questions for PGP
@@ -393,7 +396,7 @@ function query_docker_registry() {
     DOCKER_REGISTRY="dcso"
     ############## FILE exists ##############
     echo
-    echo "We switched the container repository to secure DCSO registry."
+    echo "We have switched the container repository to the DCSO registry."
     echo "      If you want to use the public one from hub.docker.com,"
     echo "      please change the parameter 'DOCKER_REGISTRY' at $CONFIG_FILE and 'make install'"
     echo

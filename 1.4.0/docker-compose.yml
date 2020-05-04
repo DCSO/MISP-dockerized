@@ -64,7 +64,7 @@ services:
 
   ### MISP Apache Server ###    
   misp-server:
-    image: dockerhub.dcso.de/misp-dockerized-server:2.4.124-ubuntu
+    image: dockerhub.dcso.de/misp-dockerized-server:2.4.125-ubuntu
     container_name: misp-server
     restart: unless-stopped
     volumes:
