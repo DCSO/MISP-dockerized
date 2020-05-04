@@ -1,0 +1,170 @@
+version: '3.1'
+
+networks: 
+  misp-backend:
+    driver: bridge
+    driver_opts:
+     com.docker.network.bridge.name: "mispbr0"
+     com.docker.network.enable_ipv6: "false"
+    ipam:
+      config:
+      - subnet: "192.168.47.0/28"
+
+services:
+  # ### MISP Database ###
+  # # LINK: https://hub.docker.com/_/mariadb/
+  # misp-db:
+  #   image: mariadb:10.3.10-bionic
+  #   container_name: misp-db
+  #   restart: unless-stopped
+  #   volumes:
+  #   - misp-vol-db-data:/var/lib/mysql/"
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "mysql -u $MYSQL_USER -p$MYSQL_PASSWORD -h misp-db --execute 'show databases;'"]
+  #     interval: 1m
+  #     timeout: 15s
+  #     retries: 5
+  #   networks:
+  #     misp-backend:
+  #       aliases:
+  #       - misp-db 
+
+  ### MISP Redis Server ###
+  # LINK: https://docs.docker.com/samples/library/redis/
+  # LINK: https://github.com/docker-library/docs/tree/master/redis
+  misp-redis:
+    image: dockerhub.dcso.de/misp-dockerized-redis:5-alpine3.9
+    restart: unless-stopped
+    container_name: misp-redis
+    command: ["redis-server", "--appendonly", "yes"] #For Data persistence
+    healthcheck:
+      test: ["CMD-SHELL", "[ $$(redis-cli ping) == PONG ] || exit 1"]
+      interval: 1m30s
+      timeout: 15s
+      retries: 3
+    volumes:
+    - misp-vol-redis-data:/data/
+    ###### Basefolder for backups
+    - /opt/MISP-dockerized:/srv/MISP-dockerized
+    networks:
+      misp-backend:
+        aliases:
+        - misp-redis
+  
+  ### MISP Modules ###
+  misp-modules:
+    image: dockerhub.dcso.de/misp-dockerized-misp-modules:latest
+    container_name: misp-modules
+    restart: unless-stopped
+    networks:
+      misp-backend:
+        aliases:
+          - misp-modules
+
+
+  ### MISP Apache Server ###    
+  misp-server:
+    image: dockerhub.dcso.de/misp-dockerized-server:2.4.125-ubuntu
+    container_name: misp-server
+    restart: unless-stopped
+    volumes:
+    ###### mips-server ######
+    # Apache2 Configuration
+    - misp-vol-server-apache2-config-sites-enabled:/etc/apache2/sites-enabled
+    # Volume with Certificates
+    - misp-vol-ssl:/etc/apache2/ssl
+    # Volume with PGP Key
+    - misp-vol-pgp:/var/www/MISP/.gnupg
+    # Volume with S/MIME Certificate and Key
+    - misp-vol-smime:/var/www/MISP/.smime
+    ###### misp-redis ######
+    - misp-vol-redis-data:/redis_data_dir
+    # MISP Configurations:
+    - misp-vol-server-MISP-app-Config:/var/www/MISP/app/Config
+    - misp-vol-server-MISP-cakeresque-config:/var/www/MISP/app/Plugin/CakeResque/Config
+    - misp-vol-server-MISP-tmp:/var/www/MISP/app/tmp
+    - misp-vol-server-MISP-attachments:/var/www/MISP/app/files
+    ###### misp-db ######
+    - misp-vol-db-data:/var/lib/mysql
+    ###### Basefolder for backups
+    - /opt/MISP-dockerized:/srv/MISP-dockerized
+    networks:
+      misp-backend:
+        aliases:
+        - misp-server
+
+  ### Reverse Proxy ###
+  misp-proxy:
+    image: dockerhub.dcso.de/misp-dockerized-proxy:1
+    container_name: misp-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"    
+    environment:
+      HTTP_PROXY: ${HTTP_PROXY}
+      HTTPS_PROXY: ${HTTPS_PROXY}
+      NO_PROXY: ${NO_PROXY}
+    volumes:
+      # NGINX Configuration
+      #- misp-vol-proxy-conf:/etc/nginx/conf.d
+      # SSL 
+      - misp-vol-ssl:/etc/nginx/ssl
+      ###### Basefolder for backups
+      - /opt/MISP-dockerized:/srv/MISP-dockerized
+    networks:
+      misp-backend:
+        aliases:
+          - misp-nginx
+
+
+  ### Robot ###
+  misp-robot:
+    image: dockerhub.dcso.de/misp-dockerized-robot:2.6
+    container_name: misp-robot
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    healthcheck:
+      disable: true
+    volumes:
+    ######  GLOBAL VOLUMES  ######
+    # Docker.sock File
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    # Volume with Certificates
+    - misp-vol-ssl:/srv/misp-ssl
+    # Volume with PGP Key
+    - misp-vol-pgp:/srv/misp-pgp
+    # Volume with S/MIME Certificate and Key
+    - misp-vol-smime:/srv/misp-smime
+    ###### mips-server ######
+    - misp-vol-server-apache2-config-sites-enabled:/srv/misp-server/apache2/sites-enabled
+    - misp-vol-server-MISP-app-Config:/srv/misp-server/MISP/Config
+    - misp-vol-server-MISP-cakeresque-config:/srv/misp-server/MISP/CakeResque/Config
+    - misp-vol-server-MISP-tmp:/srv/misp-server/MISP/app/tmp
+    - misp-vol-server-MISP-attachments:/srv/misp-server/MISP/app/files
+    ###### misp-proxy ######
+    - misp-vol-proxy-conf:/srv/misp-proxy/conf.d
+    ###### misp-redis ######
+    - misp-vol-redis-data:/srv/misp-redis
+    ###### misp-db ######
+    - misp-vol-db-data:/srv/misp-db
+    networks:
+      misp-backend:
+        aliases:
+          - misp-robot
+
+
+### VOLUMES ###
+volumes:
+  misp-vol-ssl:
+  misp-vol-pgp:
+  misp-vol-smime:
+  misp-vol-db-data:
+  misp-vol-redis-data:
+  misp-vol-server-apache2-config-sites-enabled:
+  misp-vol-server-MISP-app-Config:
+  misp-vol-server-MISP-cakeresque-config:
+  misp-vol-server-MISP-tmp:
+  misp-vol-server-MISP-attachments:
+  misp-vol-proxy-conf:
